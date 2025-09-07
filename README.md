@@ -22,7 +22,7 @@ Slice helpers:
 - [ ] Map
 - [ ] Unique
 
-Maps helpers:
+Map helpers:
 - [ ] Keys
 - [ ] Values
 - [ ] Contains
@@ -34,6 +34,9 @@ Maps helpers:
 - [ ] FilterOutByKeys
 - [ ] Invert
 - [ ] Combine
+
+Data structures:
+- [ ] Sets
 
 ## Contributing
 

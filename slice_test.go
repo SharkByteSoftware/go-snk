@@ -41,7 +41,6 @@ func TestFilter(t *testing.T) {
 			result := sink.Filter(test.input, test.filter)
 			assert.Equal(t, test.expected, result)
 		})
-
 	}
 }
 
@@ -64,6 +63,7 @@ func TestFilterI(t *testing.T) {
 				}
 
 				indexes = append(indexes, i)
+
 				return true
 			},
 			expected:      []int{2, 4, 256},
@@ -97,6 +97,5 @@ func TestFilterI(t *testing.T) {
 			assert.Equal(t, test.expected, result)
 			assert.Equal(t, test.expected_idxs, indexes)
 		})
-
 	}
 }

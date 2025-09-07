@@ -1,6 +1,6 @@
-NAME = sb
+NAME = go-sink
 BASE_DIR = .
-TEST_OPTS =-vet=all
+TEST_OPTS =-vet=all -race
 
 default: test vet
 
@@ -8,7 +8,7 @@ all: test vet
 
 test:
 	$(printTarget)
-	@go test $(TEST_OPTS) ./...
+	go test $(TEST_OPTS) ./...
 
 vet:
 	$(printTarget)
@@ -21,7 +21,6 @@ tidy:
 clean:
 	@go clean ./...
 	@go clean -testcache
-	@rm -rf $(NAME) $(CREATE_DIRS)
 
 #Helper function to pretty print targets as they execute
 TARGET_COLOR := \033[0;32m

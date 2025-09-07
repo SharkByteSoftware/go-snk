@@ -7,10 +7,12 @@ default: test vet
 all: test vet
 
 test:
+	$(printTarget)
 	@go test $(TEST_OPTS) ./...
 
 vet:
-	@golangci-lint run --output.text.path stdout
+	$(printTarget)
+	@golangci-lint run
 
 tidy:
 	$(printTarget)
@@ -20,3 +22,12 @@ clean:
 	@go clean ./...
 	@go clean -testcache
 	@rm -rf $(NAME) $(CREATE_DIRS)
+
+#Helper function to pretty print targets as they execute
+TARGET_COLOR := \033[0;32m
+NO_COLOR := \033[m
+CURRENT_TARGET = $(@)
+
+define printTarget
+	@printf "%b" "\n$(TARGET_COLOR)$(CURRENT_TARGET):$(NO_COLOR) $^\n";
+endef

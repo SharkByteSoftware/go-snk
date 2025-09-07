@@ -1,9 +1,9 @@
-package sb_test
+package sink_test
 
 import (
 	"testing"
 
-	"github.com/SharkByteSoftware/sb"
+	"github.com/SharkByteSoftware/go-sink"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,7 +38,7 @@ func TestFilter(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := sb.Filter(test.input, test.filter)
+			result := sink.Filter(test.input, test.filter)
 			assert.Equal(t, test.expected, result)
 		})
 
@@ -93,7 +93,7 @@ func TestFilterI(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			indexes = make([]int, 0)
-			result := sb.FilterI(test.input, test.filter)
+			result := sink.FilterI(test.input, test.filter)
 			assert.Equal(t, test.expected, result)
 			assert.Equal(t, test.expected_idxs, indexes)
 		})

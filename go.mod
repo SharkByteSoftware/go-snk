@@ -1,4 +1,4 @@
-module github.com/SharkByteSoftware/sb
+module github.com/SharkByteSoftware/go-sink
 
 go 1.25
 

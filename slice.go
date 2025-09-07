@@ -1,5 +1,5 @@
-// Package sb provides various slice utilities.
-package sb
+// Package sink provides various slice utilities.
+package sink
 
 type SliceFilter[T any] func(T) bool
 type SliceFilterIndex[T any] func(T, int) bool

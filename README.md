@@ -38,6 +38,38 @@ Map helpers:
 Data structures:
 - [ ] Sets
 
+| LINQ Method              | Functional Equivalent       |
+|--------------------------|-----------------------------|
+| Select                   | map                         |
+| SelectMany               | flatMap / bind              |
+| Where                    | filter                      |
+| Aggregate                | reduce / fold               |
+| Any                      | exists / any                |
+| All                      | forall / all                |
+| First / FirstOrDefault   | head                        |
+| Last / LastOrDefault     | last                        |
+| Count                    | length / size               |
+| Sum                      | sum                         |
+| Average                  | average                     |
+| Max                      | maximum                     |
+| Min                      | minimum                     |
+| GroupBy                  | groupBy                     |
+| OrderBy / OrderByDescending | sort / sortBy             |
+| Distinct                 | unique                      |
+| Concat                   | append                      |
+| Union                    | union                       |
+| Intersect                | intersect                   |
+| Except                   | difference                  |
+| Zip                      | zip                         |
+| Take                     | take                        |
+| Skip                     | drop                        |
+| Reverse                  | reverse                     |
+| Join                     | join                        |
+| GroupJoin                | groupJoin                   |
+| Contains                 | contains                    |
+| ElementAt                | index / nth                 |
+| ToList / ToArray         | toList / toArray
+
 ## Contributing
 
 

@@ -1,6 +1,6 @@
 module github.com/SharkByteSoftware/go-sink
 
-go 1.25
+go 1.22
 
 require github.com/stretchr/testify v1.11.1
 

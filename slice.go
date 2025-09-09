@@ -67,3 +67,19 @@ func Unique[T comparable](slice []T) []T {
 
 	return result
 }
+
+func ForEach[T any](slice []T, f func(item T)) {
+	for _, value := range slice {
+		f(value)
+	}
+}
+
+func SumBy[T any, R int](slice []T, sumFunc func(T) R) R {
+	var sum R
+
+	for _, value := range slice {
+		sum += sumFunc(value)
+	}
+
+	return sum
+}

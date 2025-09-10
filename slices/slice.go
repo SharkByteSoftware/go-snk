@@ -5,15 +5,9 @@ import (
 	"github.com/SharkByteSoftware/go-sink/sets"
 )
 
-func sliceFilterAdapter[T any](f func(item T) bool) func(T, int) bool {
-	return func(item T, idx int) bool {
-		return f(item)
-	}
-}
-
 // Filter filters a slice using a filter function.
 func Filter[T any, S ~[]T](slice S, filter func(item T) bool) []T {
-	return FilterWithIndex(slice, sliceFilterAdapter(filter))
+	return FilterWithIndex(slice, ItemIndexAdapter(filter))
 }
 
 // FilterWithIndex is like Filter, but it accepts a filter function that takes an index as well.
@@ -28,20 +22,9 @@ func FilterWithIndex[T any, S ~[]T](slice S, filter func(item T, index int) bool
 	return result
 }
 
-func sliceMapperAdapter[T any, R any](mapper func(T) R) func(T, int) R {
-	return func(item T, index int) R {
-		return mapper(item)
-	}
-}
-
 // Map maps a slice to a slice of another type using a mapper function.
 func Map[T, R any](slice []T, mapper func(item T) R) []R {
-	return MapWithIndex(slice, sliceMapperAdapter(mapper))
-}
-
-// UniqueMap maps a slice to a slice of another type using a mapper function and removes duplicate values.
-func UniqueMap[T, R comparable](slice []T, mapper func(item T) R) []R {
-	return Unique(Map(slice, mapper))
+	return MapWithIndex(slice, ItemIndexAdapter(mapper))
 }
 
 // MapWithIndex is like Map, but it accepts a mapper function that takes an index as well.
@@ -53,6 +36,11 @@ func MapWithIndex[T, R any](slice []T, mapper func(item T, idx int) R) []R {
 	}
 
 	return result
+}
+
+// UniqueMap maps a slice to a slice of another type using a mapper function and removes duplicate values.
+func UniqueMap[T, R comparable](slice []T, mapper func(item T) R) []R {
+	return Unique(Map(slice, mapper))
 }
 
 func Bind[T, R any](slice []T, mapper func(item T) []R) []R {

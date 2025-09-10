@@ -43,26 +43,49 @@ func UniqueMap[T, R comparable](slice []T, mapper func(item T) R) []R {
 	return Unique(Map(slice, mapper))
 }
 
+// Bind transforms and flattens a slice from one type to another using a mapper
+// function.
 func Bind[T, R any](slice []T, mapper func(item T) []R) []R {
 	result := make([]R, 0, len(slice))
+
+	Apply(slice, func(item T) {
+		result = append(result, mapper(item)...)
+	})
+
 	return result
 }
 
-func Fold[T any, R any](slice []T, reducer func(acc R, item T) R) R {
-	var acc R
-	return acc
+// Fold reduces slice to a value which is the accumulated result of calling an accumulate func
+// for each item in the slice where each successive call is supplied by the return value of
+// the previous call.
+func Fold[T any, R any](slice []T, accumulator func(agg R, item T) R, initial R) R {
+	Apply(slice, func(item T) {
+		initial = accumulator(initial, item)
+	})
+
+	return initial
 }
 
-func Any[T any](slice []T, condition func(item T) bool) bool {
-	return false
+func Find[T comparable](slice []T, predicate func(item T) bool) (T, bool) {
+	for _, value := range slice {
+		if predicate(value) {
+			return value, true
+		}
+	}
+
+	var result T
+
+	return result, false
 }
 
-func All[T any, R comparable](slice []T) bool {
-	return false
+func Any[T comparable](slice []T, predicate func(item T) bool) bool {
+	_, found := Find(slice, predicate)
+	return found
 }
 
-func Contains[T comparable](slice []T, item T) bool {
-	return false
+func All[T comparable](slice []T, candidate T) bool {
+	found := Filter(slice, func(item T) bool { return item == candidate })
+	return len(found) == len(slice)
 }
 
 // Unique returns a slice with all duplicate values removed.
@@ -94,8 +117,16 @@ func GroupBy[T, R comparable, S ~[]T](slice S, groupFunc func(item T) R) map[R][
 }
 
 func Reverse[T any, S ~[]T](slice S) S {
-	// TODO: Implement
-	return nil
+	result := make([]T, len(slice))
+	sliceLen := len(slice)
+	mid := sliceLen / 2
+
+	for i := range mid {
+		j := sliceLen - 1 - i
+		result[i], result[j] = slice[j], slice[i]
+	}
+
+	return result
 }
 
 func ToMap[T any, K comparable, V any](slice []T, keyFunc func(item T) K, valueFunc func(item T) V) map[K]V {

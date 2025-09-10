@@ -10,6 +10,12 @@ import (
 
 var numberList = []int{1, 2, 3, 4, 5, 333, 256}
 var duplicateList = []int{1, 2, 3, 4, 5, 333, 256, 1, 2, 3, 4, 5, 333, 256}
+var allSame = []int{1, 1, 1, 1, 1, 1}
+
+var nestedNumberList = [][]int{
+	numberList,
+	numberList,
+}
 
 func TestFilter(t *testing.T) {
 	tests := []struct {
@@ -69,6 +75,49 @@ func TestUniqueMap(t *testing.T) {
 	assert.Len(t, result, 7)
 }
 
+func TestBind(t *testing.T) {
+	result := slices.Bind(nestedNumberList, slices.ValueAdapter[[]int]())
+	assert.Equal(t, append(numberList, numberList...), result)
+}
+
+func TestFold(t *testing.T) {
+	accumulator := func(agg int, item []int) int {
+		return agg + item[0]
+	}
+
+	result := slices.Fold(nestedNumberList, accumulator, 0)
+	assert.Equal(t, 2, result)
+}
+
+func TestFind(t *testing.T) {
+	result, found := slices.Find(numberList, func(item int) bool { return item == 88 })
+	assert.False(t, found)
+	assert.Equal(t, 0, result)
+
+	result, found = slices.Find(numberList, func(item int) bool { return item == 256 })
+	assert.True(t, found)
+	assert.Equal(t, 256, result)
+}
+
+func TestAny(t *testing.T) {
+	result := slices.Any(numberList, func(item int) bool { return item == 0 })
+	assert.False(t, result)
+
+	result = slices.Any(numberList, func(item int) bool { return item == 1 })
+	assert.True(t, result)
+
+	result = slices.Any(duplicateList, func(item int) bool { return item == 256 })
+	assert.True(t, result)
+}
+
+func TestAll(t *testing.T) {
+	result := slices.All(numberList, 1)
+	assert.False(t, result)
+
+	result = slices.All(allSame, 1)
+	assert.True(t, result)
+}
+
 func TestUnique(t *testing.T) {
 	test := []struct {
 		name     string
@@ -109,6 +158,26 @@ func TestUnique(t *testing.T) {
 			assert.Equal(t, len(test.input), cap(result))
 		})
 	}
+}
+
+func TestGroupBy(t *testing.T) {
+}
+
+func TestReverse(t *testing.T) {
+	var orderedList = []int{1, 2, 3, 4, 5, 256}
+
+	result := slices.Reverse(orderedList)
+	assert.IsDecreasing(t, result)
+	assert.IsIncreasing(t, orderedList)
+
+	result = slices.Reverse(result)
+	assert.IsIncreasing(t, result)
+
+	result = slices.Reverse(allSame)
+	assert.IsNonDecreasing(t, result)
+
+	result = slices.Reverse([]int{})
+	assert.IsDecreasing(t, result)
 }
 
 func TestApply(t *testing.T) {

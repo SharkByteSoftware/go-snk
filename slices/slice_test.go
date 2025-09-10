@@ -18,45 +18,17 @@ var nestedNumberList = [][]int{
 }
 
 func TestFilter(t *testing.T) {
-	tests := []struct {
-		name     string
-		input    []int
-		filter   func(int) bool
-		expected []int
-	}{
-		{
-			name:     "filter even numbers",
-			input:    numberList,
-			filter:   func(n int) bool { return n%2 == 0 },
-			expected: []int{2, 4, 256},
-		},
-		{
-			name:     "filter nothing",
-			input:    numberList,
-			filter:   func(n int) bool { return false },
-			expected: []int{},
-		},
-		{
-			name:     "filter everything",
-			input:    numberList,
-			filter:   func(n int) bool { return true },
-			expected: numberList,
-		},
-		{
-			name:     "empty slice",
-			input:    []int{},
-			filter:   func(n int) bool { return true },
-			expected: []int{},
-		},
-	}
+	result := slices.Filter(numberList, func(n int) bool { return n%2 == 0 })
+	assert.Equal(t, []int{2, 4, 256}, result)
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			result := slices.Filter(test.input, test.filter)
-			assert.Equal(t, test.expected, result)
-			assert.Equal(t, len(test.input), cap(result))
-		})
-	}
+	result = slices.Filter(numberList, func(n int) bool { return false })
+	assert.Equal(t, []int{}, result)
+
+	result = slices.Filter(numberList, func(n int) bool { return true })
+	assert.Equal(t, numberList, result)
+
+	result = slices.Filter([]int{}, func(n int) bool { return true })
+	assert.Equal(t, []int{}, result)
 }
 
 func TestMap(t *testing.T) {

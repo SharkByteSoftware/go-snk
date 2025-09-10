@@ -1,4 +1,4 @@
-module github.com/SharkByteSoftware/go-sink
+module github.com/SharkByteSoftware/go-snk
 
 go 1.22
 

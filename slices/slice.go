@@ -2,7 +2,7 @@
 package slices
 
 import (
-	"github.com/SharkByteSoftware/go-sink/sets"
+	"github.com/SharkByteSoftware/go-snk/sets"
 )
 
 // Filter filters a slice using a filter function.

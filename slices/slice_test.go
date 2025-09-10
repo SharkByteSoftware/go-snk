@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-sink/slices"
+	"github.com/SharkByteSoftware/go-snk/slices"
 	"github.com/stretchr/testify/assert"
 )
 

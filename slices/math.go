@@ -1,6 +1,6 @@
 package slices
 
-import "github.com/SharkByteSoftware/go-sink/constraints"
+import "github.com/SharkByteSoftware/go-snk/constraints"
 
 func Sum[T constraints.Numeric](slice []T) T {
 	return SumBy(slice, ValueAdapter[T]())

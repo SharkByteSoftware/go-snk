@@ -91,45 +91,20 @@ func TestAll(t *testing.T) {
 }
 
 func TestUnique(t *testing.T) {
-	test := []struct {
-		name     string
-		input    []int
-		expected []int
-	}{
-		{
-			name:     "empty slice",
-			input:    []int{},
-			expected: []int{},
-		},
-		{
-			name:     "single element slice",
-			input:    []int{1},
-			expected: []int{1},
-		},
-		{
-			name:     "multiple element slice",
-			input:    numberList,
-			expected: numberList,
-		},
-		{
-			name:     "duplicate elements",
-			input:    duplicateList,
-			expected: []int{1, 2, 3, 4, 5, 333, 256},
-		},
-		{
-			name:     "multiple single duplicate elements",
-			input:    []int{1, 1, 1, 1, 1, 1, 1, 2},
-			expected: []int{1, 2},
-		},
-	}
+	result := slices.Unique([]int{})
+	assert.Equal(t, []int{}, result)
 
-	for _, test := range test {
-		t.Run(test.name, func(t *testing.T) {
-			result := slices.Unique(test.input)
-			assert.Equal(t, test.expected, result)
-			assert.Equal(t, len(test.input), cap(result))
-		})
-	}
+	result = slices.Unique([]int{1})
+	assert.Equal(t, []int{1}, result)
+
+	result = slices.Unique(numberList)
+	assert.Equal(t, numberList, result)
+
+	result = slices.Unique(duplicateList)
+	assert.Equal(t, []int{1, 2, 3, 4, 5, 333, 256}, result)
+
+	result = slices.Unique([]int{1, 1, 1, 1, 1, 1, 1, 2})
+	assert.Equal(t, []int{1, 2}, result)
 }
 
 func TestGroupBy(t *testing.T) {

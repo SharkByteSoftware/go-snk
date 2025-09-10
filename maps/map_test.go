@@ -1,9 +1,9 @@
-package sink_test
+package maps_test
 
 import (
 	"testing"
 
-	"github.com/SharkByteSoftware/go-sink"
+	"github.com/SharkByteSoftware/go-sink/maps"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +17,7 @@ var numberMap = map[int]string{
 }
 
 func TestKeys(t *testing.T) {
-	keys := sink.Keys(numberMap)
+	keys := maps.Keys(numberMap)
 
 	assert.Len(t, keys, 6)
 	for k, _ := range numberMap {
@@ -26,7 +26,7 @@ func TestKeys(t *testing.T) {
 }
 
 func TestValues(t *testing.T) {
-	values := sink.Values(numberMap)
+	values := maps.Values(numberMap)
 
 	assert.Len(t, values, 6)
 	for _, v := range numberMap {

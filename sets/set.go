@@ -1,4 +1,5 @@
-package sink
+// Package sets provides a set data structure.
+package sets
 
 // Set is a set data structure.
 type Set[T comparable] struct {

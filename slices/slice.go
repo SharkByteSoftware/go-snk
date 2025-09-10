@@ -1,5 +1,9 @@
-// Package sink provides various slice utilities.
-package sink
+// Package slices provides various slice utilities.
+package slices
+
+import (
+	"github.com/SharkByteSoftware/go-sink/sets"
+)
 
 func sliceFilterAdapter[T any](f func(item T) bool) func(T, int) bool {
 	return func(item T, idx int) bool {
@@ -35,6 +39,11 @@ func Map[T, R any](slice []T, mapper func(item T) R) []R {
 	return MapWithIndex(slice, sliceMapperAdapter(mapper))
 }
 
+// UniqueMap maps a slice to a slice of another type using a mapper function and removes duplicate values.
+func UniqueMap[T, R comparable](slice []T, mapper func(item T) R) []R {
+	return Unique(Map(slice, mapper))
+}
+
 // MapWithIndex is like Map, but it accepts a mapper function that takes an index as well.
 func MapWithIndex[T, R any](slice []T, mapper func(item T, idx int) R) []R {
 	result := make([]R, len(slice))
@@ -46,15 +55,32 @@ func MapWithIndex[T, R any](slice []T, mapper func(item T, idx int) R) []R {
 	return result
 }
 
-// UniqueMap maps a slice to a slice of another type using a mapper function and removes duplicate values.
-func UniqueMap[T, R comparable](slice []T, mapper func(item T) R) []R {
-	return Unique(Map(slice, mapper))
+func Bind[T, R any](slice []T, mapper func(item T) []R) []R {
+	result := make([]R, 0, len(slice))
+	return result
+}
+
+func Fold[T any, R any](slice []T, reducer func(acc R, item T) R) R {
+	var acc R
+	return acc
+}
+
+func Any[T any](slice []T, condition func(item T) bool) bool {
+	return false
+}
+
+func All[T any, R comparable](slice []T) bool {
+	return false
+}
+
+func Contains[T comparable](slice []T, item T) bool {
+	return false
 }
 
 // Unique returns a slice with all duplicate values removed.
 func Unique[T comparable](slice []T) []T {
 	result := make([]T, 0, len(slice))
-	set := NewSet[T]()
+	set := sets.NewSet[T]()
 
 	for _, value := range slice {
 		if set.Contains(value) {
@@ -68,18 +94,23 @@ func Unique[T comparable](slice []T) []T {
 	return result
 }
 
-func ForEach[T any](slice []T, f func(item T)) {
+func Apply[T any](slice []T, f func(item T)) {
 	for _, value := range slice {
 		f(value)
 	}
 }
 
-func SumBy[T any, R int](slice []T, sumFunc func(T) R) R {
-	var sum R
+func GroupBy[T, R comparable, S ~[]T](slice S, groupFunc func(item T) R) map[R][]T {
+	// TODO: Implement
+	return nil
+}
 
-	for _, value := range slice {
-		sum += sumFunc(value)
-	}
+func Reverse[T any, S ~[]T](slice S) S {
+	// TODO: Implement
+	return nil
+}
 
-	return sum
+func ToMap[T any, K comparable, V any](slice []T, keyFunc func(item T) K, valueFunc func(item T) V) map[K]V {
+	// TODO: Implement
+	return nil
 }

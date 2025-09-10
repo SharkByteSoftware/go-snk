@@ -1,4 +1,7 @@
-package sink
+// Package maps provides functions for working with maps.
+package maps
+
+import "github.com/SharkByteSoftware/go-sink/slices"
 
 // Keys returns an array of the map keys.
 func Keys[K comparable, V any](collection map[K]V) []K {
@@ -22,14 +25,19 @@ func Values[K comparable, V any](collection map[K]V) []V {
 	return values
 }
 
+func UniqueValues[K comparable, V comparable](collection map[K]V) []V {
+	// TODO: Implement
+	return nil
+}
+
 // Contains returns true/false if the map contains the specified key.
 func Contains[K comparable, V any](collection map[K]V, key K) bool {
 	_, ok := collection[key]
 	return ok
 }
 
-// ValueOrDefault returns the value for a key or the specified default.
-func ValueOrDefault[K comparable, V any](collection map[K]V, key K, fallback V) V {
+// Value returns the value for a key or the specified default.
+func Value[K comparable, V any](collection map[K]V, key K, fallback V) V {
 	if value, ok := collection[key]; ok {
 		return value
 	}
@@ -48,10 +56,10 @@ func Invert[K comparable, V comparable](collection map[K]V) map[V]K {
 }
 
 func Combine[K comparable, V any](maps ...map[K]V) map[K]V {
-	size := SumBy(maps, func(item map[K]V) int { return len(item) })
+	size := slices.SumBy(maps, func(item map[K]V) int { return len(item) })
 	result := make(map[K]V, size)
 
-	ForEach(maps, func(item map[K]V) {
+	slices.Apply(maps, func(item map[K]V) {
 		for key, value := range item {
 			result[key] = value
 		}
@@ -60,8 +68,7 @@ func Combine[K comparable, V any](maps ...map[K]V) map[K]V {
 	return result
 }
 
-//- [ ] Filter
-//- [ ] FilterByKeys
-//- [ ] FilterOut
-//- [ ] FilterOutByKeys
-//- [ ] Combine
+func ToSlice[K comparable, V any, R any](collection map[K]V, mapper func(item V) R) []R {
+	// TODO: Implement
+	return nil
+}

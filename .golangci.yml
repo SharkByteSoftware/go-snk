@@ -42,7 +42,7 @@ linters:
     - gocritic
     - gocyclo
     - godot
-    - godox
+#    - godox
     - goheader
     - gomoddirectives
     - gomodguard
@@ -64,7 +64,7 @@ linters:
     - makezero
     - mirror
     - misspell
-    - mnd
+#    - mnd
     - musttag
     - nakedret
     - nestif
@@ -122,6 +122,15 @@ linters:
       statements: -1
     nlreturn:
       block-size: 2
+    depguard:
+      rules:
+        main:
+          files:
+            - "$all"
+            - "!$test"
+          allow:
+            - "$gostd"
+            - "github.com/SharkByteSoftware/go-sink"
 
   exclusions:
     paths:

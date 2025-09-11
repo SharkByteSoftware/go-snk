@@ -22,5 +22,5 @@ type Complex interface {
 }
 
 type Numeric interface {
-	Integers | Floats | Complex
+	Integers | Floats
 }

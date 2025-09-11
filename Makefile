@@ -12,7 +12,7 @@ test:
 
 bench:
 	$(printTarget)
-	go test -benchmem -count 3 -bench ./...
+	go test -benchmem -count 3 -bench
 
 vet:
 	$(printTarget)

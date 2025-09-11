@@ -1,7 +1,7 @@
 // Package maps provides functions for working with maps.
 package maps
 
-import "github.com/SharkByteSoftware/go-sink/slices"
+import "github.com/SharkByteSoftware/go-snk/slices"
 
 // Keys returns an array of the map keys.
 func Keys[K comparable, V any](collection map[K]V) []K {

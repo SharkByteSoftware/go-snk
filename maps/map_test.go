@@ -3,7 +3,7 @@ package maps_test
 import (
 	"testing"
 
-	"github.com/SharkByteSoftware/go-sink/maps"
+	"github.com/SharkByteSoftware/go-snk/maps"
 	"github.com/stretchr/testify/assert"
 )
 

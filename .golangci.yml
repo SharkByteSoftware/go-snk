@@ -130,7 +130,7 @@ linters:
             - "!$test"
           allow:
             - "$gostd"
-            - "github.com/SharkByteSoftware/go-sink"
+            - "github.com/SharkByteSoftware/go-snk"
 
   exclusions:
     paths:

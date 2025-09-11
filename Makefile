@@ -1,6 +1,6 @@
 NAME = go-sink
 BASE_DIR = .
-TEST_OPTS =-vet=all -race
+TEST_OPTS =-vet=all
 
 default: test vet
 

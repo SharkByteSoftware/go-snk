@@ -10,6 +10,10 @@ test:
 	$(printTarget)
 	go test $(TEST_OPTS) ./...
 
+bench:
+	$(printTarget)
+	go test -benchmem -count 3 -bench ./...
+
 vet:
 	$(printTarget)
 	@golangci-lint run

@@ -112,13 +112,15 @@ func TestGroupBy(t *testing.T) {
 
 func TestReverse(t *testing.T) {
 	var orderedList = []int{1, 2, 3, 4, 5, 256}
+	var oddNumberedOrderedList = []int{1, 2, 3, 4, 5, 256, 333}
 
 	result := slices.Reverse(orderedList)
 	assert.IsDecreasing(t, result)
 	assert.IsIncreasing(t, orderedList)
 
-	result = slices.Reverse(result)
-	assert.IsIncreasing(t, result)
+	result = slices.Reverse(oddNumberedOrderedList)
+	assert.IsDecreasing(t, result)
+	assert.IsIncreasing(t, oddNumberedOrderedList)
 
 	result = slices.Reverse(allSame)
 	assert.IsNonDecreasing(t, result)
@@ -131,4 +133,16 @@ func TestApply(t *testing.T) {
 	var nums string
 	slices.Apply(numberList, func(n int) { nums += strconv.Itoa(n) })
 	assert.Equal(t, "12345333256", nums)
+}
+
+func TestToMap(t *testing.T) {
+	mapperFunc := func(item int) string { return strconv.Itoa(item) }
+
+	result := slices.ToMap([]int{}, mapperFunc)
+	assert.Len(t, result, 0)
+	assert.Equal(t, map[string]int{}, result)
+
+	result = slices.ToMap(numberList, mapperFunc)
+	assert.Len(t, result, len(numberList))
+	assert.Equal(t, numberList[0], result[strconv.Itoa(numberList[0])])
 }

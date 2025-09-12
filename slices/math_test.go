@@ -16,9 +16,6 @@ func TestSum(t *testing.T) {
 
 	float64Result := slices.Sum([]float64{1.0, 2.0, 3.0})
 	assert.Equal(t, 6.0, float64Result)
-
-	//complexResult := slices.Sum([]complex128{1.0, 2.0, 3.0})
-	//assert.Equal(t, complex(6.0, 0.0), complexResult)
 }
 
 func TestProduct(t *testing.T) {
@@ -68,6 +65,9 @@ func TestMin(t *testing.T) {
 	assert.Equal(t, 1, min)
 
 	min = slices.Min(duplicateList)
+	assert.Equal(t, 1, min)
+
+	min = slices.Min(slices.Reverse(numberList))
 	assert.Equal(t, 1, min)
 
 	min = slices.Min([]int{})

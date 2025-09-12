@@ -118,16 +118,16 @@ func Unique[T comparable](slice []T) []T {
 }
 
 // Apply applies a function to each item in the slice.
-func Apply[T any](slice []T, f func(item T)) {
+func Apply[T any](slice []T, predicate func(item T)) {
 	for _, value := range slice {
-		f(value)
+		predicate(value)
 	}
 }
 
-func GroupBy[T, R comparable, S ~[]T](slice S, groupFunc func(item T) R) map[R][]T {
-	// TODO: Implement
-	return nil
-}
+//func GroupBy[T, R comparable, S ~[]T](slice S, groupFunc func(item T) R) map[R][]T {
+//	// TODO: Implement
+//	return nil
+//}
 
 // Reverse reverses a slice.
 func Reverse[T any, S ~[]T](slice S) S {
@@ -135,16 +135,25 @@ func Reverse[T any, S ~[]T](slice S) S {
 	sliceLen := len(slice)
 	mid := sliceLen / 2
 
-	for i := range mid {
+	for i := 0; i < mid; i++ {
 		j := sliceLen - 1 - i
 		result[i], result[j] = slice[j], slice[i]
+	}
+
+	if sliceLen%2 != 0 {
+		result[mid] = slice[mid]
 	}
 
 	return result
 }
 
-// ToMap converts a slice to a map using the given key value function.
-func ToMap[T any, K comparable, V any](slice []T, keyValueFunc func(item T) (K, V)) map[K]V {
-	// TODO: Implement
-	return nil
+// ToMap converts a slice to a map using the given key function.
+func ToMap[T any, K comparable](slice []T, keyFunc func(item T) K) map[K]T {
+	result := make(map[K]T, len(slice))
+
+	Apply(slice, func(item T) {
+		result[keyFunc(item)] = item
+	})
+
+	return result
 }

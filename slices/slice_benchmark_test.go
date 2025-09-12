@@ -146,6 +146,19 @@ func BenchmarkApply(b *testing.B) {
 	}
 }
 
+func BenchmarkToMap(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_ = slices.ToMap(ints, func(item int) int {
+					return item
+				})
+			}
+		})
+	}
+}
+
 func accumulater(agg int, item []int) int {
 	if len(item) == 0 {
 		return agg

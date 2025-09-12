@@ -1,6 +1,7 @@
 NAME = go-sink
 BASE_DIR = .
-TEST_OPTS =-vet=all
+COV_PROFILE = dist/covprofile.out
+TEST_OPTS = -vet=all -cover -covermode=atomic -coverprofile=$(COV_PROFILE)
 
 BENCH_PKGS = \
 	slices \
@@ -13,9 +14,10 @@ default: test vet
 
 all: test vet
 
-test:
+test: | dist
 	$(printTarget)
 	go test $(TEST_OPTS) ./...
+	go tool cover --html=$(COV_PROFILE) -o dist/coverage_report.html
 
 bench: $(BENCHMARKS)
 bench/%:
@@ -33,6 +35,10 @@ tidy:
 clean:
 	@go clean ./...
 	@go clean -testcache
+
+dist:
+	$(printTarget)
+	@mkdir -p $(@)
 
 #Helper function to pretty print targets as they execute
 TARGET_COLOR := \033[0;32m

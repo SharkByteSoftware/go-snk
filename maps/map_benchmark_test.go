@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/SharkByteSoftware/go-snk/adapt"
 	"github.com/SharkByteSoftware/go-snk/maps"
 	"github.com/SharkByteSoftware/go-snk/slices"
 )
@@ -33,7 +34,7 @@ func BenchmarkValues(b *testing.B) {
 }
 
 func generateMap(size int) map[int]int {
-	return slices.ToMap(generateIntSlice(size), slices.ValueAdapter[int]())
+	return slices.ToMap(generateIntSlice(size), adapt.ValueAdapter)
 }
 
 func generateIntSlice(size int) []int {

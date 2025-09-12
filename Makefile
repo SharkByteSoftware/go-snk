@@ -6,7 +6,7 @@ TEST_OPTS = -vet=all -cover -covermode=atomic -coverprofile=$(COV_PROFILE)
 BENCH_PKGS = \
 	slices \
 	maps \
-	sets
+	ds
 BENCHMARKS = $(BENCH_PKGS:%=bench/%)
 BENCH_COUNT = 1
 
@@ -35,6 +35,7 @@ tidy:
 clean:
 	@go clean ./...
 	@go clean -testcache
+	@rm -rf dist/
 
 dist:
 	$(printTarget)

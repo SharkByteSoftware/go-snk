@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"testing"
 
+	"github.com/SharkByteSoftware/go-snk/adapt"
 	"github.com/SharkByteSoftware/go-snk/slices"
 )
 
@@ -54,7 +55,7 @@ func BenchmarkBind(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateNestedIntSlices(sliceCount, size)
 			for b.Loop() {
-				_ = slices.Bind(ints, slices.ValueAdapter[[]int]())
+				_ = slices.Bind(ints, adapt.ValueAdapter)
 			}
 		})
 	}
@@ -65,7 +66,7 @@ func BenchmarkFold(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateNestedIntSlices(size, size)
 			for b.Loop() {
-				_ = slices.Fold(ints, accumulater, 0)
+				_ = slices.Fold(ints, accumulator, 0)
 			}
 		})
 	}
@@ -146,6 +147,17 @@ func BenchmarkApply(b *testing.B) {
 	}
 }
 
+func BenchmarkIndexOf(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_, _ = slices.IndexOf(ints, rand.Int())
+			}
+		})
+	}
+}
+
 func BenchmarkToMap(b *testing.B) {
 	for _, size := range startingSize {
 		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
@@ -159,7 +171,7 @@ func BenchmarkToMap(b *testing.B) {
 	}
 }
 
-func accumulater(agg int, item []int) int {
+func accumulator(agg int, item []int) int {
 	if len(item) == 0 {
 		return agg
 	}

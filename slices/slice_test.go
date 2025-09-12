@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/SharkByteSoftware/go-snk/adapt"
 	"github.com/SharkByteSoftware/go-snk/slices"
 	"github.com/stretchr/testify/assert"
 )
@@ -48,7 +49,10 @@ func TestUniqueMap(t *testing.T) {
 }
 
 func TestBind(t *testing.T) {
-	result := slices.Bind(nestedNumberList, slices.ValueAdapter[[]int]())
+	x := [][]int{{1, 2}, {3, 4}}
+	_ = slices.Bind(x, adapt.ValueAdapter)
+
+	result := slices.Bind(nestedNumberList, adapt.ValueAdapter)
 	assert.Equal(t, append(numberList, numberList...), result)
 }
 
@@ -68,6 +72,14 @@ func TestFind(t *testing.T) {
 
 	result, found = slices.Find(numberList, 256)
 	assert.True(t, found)
+	assert.Equal(t, 256, result)
+}
+
+func TestFindOr(t *testing.T) {
+	result := slices.FindOr(numberList, 88, 8192)
+	assert.Equal(t, 8192, result)
+
+	result = slices.FindOr(numberList, 256, -1)
 	assert.Equal(t, 256, result)
 }
 
@@ -133,6 +145,20 @@ func TestApply(t *testing.T) {
 	var nums string
 	slices.Apply(numberList, func(n int) { nums += strconv.Itoa(n) })
 	assert.Equal(t, "12345333256", nums)
+}
+
+func TestIndex(t *testing.T) {
+	idx, found := slices.IndexOfBy(numberList, func(n int) bool { return n == 256 })
+	assert.True(t, found)
+	assert.Equal(t, 6, idx)
+
+	idx, found = slices.IndexOfBy(numberList, func(n int) bool { return n == 100 })
+	assert.False(t, found)
+	assert.Equal(t, -1, idx)
+
+	idx, found = slices.IndexOfBy([]int{}, func(n int) bool { return n == 100 })
+	assert.False(t, found)
+	assert.Equal(t, -1, idx)
 }
 
 func TestToMap(t *testing.T) {

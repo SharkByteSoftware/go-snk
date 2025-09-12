@@ -2,6 +2,13 @@ NAME = go-sink
 BASE_DIR = .
 TEST_OPTS =-vet=all
 
+BENCH_PKGS = \
+	slices \
+	maps \
+	sets
+BENCHMARKS = $(BENCH_PKGS:%=bench/%)
+BENCH_COUNT = 1
+
 default: test vet
 
 all: test vet
@@ -10,9 +17,10 @@ test:
 	$(printTarget)
 	go test $(TEST_OPTS) ./...
 
-bench:
+bench: $(BENCHMARKS)
+bench/%:
 	$(printTarget)
-	go test -benchmem -count 3 -bench
+	cd $(@F) && go test -benchmem -count $(BENCH_COUNT) -bench .
 
 vet:
 	$(printTarget)

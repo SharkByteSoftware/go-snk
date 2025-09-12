@@ -8,22 +8,166 @@ import (
 	"github.com/SharkByteSoftware/go-snk/slices"
 )
 
+const (
+	sliceSize  = 1000
+	sliceCount = 5
+	maxRandInt = 1000
+)
+
+var startingSize = []int{0, 1, 100, 1000, 10000}
+
+func BenchmarkFilter(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_ = slices.Filter(ints, func(i int) bool { return i%2 == 0 })
+			}
+		})
+	}
+}
+
+func BenchmarkMap(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_ = slices.Map(ints, func(i int) bool { return i%2 == 0 })
+			}
+		})
+	}
+}
+
+func BenchmarkUniqueMap(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_ = slices.UniqueMap(ints, func(i int) bool { return i%2 == 0 })
+			}
+		})
+	}
+}
+
+func BenchmarkBind(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
+			ints := generateNestedIntSlices(sliceCount, size)
+			for b.Loop() {
+				_ = slices.Bind(ints, slices.ValueAdapter[[]int]())
+			}
+		})
+	}
+}
+
+func BenchmarkFold(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
+			ints := generateNestedIntSlices(size, size)
+			for b.Loop() {
+				_ = slices.Fold(ints, accumulater, 0)
+			}
+		})
+	}
+}
+
+func BenchmarkFind(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_, _ = slices.Find(ints, rand.Int())
+			}
+		})
+	}
+}
+
+func BenchmarkAny(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_ = slices.Any(ints, 32)
+			}
+		})
+	}
+}
+
+func BenchmarkAll(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_ = slices.All(ints, 32)
+			}
+		})
+	}
+}
+
+func BenchmarkUnique(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_ = slices.Unique(ints)
+			}
+		})
+	}
+}
+
+func BenchmarkGroupBy(b *testing.B) {
+	b.Run(fmt.Sprintf("size: %d", sliceSize), func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			_ = generateNestedIntSlices(sliceCount, sliceSize)
+		}
+	})
+}
+
+func BenchmarkReverse(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_ = slices.Reverse(ints)
+			}
+		})
+	}
+}
+
+func BenchmarkApply(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				var sum int
+				slices.Apply(ints, func(n int) { sum += n })
+			}
+		})
+	}
+}
+
+func accumulater(agg int, item []int) int {
+	if len(item) == 0 {
+		return agg
+	}
+
+	return agg + item[0]
+}
+
 func generateIntSlice(size int) []int {
 	result := make([]int, size)
 	for i := range result {
-		result[i] = rand.Intn(100_000)
+		result[i] = rand.Intn(maxRandInt)
 	}
 
 	return result
 }
 
-func BenchmarkFilter(b *testing.B) {
-	size := 1000
-	ints := generateIntSlice(size)
+func generateNestedIntSlices(count int, size int) [][]int {
+	result := make([][]int, count)
+	for i := range result {
+		result[i] = generateIntSlice(size)
+	}
 
-	b.Run(fmt.Sprintf("ints_%d", size), func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			_ = slices.Filter(ints, func(i int) bool { return i%2 == 0 })
-		}
-	})
+	return result
 }

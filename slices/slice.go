@@ -66,7 +66,13 @@ func Fold[T any, R any](slice []T, accumulator func(agg R, item T) R, initial R)
 	return initial
 }
 
-func Find[T comparable](slice []T, predicate func(item T) bool) (T, bool) {
+// Find returns the first item in the slice that is equal to the given candidate.
+func Find[T comparable](slice []T, candidate T) (T, bool) {
+	return FindBy(slice, ItemEqualsAdapter(candidate))
+}
+
+// FindBy returns the first item in the slice that satisfies the predicate.
+func FindBy[T comparable](slice []T, predicate func(item T) bool) (T, bool) {
 	for _, value := range slice {
 		if predicate(value) {
 			return value, true
@@ -78,11 +84,17 @@ func Find[T comparable](slice []T, predicate func(item T) bool) (T, bool) {
 	return result, false
 }
 
-func Any[T comparable](slice []T, predicate func(item T) bool) bool {
-	_, found := Find(slice, predicate)
+func Any[T comparable](slice []T, candidate T) bool {
+	return AnyBy(slice, ItemEqualsAdapter(candidate))
+}
+
+// AnyBy returns true if any item in the slice satisfies the predicate.
+func AnyBy[T comparable](slice []T, predicate func(item T) bool) bool {
+	_, found := FindBy(slice, predicate)
 	return found
 }
 
+// All returns true if all items in the slice are equal to the given candidate.
 func All[T comparable](slice []T, candidate T) bool {
 	found := Filter(slice, func(item T) bool { return item == candidate })
 	return len(found) == len(slice)
@@ -105,6 +117,7 @@ func Unique[T comparable](slice []T) []T {
 	return result
 }
 
+// Apply applies a function to each item in the slice.
 func Apply[T any](slice []T, f func(item T)) {
 	for _, value := range slice {
 		f(value)
@@ -116,6 +129,7 @@ func GroupBy[T, R comparable, S ~[]T](slice S, groupFunc func(item T) R) map[R][
 	return nil
 }
 
+// Reverse reverses a slice.
 func Reverse[T any, S ~[]T](slice S) S {
 	result := make([]T, len(slice))
 	sliceLen := len(slice)
@@ -129,7 +143,8 @@ func Reverse[T any, S ~[]T](slice S) S {
 	return result
 }
 
-func ToMap[T any, K comparable, V any](slice []T, keyFunc func(item T) K, valueFunc func(item T) V) map[K]V {
+// ToMap converts a slice to a map using the given key value function.
+func ToMap[T any, K comparable, V any](slice []T, keyValueFunc func(item T) (K, V)) map[K]V {
 	// TODO: Implement
 	return nil
 }

@@ -7,11 +7,8 @@ type Set[T comparable] struct {
 }
 
 // NewSet creates a new set with the given items.
-func NewSet[T comparable](items ...T) *Set[T] {
-	set := &Set[T]{
-		items: make(map[T]struct{}, len(items)),
-	}
-
+func NewSet[T comparable](items ...T) Set[T] {
+	set := Set[T]{items: make(map[T]struct{})}
 	set.Add(items...)
 
 	return set

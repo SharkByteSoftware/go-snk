@@ -62,23 +62,23 @@ func TestFold(t *testing.T) {
 }
 
 func TestFind(t *testing.T) {
-	result, found := slices.Find(numberList, func(item int) bool { return item == 88 })
+	result, found := slices.Find(numberList, 88)
 	assert.False(t, found)
 	assert.Equal(t, 0, result)
 
-	result, found = slices.Find(numberList, func(item int) bool { return item == 256 })
+	result, found = slices.Find(numberList, 256)
 	assert.True(t, found)
 	assert.Equal(t, 256, result)
 }
 
 func TestAny(t *testing.T) {
-	result := slices.Any(numberList, func(item int) bool { return item == 0 })
+	result := slices.Any(numberList, 0)
 	assert.False(t, result)
 
-	result = slices.Any(numberList, func(item int) bool { return item == 1 })
+	result = slices.Any(numberList, 1)
 	assert.True(t, result)
 
-	result = slices.Any(duplicateList, func(item int) bool { return item == 256 })
+	result = slices.Any(duplicateList, 256)
 	assert.True(t, result)
 }
 

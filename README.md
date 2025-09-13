@@ -1,9 +1,11 @@
 # go-snk - slices, maps, channels, and more
-[![tag](https://img.shields.io/github/tag/samber/lo.svg)](https://github.com/SharkByteSoftware/go-snk/releases)
-![Go Version](https://img.shields.io/badge/Go-%3E%3D%201.25-%23007d9c)
+![GitHub Release](https://img.shields.io/github/v/release/SharkByteSoftware/go-snk)
+![GitHub Tag](https://img.shields.io/github/v/tag/SharkByteSoftware/go-snk)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/SharkByteSoftware/go-snk)
 ![Build Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml/badge.svg)
-[![Go report](https://goreportcard.com/badge/github.com/samber/lo)](https://goreportcard.com/report/SharkByteSoftware/go-snk)
-[![License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)
+[![Go report](https://goreportcard.com/badge/github.com/SharkByteSoftware/go-snk)](https://goreportcard.com/report/SharkByteSoftware/go-snk)
+![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)
+
 
 Everything and the kitchen sink for Go.
 

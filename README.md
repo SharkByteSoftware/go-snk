@@ -4,8 +4,7 @@
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/SharkByteSoftware/go-snk)
 ![Build Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml/badge.svg)
 [![Go report](https://goreportcard.com/badge/github.com/SharkByteSoftware/go-snk)](https://goreportcard.com/report/SharkByteSoftware/go-snk)
-[![License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)
-
+![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)
 
 
 Everything and the kitchen sink for Go.

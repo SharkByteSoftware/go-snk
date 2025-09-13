@@ -1,0 +1,109 @@
+// Package ds provides a set data structure.
+package ds
+
+import "github.com/SharkByteSoftware/go-snk/conditionals"
+
+// Set is a set data structure.
+type Set[T comparable] struct {
+	items map[T]struct{}
+}
+
+// NewSet creates a new set with the given items.
+func NewSet[T comparable](items ...T) Set[T] {
+	set := Set[T]{items: make(map[T]struct{})}
+	set.Add(items...)
+
+	return set
+}
+
+// Add adds the given items to the set.
+func (s *Set[T]) Add(item ...T) {
+	for _, i := range item {
+		s.items[i] = struct{}{}
+	}
+}
+
+// Contains returns true if the set contains the given item.
+func (s *Set[T]) Contains(item T) bool {
+	_, ok := s.items[item]
+	return ok
+}
+
+// Remove removes the given item from the set.
+func (s *Set[T]) Remove(item T) {
+	delete(s.items, item)
+}
+
+// Size returns the size of the set.
+func (s *Set[T]) Size() int {
+	return len(s.items)
+}
+
+// Clear clears the set.
+func (s *Set[T]) Clear() {
+	s.items = make(map[T]struct{})
+}
+
+// Values returns the values of the set.
+func (s *Set[T]) Values() []T {
+	items := make([]T, len(s.items))
+
+	idx := 0
+	for item := range s.items {
+		items[idx] = item
+		idx++
+	}
+
+	return items
+}
+
+// Intersect returns the intersection of the set with the given set.
+func (s *Set[T]) Intersect(other Set[T]) Set[T] {
+	size1 := s.Size()
+	size2 := other.Size()
+	smallSet := conditionals.If(size1 < size2, *s, other)
+	largerSet := conditionals.If(size1 < size2, other, *s)
+
+	result := NewSet[T]()
+	
+	for item := range smallSet.items {
+		if largerSet.Contains(item) {
+			result.Add(item)
+		}
+	}
+
+	return result
+}
+
+// Union returns the union of the set with the given set.
+func (s *Set[T]) Union(other Set[T]) Set[T] {
+	size1 := s.Size()
+	size2 := other.Size()
+	smallSet := conditionals.If(size1 < size2, *s, other)
+	largerSet := conditionals.If(size1 < size2, other, *s)
+
+	result := largerSet.Clone()
+	for item := range smallSet.items {
+		result.Add(item)
+	}
+
+	return result
+}
+
+// Difference returns the difference of the set with the given set.
+func (s *Set[T]) Difference(other Set[T]) Set[T] {
+	result := NewSet[T]()
+
+	for item := range s.items {
+		if !other.Contains(item) {
+			result.Add(item)
+		}
+	}
+
+	return result
+}
+
+// Clone creates a clone of the set.
+func (s *Set[T]) Clone() Set[T] {
+	return NewSet[T](s.Values()...)
+}

@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/SharkByteSoftware/go-snk/adapt"
 	"github.com/SharkByteSoftware/go-snk/slices"
 	"github.com/stretchr/testify/assert"
 )
@@ -48,7 +49,10 @@ func TestUniqueMap(t *testing.T) {
 }
 
 func TestBind(t *testing.T) {
-	result := slices.Bind(nestedNumberList, slices.ValueAdapter[[]int]())
+	x := [][]int{{1, 2}, {3, 4}}
+	_ = slices.Bind(x, adapt.ValueAdapter)
+
+	result := slices.Bind(nestedNumberList, adapt.ValueAdapter)
 	assert.Equal(t, append(numberList, numberList...), result)
 }
 
@@ -62,23 +66,31 @@ func TestFold(t *testing.T) {
 }
 
 func TestFind(t *testing.T) {
-	result, found := slices.Find(numberList, func(item int) bool { return item == 88 })
+	result, found := slices.Find(numberList, 88)
 	assert.False(t, found)
 	assert.Equal(t, 0, result)
 
-	result, found = slices.Find(numberList, func(item int) bool { return item == 256 })
+	result, found = slices.Find(numberList, 256)
 	assert.True(t, found)
 	assert.Equal(t, 256, result)
 }
 
+func TestFindOr(t *testing.T) {
+	result := slices.FindOr(numberList, 88, 8192)
+	assert.Equal(t, 8192, result)
+
+	result = slices.FindOr(numberList, 256, -1)
+	assert.Equal(t, 256, result)
+}
+
 func TestAny(t *testing.T) {
-	result := slices.Any(numberList, func(item int) bool { return item == 0 })
+	result := slices.Any(numberList, 0)
 	assert.False(t, result)
 
-	result = slices.Any(numberList, func(item int) bool { return item == 1 })
+	result = slices.Any(numberList, 1)
 	assert.True(t, result)
 
-	result = slices.Any(duplicateList, func(item int) bool { return item == 256 })
+	result = slices.Any(duplicateList, 256)
 	assert.True(t, result)
 }
 
@@ -112,13 +124,15 @@ func TestGroupBy(t *testing.T) {
 
 func TestReverse(t *testing.T) {
 	var orderedList = []int{1, 2, 3, 4, 5, 256}
+	var oddNumberedOrderedList = []int{1, 2, 3, 4, 5, 256, 333}
 
 	result := slices.Reverse(orderedList)
 	assert.IsDecreasing(t, result)
 	assert.IsIncreasing(t, orderedList)
 
-	result = slices.Reverse(result)
-	assert.IsIncreasing(t, result)
+	result = slices.Reverse(oddNumberedOrderedList)
+	assert.IsDecreasing(t, result)
+	assert.IsIncreasing(t, oddNumberedOrderedList)
 
 	result = slices.Reverse(allSame)
 	assert.IsNonDecreasing(t, result)
@@ -131,4 +145,30 @@ func TestApply(t *testing.T) {
 	var nums string
 	slices.Apply(numberList, func(n int) { nums += strconv.Itoa(n) })
 	assert.Equal(t, "12345333256", nums)
+}
+
+func TestIndex(t *testing.T) {
+	idx, found := slices.IndexOfBy(numberList, func(n int) bool { return n == 256 })
+	assert.True(t, found)
+	assert.Equal(t, 6, idx)
+
+	idx, found = slices.IndexOfBy(numberList, func(n int) bool { return n == 100 })
+	assert.False(t, found)
+	assert.Equal(t, -1, idx)
+
+	idx, found = slices.IndexOfBy([]int{}, func(n int) bool { return n == 100 })
+	assert.False(t, found)
+	assert.Equal(t, -1, idx)
+}
+
+func TestToMap(t *testing.T) {
+	mapperFunc := func(item int) string { return strconv.Itoa(item) }
+
+	result := slices.ToMap([]int{}, mapperFunc)
+	assert.Len(t, result, 0)
+	assert.Equal(t, map[string]int{}, result)
+
+	result = slices.ToMap(numberList, mapperFunc)
+	assert.Len(t, result, len(numberList))
+	assert.Equal(t, numberList[0], result[strconv.Itoa(numberList[0])])
 }

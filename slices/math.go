@@ -3,11 +3,12 @@ package slices
 import (
 	"cmp"
 
+	"github.com/SharkByteSoftware/go-snk/adapt"
 	"github.com/SharkByteSoftware/go-snk/constraints"
 )
 
 func Sum[T constraints.Numeric](slice []T) T {
-	return SumBy(slice, ValueAdapter[T]())
+	return SumBy(slice, adapt.ValueAdapter)
 }
 
 func SumBy[T any, R constraints.Numeric](slice []T, sumFunc func(item T) R) R {
@@ -21,7 +22,7 @@ func SumBy[T any, R constraints.Numeric](slice []T, sumFunc func(item T) R) R {
 }
 
 func Product[T constraints.Numeric](slice []T) T {
-	return ProductBy(slice, ValueAdapter[T]())
+	return ProductBy(slice, adapt.ValueAdapter)
 }
 
 func ProductBy[T any, R constraints.Numeric](slice []T, productFunc func(item T) R) R {
@@ -39,7 +40,7 @@ func ProductBy[T any, R constraints.Numeric](slice []T, productFunc func(item T)
 }
 
 func Mean[T constraints.Numeric](slice []T) T {
-	return MeanBy(slice, ValueAdapter[T]())
+	return MeanBy(slice, adapt.ValueAdapter)
 }
 
 func MeanBy[T any, R constraints.Numeric](slice []T, valueFunc func(item T) R) R {

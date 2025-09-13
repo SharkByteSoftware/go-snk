@@ -33,3 +33,4 @@ go.work.sum
 
 # OS files
 .DS_Store
+dist/

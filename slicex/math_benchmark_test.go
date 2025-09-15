@@ -1,10 +1,10 @@
-package slices_test
+package slicex_test
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/slices"
+	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
 func BenchmarkSum(b *testing.B) {
@@ -12,7 +12,7 @@ func BenchmarkSum(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.Sum(ints)
+				_ = slicex.Sum(ints)
 			}
 		})
 	}
@@ -23,7 +23,7 @@ func BenchmarkProduct(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.Product(ints)
+				_ = slicex.Product(ints)
 			}
 		})
 	}
@@ -34,7 +34,7 @@ func BenchmarkMean(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.Mean(ints)
+				_ = slicex.Mean(ints)
 			}
 		})
 	}
@@ -45,7 +45,7 @@ func BenchmarkMax(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.Max(ints)
+				_ = slicex.Max(ints)
 			}
 		})
 	}
@@ -56,7 +56,7 @@ func BenchmarkMin(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.Min(ints)
+				_ = slicex.Min(ints)
 			}
 		})
 	}

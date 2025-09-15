@@ -12,7 +12,13 @@ func If[T any](cond bool, ifTrue T, ifFalse T) T {
 
 // IfCall is a ternary function for calling a function if a condition is true
 // and calling another if false.
-func IfCall[T any](cond bool, truFunc func() T, falseFunc func() T) T {
-	callee := If(cond, truFunc, falseFunc)
-	return callee()
+func IfCall(cond bool, trueFunc func(), falseFunc func()) {
+	callee := If(cond, trueFunc, falseFunc)
+	callee()
+}
+
+// IfCallReturn is a ternary function for calling a function if a condition is true
+// and calling another if false and returns the result.
+func IfCallReturn[T any](cond bool, trueFunc func() T, falseFunc func() T) T {
+	return If(cond, trueFunc, falseFunc)()
 }

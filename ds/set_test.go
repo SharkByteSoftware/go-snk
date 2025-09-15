@@ -131,3 +131,36 @@ func TestSet_Difference(t *testing.T) {
 	assert.Equal(t, 0, result.Size())
 	assert.Equal(t, nullSet, result)
 }
+
+func TestSet_SymmetricDifference(t *testing.T) {
+	set1 := ds.NewSet[int](1, 2, 3, 4, 5)
+	set2 := ds.NewSet[int](4, 5, 6, 7, 256)
+	set3 := ds.NewSet[int](1, 2, 3, 4, 5, 4, 5, 6, 7, 256, 512, 1024, 2048, 8192)
+
+	result := set1.SymmetricDifference(set1)
+	assert.Equal(t, 0, result.Size())
+
+	result = set1.SymmetricDifference(set2)
+	assert.Equal(t, 6, result.Size())
+	for _, item := range []int{4, 5} {
+		assert.False(t, result.Contains(item))
+	}
+
+	result = set2.SymmetricDifference(set3)
+	assert.Equal(t, 7, result.Size())
+	for _, item := range []int{512, 1024, 2048, 8192} {
+		assert.True(t, result.Contains(item))
+	}
+}
+
+func TestSet_Subset(t *testing.T) {
+	set1 := ds.NewSet[int](1, 2, 3, 4, 5)
+	set2 := ds.NewSet[int](4, 5, 6, 7, 256)
+	set3 := ds.NewSet[int](1, 2, 3, 4, 5, 4, 5, 6, 7, 256, 512, 1024, 2048, 8192)
+
+	assert.True(t, set1.Subset(set1))
+	assert.False(t, set1.Subset(set2))
+
+	assert.True(t, set1.Subset(set3))
+	assert.True(t, set2.Subset(set3))
+}

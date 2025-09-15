@@ -92,6 +92,42 @@ func BenchmarkValues(b *testing.B) {
 	}
 }
 
+func BenchmarkInterset(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("values: %d", size), func(b *testing.B) {
+			set := ds.NewSet(generateIntSlice(size)...)
+			set2 := ds.NewSet(generateIntSlice(10)...)
+			for b.Loop() {
+				_ = set.Intersect(set2)
+			}
+		})
+	}
+}
+
+func BenchmarkUnion(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("values: %d", size), func(b *testing.B) {
+			set := ds.NewSet(generateIntSlice(size)...)
+			set2 := ds.NewSet(generateIntSlice(10)...)
+			for b.Loop() {
+				_ = set.Union(set2)
+			}
+		})
+	}
+}
+
+func BenchmarkDifference(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("values: %d", size), func(b *testing.B) {
+			set := ds.NewSet(generateIntSlice(size)...)
+			set2 := ds.NewSet(generateIntSlice(10)...)
+			for b.Loop() {
+				_ = set.Difference(set2)
+			}
+		})
+	}
+}
+
 func generateIntSlice(size int) []int {
 	result := make([]int, size)
 	for i := range result {

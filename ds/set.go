@@ -44,7 +44,7 @@ func (s *Set[T]) Clear() {
 	s.items = make(map[T]struct{})
 }
 
-// Values returns the values of the set.
+// Values returns a slice of the set values.
 func (s *Set[T]) Values() []T {
 	items := make([]T, len(s.items))
 
@@ -65,7 +65,7 @@ func (s *Set[T]) Intersect(other Set[T]) Set[T] {
 	largerSet := conditionals.If(size1 < size2, other, *s)
 
 	result := NewSet[T]()
-	
+
 	for item := range smallSet.items {
 		if largerSet.Contains(item) {
 			result.Add(item)
@@ -101,6 +101,36 @@ func (s *Set[T]) Difference(other Set[T]) Set[T] {
 	}
 
 	return result
+}
+
+// SymmetricDifference returns a set with elements from either set but not both.
+func (s *Set[T]) SymmetricDifference(other Set[T]) Set[T] {
+	result := NewSet[T]()
+
+	for item := range s.items {
+		if !other.Contains(item) {
+			result.Add(item)
+		}
+	}
+
+	for item := range other.items {
+		if !s.Contains(item) {
+			result.Add(item)
+		}
+	}
+
+	return result
+}
+
+// Subset returns true of the set is a subset of given set.
+func (s *Set[T]) Subset(other Set[T]) bool {
+	for item := range s.items {
+		if !other.Contains(item) {
+			return false
+		}
+	}
+
+	return true
 }
 
 // Clone creates a clone of the set.

@@ -1,10 +1,10 @@
-package maps_test
+package mapx_test
 
 import (
 	"testing"
 
 	"github.com/SharkByteSoftware/go-snk/adapt"
-	"github.com/SharkByteSoftware/go-snk/maps"
+	"github.com/SharkByteSoftware/go-snk/mapx"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,7 +37,7 @@ var dupValueMap = map[int]string{
 }
 
 func TestKeys(t *testing.T) {
-	keys := maps.Keys(numberMap)
+	keys := mapx.Keys(numberMap)
 
 	assert.Len(t, keys, 6)
 	for k, _ := range numberMap {
@@ -46,7 +46,7 @@ func TestKeys(t *testing.T) {
 }
 
 func TestValues(t *testing.T) {
-	values := maps.Values(numberMap)
+	values := mapx.Values(numberMap)
 
 	assert.Len(t, values, 6)
 	for _, v := range numberMap {
@@ -55,13 +55,13 @@ func TestValues(t *testing.T) {
 }
 
 func TestUniqueValues(t *testing.T) {
-	values := maps.UniqueValues(numberMap)
+	values := mapx.UniqueValues(numberMap)
 	assert.Len(t, values, 6)
 	for _, v := range numberMap {
 		assert.Contains(t, values, v)
 	}
 
-	values = maps.UniqueValues(dupValueMap)
+	values = mapx.UniqueValues(dupValueMap)
 	assert.Len(t, values, 3)
 	assert.Contains(t, values, "zero")
 	assert.Contains(t, values, "two")
@@ -69,47 +69,47 @@ func TestUniqueValues(t *testing.T) {
 }
 
 func TestContains(t *testing.T) {
-	assert.True(t, maps.Contains(numberMap, 256))
+	assert.True(t, mapx.Contains(numberMap, 256))
 
-	assert.False(t, maps.Contains(numberMap, 257))
+	assert.False(t, mapx.Contains(numberMap, 257))
 
-	assert.False(t, maps.Contains(map[int]int{}, 0))
+	assert.False(t, mapx.Contains(map[int]int{}, 0))
 }
 
 func TestValue(t *testing.T) {
-	result := maps.Value(numberMap, 0, "negative")
+	result := mapx.Value(numberMap, 0, "negative")
 	assert.Equal(t, "zero", result)
 
-	result = maps.Value(numberMap, 257, "negative")
+	result = mapx.Value(numberMap, 257, "negative")
 	assert.Equal(t, "negative", result)
 
-	result = maps.Value(map[int]string{}, 12, "negative")
+	result = mapx.Value(map[int]string{}, 12, "negative")
 	assert.Equal(t, "negative", result)
 }
 
 func TestInvert(t *testing.T) {
-	inverted := maps.Invert(numberMap)
+	inverted := mapx.Invert(numberMap)
 	assert.Len(t, inverted, 6)
 	for k, v := range inverted {
 		assert.Contains(t, numberMap, v)
 		assert.Equal(t, k, numberMap[v])
 	}
 
-	inverted = maps.Invert(dupValueMap)
+	inverted = mapx.Invert(dupValueMap)
 	assert.Len(t, inverted, 3)
 	assert.Contains(t, inverted, "five", "zero", "two")
 }
 
 func TestCombine(t *testing.T) {
-	result := maps.Combine(numberMap, numberMap)
+	result := mapx.Combine(numberMap, numberMap)
 	assert.Len(t, result, 6)
 	assert.Equal(t, numberMap, result)
 
-	result = maps.Combine(numberMap, dupValueMap)
+	result = mapx.Combine(numberMap, dupValueMap)
 	assert.Len(t, result, 7)
 	assert.Equal(t, dupValueMap, result)
 
-	result = maps.Combine(numberMap, contNumberMap)
+	result = mapx.Combine(numberMap, contNumberMap)
 	assert.Len(t, result, 12)
 	for k, v := range numberMap {
 		assert.Contains(t, result, k)
@@ -123,16 +123,30 @@ func TestCombine(t *testing.T) {
 }
 
 func TestToSlice(t *testing.T) {
-	stringResult := maps.ToSlice(numberMap, adapt.ValueSelectorAdapter)
+	stringResult := mapx.ToSlice(numberMap, adapt.ValueSelectorAdapter)
 
 	assert.Len(t, stringResult, 6)
 	for _, value := range numberMap {
 		assert.Contains(t, stringResult, value)
 	}
 
-	intResult := maps.ToSlice(numberMap, adapt.KeySelectorAdapter)
+	intResult := mapx.ToSlice(numberMap, adapt.KeySelectorAdapter)
 	assert.Len(t, intResult, 6)
 	for key, _ := range numberMap {
 		assert.Contains(t, intResult, key)
 	}
+}
+
+func TestFilter(t *testing.T) {
+	result := mapx.Filter(numberMap, func(k int, v string) bool { return true })
+	assert.Equal(t, numberMap, result)
+
+	result = mapx.Filter(numberMap, func(k int, v string) bool { return v == "zero" })
+	assert.Equal(t, map[int]string{0: "zero"}, result)
+
+	result = mapx.Filter(numberMap, func(k int, v string) bool { return k%2 == 0 })
+	assert.Equal(t, map[int]string{0: "zero", 2: "two", 8: "one", 12: "four", 256: "five"}, result)
+
+	result = mapx.Filter(map[int]string{}, func(k int, v string) bool { return true })
+	assert.Equal(t, map[int]string{}, result)
 }

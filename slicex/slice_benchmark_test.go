@@ -1,4 +1,4 @@
-package slices_test
+package slicex_test
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/SharkByteSoftware/go-snk/adapt"
-	"github.com/SharkByteSoftware/go-snk/slices"
+	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
 const (
@@ -22,7 +22,7 @@ func BenchmarkFilter(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.Filter(ints, func(i int) bool { return i%2 == 0 })
+				_ = slicex.Filter(ints, func(i int) bool { return i%2 == 0 })
 			}
 		})
 	}
@@ -33,7 +33,7 @@ func BenchmarkMap(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.Map(ints, func(i int) bool { return i%2 == 0 })
+				_ = slicex.Map(ints, func(i int) bool { return i%2 == 0 })
 			}
 		})
 	}
@@ -44,7 +44,7 @@ func BenchmarkUniqueMap(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.UniqueMap(ints, func(i int) bool { return i%2 == 0 })
+				_ = slicex.UniqueMap(ints, func(i int) bool { return i%2 == 0 })
 			}
 		})
 	}
@@ -55,7 +55,7 @@ func BenchmarkBind(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateNestedIntSlices(sliceCount, size)
 			for b.Loop() {
-				_ = slices.Bind(ints, adapt.ValueAdapter)
+				_ = slicex.Bind(ints, adapt.ValueAdapter)
 			}
 		})
 	}
@@ -66,7 +66,7 @@ func BenchmarkFold(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateNestedIntSlices(size, size)
 			for b.Loop() {
-				_ = slices.Fold(ints, accumulator, 0)
+				_ = slicex.Fold(ints, accumulator, 0)
 			}
 		})
 	}
@@ -77,7 +77,7 @@ func BenchmarkFind(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_, _ = slices.Find(ints, rand.Int())
+				_, _ = slicex.Find(ints, rand.Int())
 			}
 		})
 	}
@@ -88,7 +88,7 @@ func BenchmarkAny(b *testing.B) {
 		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.Any(ints, 32)
+				_ = slicex.Any(ints, 32)
 			}
 		})
 	}
@@ -99,7 +99,7 @@ func BenchmarkAll(b *testing.B) {
 		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.All(ints, 32)
+				_ = slicex.All(ints, 32)
 			}
 		})
 	}
@@ -110,7 +110,7 @@ func BenchmarkUnique(b *testing.B) {
 		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.Unique(ints)
+				_ = slicex.Unique(ints)
 			}
 		})
 	}
@@ -129,7 +129,7 @@ func BenchmarkReverse(b *testing.B) {
 		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.Reverse(ints)
+				_ = slicex.Reverse(ints)
 			}
 		})
 	}
@@ -141,18 +141,7 @@ func BenchmarkApply(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
 				var sum int
-				slices.Apply(ints, func(n int) { sum += n })
-			}
-		})
-	}
-}
-
-func BenchmarkIndexOf(b *testing.B) {
-	for _, size := range startingSize {
-		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
-			ints := generateIntSlice(size)
-			for b.Loop() {
-				_, _ = slices.IndexOf(ints, rand.Int())
+				slicex.Apply(ints, func(n int) { sum += n })
 			}
 		})
 	}
@@ -163,7 +152,7 @@ func BenchmarkToMap(b *testing.B) {
 		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				_ = slices.ToMap(ints, func(item int) int {
+				_ = slicex.ToMap(ints, func(item int) int {
 					return item
 				})
 			}

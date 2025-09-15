@@ -1,75 +1,75 @@
-package slices_test
+package slicex_test
 
 import (
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/slices"
+	"github.com/SharkByteSoftware/go-snk/slicex"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSum(t *testing.T) {
-	intResult := slices.Sum([]int{1, 2, 3})
+	intResult := slicex.Sum([]int{1, 2, 3})
 	assert.Equal(t, 6, intResult)
 
-	floatResult := slices.Sum([]float32{1.0, 2.0, 3.0})
+	floatResult := slicex.Sum([]float32{1.0, 2.0, 3.0})
 	assert.Equal(t, float32(6.0), floatResult)
 
-	float64Result := slices.Sum([]float64{1.0, 2.0, 3.0})
+	float64Result := slicex.Sum([]float64{1.0, 2.0, 3.0})
 	assert.Equal(t, 6.0, float64Result)
 }
 
 func TestProduct(t *testing.T) {
-	product := slices.Product(numberList)
+	product := slicex.Product(numberList)
 	assert.Equal(t, 10229760, product)
 
-	product = slices.Product(duplicateList)
+	product = slicex.Product(duplicateList)
 	assert.Equal(t, 104647989657600, product)
 
-	product = slices.Product([]int{1, 2, -3})
+	product = slicex.Product([]int{1, 2, -3})
 	assert.Equal(t, -6, product)
 
-	product = slices.Product([]int{})
+	product = slicex.Product([]int{})
 	assert.Equal(t, 1, product)
 }
 
 func TestMean(t *testing.T) {
-	mean := slices.Mean(numberList)
+	mean := slicex.Mean(numberList)
 	assert.Equal(t, 86, mean)
 
-	mean = slices.Mean(duplicateList)
+	mean = slicex.Mean(duplicateList)
 	assert.Equal(t, 86, mean)
 
-	mean = slices.Mean([]int{1, 2, 10, -3})
+	mean = slicex.Mean([]int{1, 2, 10, -3})
 	assert.Equal(t, 2, mean)
 
-	mean = slices.Mean([]int{-1, -2, -3, -123})
+	mean = slicex.Mean([]int{-1, -2, -3, -123})
 	assert.Equal(t, -32, mean)
 
-	mean = slices.Mean([]int{})
+	mean = slicex.Mean([]int{})
 	assert.Equal(t, 0, mean)
 }
 
 func TestMax(t *testing.T) {
-	max := slices.Max(numberList)
+	max := slicex.Max(numberList)
 	assert.Equal(t, 333, max)
 
-	max = slices.Max(duplicateList)
+	max = slicex.Max(duplicateList)
 	assert.Equal(t, 333, max)
 
-	max = slices.Max([]int{})
+	max = slicex.Max([]int{})
 	assert.Equal(t, 0, max)
 }
 
 func TestMin(t *testing.T) {
-	min := slices.Min(numberList)
+	min := slicex.Min(numberList)
 	assert.Equal(t, 1, min)
 
-	min = slices.Min(duplicateList)
+	min = slicex.Min(duplicateList)
 	assert.Equal(t, 1, min)
 
-	min = slices.Min(slices.Reverse(numberList))
+	min = slicex.Min(slicex.Reverse(numberList))
 	assert.Equal(t, 1, min)
 
-	min = slices.Min([]int{})
+	min = slicex.Min([]int{})
 	assert.Equal(t, 0, min)
 }

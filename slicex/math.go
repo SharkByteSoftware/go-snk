@@ -1,4 +1,4 @@
-package slices
+package slicex
 
 import (
 	"cmp"
@@ -11,7 +11,7 @@ func Sum[T constraints.Numeric](slice []T) T {
 	return SumBy(slice, adapt.ValueAdapter)
 }
 
-func SumBy[T any, R constraints.Numeric](slice []T, sumFunc func(item T) R) R {
+func SumBy[S ~[]T, T any, R constraints.Numeric](slice S, sumFunc func(item T) R) R {
 	var sum R
 
 	Apply(slice, func(item T) {
@@ -21,11 +21,11 @@ func SumBy[T any, R constraints.Numeric](slice []T, sumFunc func(item T) R) R {
 	return sum
 }
 
-func Product[T constraints.Numeric](slice []T) T {
+func Product[S ~[]T, T constraints.Numeric](slice S) T {
 	return ProductBy(slice, adapt.ValueAdapter)
 }
 
-func ProductBy[T any, R constraints.Numeric](slice []T, productFunc func(item T) R) R {
+func ProductBy[S ~[]T, T any, R constraints.Numeric](slice S, productFunc func(item T) R) R {
 	var product R = 1
 
 	if len(slice) == 0 {
@@ -39,11 +39,11 @@ func ProductBy[T any, R constraints.Numeric](slice []T, productFunc func(item T)
 	return product
 }
 
-func Mean[T constraints.Numeric](slice []T) T {
+func Mean[S ~[]T, T constraints.Numeric](slice S) T {
 	return MeanBy(slice, adapt.ValueAdapter)
 }
 
-func MeanBy[T any, R constraints.Numeric](slice []T, valueFunc func(item T) R) R {
+func MeanBy[S ~[]T, T any, R constraints.Numeric](slice S, valueFunc func(item T) R) R {
 	count := R(len(slice))
 
 	if count == 0 {
@@ -53,11 +53,11 @@ func MeanBy[T any, R constraints.Numeric](slice []T, valueFunc func(item T) R) R
 	return SumBy(slice, valueFunc) / count
 }
 
-func Max[T cmp.Ordered](slice []T) T {
+func Max[S ~[]T, T cmp.Ordered](slice S) T {
 	return MaxBy(slice, func(a T, b T) bool { return a < b })
 }
 
-func MaxBy[T any](slice []T, maxFunc func(a T, b T) bool) T {
+func MaxBy[S ~[]T, T any](slice S, maxFunc func(a T, b T) bool) T {
 	var maxValue T
 
 	Apply(slice, func(item T) {
@@ -69,11 +69,11 @@ func MaxBy[T any](slice []T, maxFunc func(a T, b T) bool) T {
 	return maxValue
 }
 
-func Min[T cmp.Ordered](slice []T) T {
+func Min[S ~[]T, T cmp.Ordered](slice S) T {
 	return MinBy(slice, func(a T, b T) bool { return a > b })
 }
 
-func MinBy[T any](slice []T, minFunc func(a T, b T) bool) T {
+func MinBy[S ~[]T, T any](slice S, minFunc func(a T, b T) bool) T {
 	var minValue T
 
 	if len(slice) == 0 {

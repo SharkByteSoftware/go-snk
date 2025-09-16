@@ -24,6 +24,7 @@ func (set *Set[T]) FromJSON(data []byte) error {
 		return fmt.Errorf("failed to unmarshal set: %w", err)
 	}
 
+	set.Clear()
 	set.Add(items...)
 
 	return nil
@@ -33,6 +34,6 @@ func (s *Set[T]) UnmarshalJSON(bytes []byte) error {
 	return s.FromJSON(bytes)
 }
 
-func (s *Set[T]) MarshalJSON() ([]byte, error) {
+func (s Set[T]) MarshalJSON() ([]byte, error) {
 	return s.ToJSON()
 }

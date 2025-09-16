@@ -55,7 +55,7 @@ func (s *Set[T]) Values() []T {
 		items[idx] = item
 		idx++
 	}
-	
+
 	return items
 }
 

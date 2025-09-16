@@ -17,11 +17,12 @@ func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) []T {
 // FilterWithIndex is like Filter, but it accepts a predicate function that takes an index as well.
 func FilterWithIndex[S ~[]T, T any](slice S, predicate func(item T, index int) bool) []T {
 	result := make(S, 0, len(slice))
-	for index, value := range slice {
-		if predicate(value, index) {
-			result = append(result, value)
+
+	ApplyWithIndex(slice, func(item T, index int) {
+		if predicate(item, index) {
+			result = append(result, item)
 		}
-	}
+	})
 
 	return result
 }
@@ -35,9 +36,9 @@ func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
 func MapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, idx int) R) []R {
 	result := make([]R, len(slice))
 
-	for idx, value := range slice {
-		result[idx] = mapper(value, idx)
-	}
+	ApplyWithIndex(slice, func(item T, idx int) {
+		result[idx] = mapper(item, idx)
+	})
 
 	return result
 }
@@ -121,22 +122,24 @@ func Unique[S ~[]T, T comparable](slice S) []T {
 	result := make([]T, 0, len(slice))
 	set := ds.NewSet[T]()
 
-	for _, value := range slice {
-		if set.Contains(value) {
-			continue
+	Apply(slice, func(item T) {
+		if !set.Contains(item) {
+			set.Add(item)
+			result = append(result, item)
 		}
-
-		result = append(result, value)
-		set.Add(value)
-	}
+	})
 
 	return result
 }
 
 // Apply applies a function to each item in the slice.
 func Apply[S ~[]T, T any](slice S, apply func(item T)) {
-	for _, value := range slice {
-		apply(value)
+	ApplyWithIndex(slice, func(item T, _ int) { apply(item) })
+}
+
+func ApplyWithIndex[S ~[]T, T any](slice S, apply func(item T, index int)) {
+	for idx, value := range slice {
+		apply(value, idx)
 	}
 }
 
@@ -175,12 +178,12 @@ func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
 	part1 := make(S, 0)
 	part2 := make(S, 0)
 
-	for _, item := range slice {
+	Apply(slice, func(item T) {
 		conditionals.IfCall(predicate(item),
 			func() { part1 = append(part1, item) },
 			func() { part2 = append(part2, item) },
 		)
-	}
+	})
 
 	return part1, part2
 }

@@ -109,17 +109,17 @@ func (s *Set[T]) Difference(other Set[T]) Set[T] {
 func (s *Set[T]) SymmetricDifference(other Set[T]) Set[T] {
 	result := NewSet[T]()
 
-	for item := range s.items {
+	s.Apply(func(item T) {
 		if !other.Contains(item) {
 			result.Add(item)
 		}
-	}
+	})
 
-	for item := range other.items {
+	other.Apply(func(item T) {
 		if !s.Contains(item) {
 			result.Add(item)
 		}
-	}
+	})
 
 	return result
 }
@@ -133,6 +133,13 @@ func (s *Set[T]) Subset(other Set[T]) bool {
 	}
 
 	return true
+}
+
+// Apply applies a function to each item in the set.
+func (s *Set[T]) Apply(apply func(item T)) {
+	for item := range s.items {
+		apply(item)
+	}
 }
 
 // Clone creates a clone of the set.

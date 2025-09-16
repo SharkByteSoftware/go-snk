@@ -1,7 +1,9 @@
 // Package ds provides a set data structure.
 package ds
 
-import "github.com/SharkByteSoftware/go-snk/conditionals"
+import (
+	"github.com/SharkByteSoftware/go-snk/conditionals"
+)
 
 // Set is a set data structure.
 type Set[T comparable] struct {

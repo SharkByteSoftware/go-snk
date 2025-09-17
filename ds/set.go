@@ -25,6 +25,26 @@ func (s *Set[T]) Add(item ...T) {
 	}
 }
 
+// IsEmpty returns true of the set contains zero items.
+func (s *Set[T]) IsEmpty() bool {
+	return len(s.items) == 0
+}
+
+// Equals returns true of the two sets contain the same items.
+func (s *Set[T]) Equals(other Set[T]) bool {
+	if len(s.items) != len(other.items) {
+		return false
+	}
+
+	for item := range s.items {
+		if !other.Contains(item) {
+			return false
+		}
+	}
+
+	return true
+}
+
 // Contains returns true if the set contains the given item.
 func (s *Set[T]) Contains(item T) bool {
 	_, ok := s.items[item]

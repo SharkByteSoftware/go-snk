@@ -25,6 +25,30 @@ func TestSet_Add(t *testing.T) {
 	assert.Equal(t, 5, set.Size())
 }
 
+func TestSet_IsEmpty(t *testing.T) {
+	set := ds.NewSet[int]()
+	assert.True(t, set.IsEmpty())
+
+	set.Add(1, 2, 3, 4, 5)
+	assert.False(t, set.IsEmpty())
+}
+
+func TestSet_Equals(t *testing.T) {
+	set := ds.NewSet[int]()
+	assert.True(t, set.Equals(set))
+
+	set.Add(1)
+	set2 := ds.NewSet[int](1)
+	assert.True(t, set.Equals(set2))
+
+	set.Add(2, 2, 3, 4, 5)
+	assert.False(t, set.Equals(set2))
+
+	set.Clear()
+	set2.Clear()
+	assert.True(t, set.Equals(set2))
+}
+
 func TestSet_Contains(t *testing.T) {
 	set := ds.NewSet[int](1, 2, 3, 4, 5)
 	assert.Equal(t, 5, set.Size())

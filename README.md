@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml)
 [![Go report](https://goreportcard.com/badge/github.com/SharkByteSoftware/go-snk)](https://goreportcard.com/report/SharkByteSoftware/go-snk)
 [![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)
-[![Contributors](https://img.shields.io/github/contributors/samber/lo)](https://github.com/SharkByteSoftware/go-snk/graphs/contributors)
+[![Contributors](https://img.shields.io/github/contributors/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/graphs/contributors)
 
 Everything and the kitchen sink for Go.
 

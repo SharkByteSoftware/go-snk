@@ -1,11 +1,22 @@
 package ds
 
-import "github.com/SharkByteSoftware/go-snk/conditionals"
+import (
+	"github.com/SharkByteSoftware/go-snk/conditionals"
+)
 
 type ListElement[T comparable] struct {
 	next, prev *ListElement[T]
 	parent     *List[T]
 	Value      T
+}
+
+func NewListElement[T comparable](value T, parent *List[T]) *ListElement[T] {
+	return &ListElement[T]{
+		next:   nil,
+		prev:   nil,
+		parent: parent,
+		Value:  value,
+	}
 }
 
 func (e *ListElement[T]) Next() *ListElement[T] {
@@ -28,7 +39,12 @@ type List[T comparable] struct {
 
 // NewList creates a new linked list from all the values.
 func NewList[T comparable](values ...T) *List[T] {
-	result := &List[T]{}
+	result := &List[T]{
+		first: nil,
+		last:  nil,
+		size:  0,
+	}
+
 	result.Add(values...)
 
 	return result
@@ -50,7 +66,7 @@ func (l *List[T]) IsEmpty() bool {
 	return l.Size() == 0
 }
 
-// Add adds the values to the end of the list
+// Add adds the values to the end of the list.
 func (l *List[T]) Add(values ...T) {
 	for _, value := range values {
 		_ = l.insertValue(value, l.last)
@@ -64,7 +80,7 @@ func (l *List[T]) Append(values ...T) {
 func (l *List[T]) Prepend(values ...T) {
 }
 
-func (l *List[T]) insertAt(element *ListElement[T], at *ListElement[T]) *ListElement[T] {
+func (l *List[T]) insertAt(element *ListElement[T], atLocation *ListElement[T]) *ListElement[T] {
 	if l.IsEmpty() {
 		l.first = element
 		l.last = element
@@ -73,28 +89,22 @@ func (l *List[T]) insertAt(element *ListElement[T], at *ListElement[T]) *ListEle
 		return element
 	}
 
-	if at == nil {
+	if atLocation == nil {
 		return nil
 	}
 
-	element.prev = at
-	element.next = at.next
+	element.prev = atLocation
+	element.next = atLocation.next
 	element.prev.next = element
 
 	conditionals.IfNotNil(element.next, func() { element.next.prev = element })
-
-	//e.prev = at
-	//e.next = at.next
-	//e.prev.next = e
-	//e.next.prev = e
-
-	l.last = conditionals.If(l.last == at, element, at)
+	l.last = conditionals.If(l.last == atLocation, element, atLocation)
 	l.size++
 
 	return element
 }
 
 func (l *List[T]) insertValue(value T, at *ListElement[T]) *ListElement[T] {
-	element := &ListElement[T]{Value: value, parent: l}
+	element := NewListElement(value, l)
 	return l.insertAt(element, at)
 }

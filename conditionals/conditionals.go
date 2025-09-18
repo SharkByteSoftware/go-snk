@@ -10,6 +10,15 @@ func If[T any](cond bool, ifTrue T, ifFalse T) T {
 	return ifFalse
 }
 
+// IfNotNil calls a function if x is not nil.
+func IfNotNil[T any](x *T, callee func()) {
+	if x == nil {
+		return
+	}
+
+	callee()
+}
+
 // IfCall is a ternary function for calling a function if a condition is true
 // and calling another if false.
 func IfCall(cond bool, trueFunc func(), falseFunc func()) {

@@ -1,17 +1,16 @@
 package ds
 
-import (
-	"github.com/SharkByteSoftware/go-snk/conditionals"
-)
+import "github.com/SharkByteSoftware/go-snk/conditionals"
 
-type ListElement[T comparable] struct {
-	next, prev *ListElement[T]
+// Element an element of a linked list.
+type Element[T comparable] struct {
+	next, prev *Element[T]
 	parent     *List[T]
 	Value      T
 }
 
-func NewListElement[T comparable](value T, parent *List[T]) *ListElement[T] {
-	return &ListElement[T]{
+func NewListElement[T comparable](value T, parent *List[T]) *Element[T] {
+	return &Element[T]{
 		next:   nil,
 		prev:   nil,
 		parent: parent,
@@ -19,92 +18,141 @@ func NewListElement[T comparable](value T, parent *List[T]) *ListElement[T] {
 	}
 }
 
-func (e *ListElement[T]) Next() *ListElement[T] {
+func (e *Element[T]) Next() *Element[T] {
 	return e.next
 }
 
-func (e *ListElement[T]) Prev() *ListElement[T] {
+func (e *Element[T]) Prev() *Element[T] {
 	return e.prev
 }
 
-func (e *ListElement[T]) Parent() *List[T] {
-	return e.parent
-}
-
+// List represents a doubly linked list.  Api compatible with the Go
+// containers List implementation.
 type List[T comparable] struct {
-	first *ListElement[T]
-	last  *ListElement[T]
-	size  int
+	root Element[T]
+	len  int
 }
 
 // NewList creates a new linked list from all the values.
 func NewList[T comparable](values ...T) *List[T] {
 	result := &List[T]{
-		first: nil,
-		last:  nil,
-		size:  0,
+		root: Element[T]{
+			Value:  *new(T),
+			next:   nil,
+			prev:   nil,
+			parent: nil,
+		},
+		len: 0,
 	}
 
-	result.Add(values...)
+	result.root.next = &result.root
+	result.root.prev = &result.root
+	result.root.parent = result
+
+	result.PushBack(values...)
 
 	return result
 }
 
-func (l *List[T]) First() *ListElement[T] {
-	return l.first
+// Len returns the number of elements in the list.
+func (l *List[T]) Len() int {
+	return l.len
 }
 
-func (l *List[T]) Last() *ListElement[T] {
-	return l.last
+// Front returns the first element in the list. If the list is empty,
+// it will return nil.
+func (l *List[T]) Front() *Element[T] {
+	return conditionals.If(l.Len() == 0, nil, l.root.next)
 }
 
-func (l *List[T]) Size() int {
-	return l.size
+// Back returns the last element in the list. If the list is empty,
+// it will return nil.
+func (l *List[T]) Back() *Element[T] {
+	return conditionals.If(l.Len() == 0, nil, l.root.prev)
 }
 
+// IsEmpty checks to see if the list is empty.
 func (l *List[T]) IsEmpty() bool {
-	return l.Size() == 0
+	return l.Len() == 0
 }
 
-// Add adds the values to the end of the list.
-func (l *List[T]) Add(values ...T) {
+func (l *List[T]) Remove(element *Element[T]) T {
+	if l.isElementMemberOfList(element) {
+		element.prev.next = element.next
+		element.next.prev = element.prev
+		element.next = nil
+		element.prev = nil
+		l.len--
+	}
+
+	return element.Value
+}
+
+// PushFront inserts values to the front of the list.
+func (l *List[T]) PushFront(values ...T) {
+	for idx := len(values) - 1; idx >= 0; idx-- {
+		_ = l.insertValue(values[idx], &l.root)
+	}
+}
+
+// PushBack adds the values to the end of the list.
+func (l *List[T]) PushBack(values ...T) {
 	for _, value := range values {
-		_ = l.insertValue(value, l.last)
+		_ = l.insertValue(value, l.root.prev)
 	}
 }
 
-func (l *List[T]) Append(values ...T) {
-	l.Add(values...)
+func (l *List[T]) InsertBefore(value T, mark *Element[T]) *Element[T] {
+	return conditionals.If(l.isElementMemberOfList(mark),
+		l.insertValue(value, mark.prev), nil)
 }
 
-func (l *List[T]) Prepend(values ...T) {
+func (l *List[T]) InsertAfter(value T, mark *Element[T]) *Element[T] {
+	return conditionals.If(l.isElementMemberOfList(mark),
+		l.insertValue(value, mark), nil)
 }
 
-func (l *List[T]) insertAt(element *ListElement[T], atLocation *ListElement[T]) *ListElement[T] {
-	if l.IsEmpty() {
-		l.first = element
-		l.last = element
-		l.size++
+func (l *List[T]) MoveToFront(element *Element[T]) {
+	if !l.isElementMemberOfList(element) || l.Front() == element {
+		return
+	}
+	
+	l.insertValue(l.Remove(element), &l.root)
+}
 
-		return element
+func (l *List[T]) MoveToBack(element *Element[T]) {
+	if !l.isElementMemberOfList(element) || l.Back() == element {
+		return
 	}
 
-	if atLocation == nil {
-		return nil
-	}
+	l.insertValue(l.Remove(element), l.root.prev)
+}
 
+func (l *List[T]) MoveBefore(element *Element[T], mark *Element[T]) {
+}
+
+func (l *List[T]) MoveAfter(element *Element[T], mark *Element[T]) {
+}
+
+func (l *List[T]) PushBackList(other *List[T]) {}
+
+func (l *List[T]) PushFrontList(other *List[T]) {}
+
+func (l *List[T]) isElementMemberOfList(element *Element[T]) bool {
+	return l == element.parent
+}
+
+func (l *List[T]) insertAt(element *Element[T], atLocation *Element[T]) *Element[T] {
 	element.prev = atLocation
 	element.next = atLocation.next
 	element.prev.next = element
-
-	conditionals.IfNotNil(element.next, func() { element.next.prev = element })
-	l.last = conditionals.If(l.last == atLocation, element, atLocation)
-	l.size++
+	element.next.prev = element
+	l.len++
 
 	return element
 }
 
-func (l *List[T]) insertValue(value T, at *ListElement[T]) *ListElement[T] {
+func (l *List[T]) insertValue(value T, at *Element[T]) *Element[T] {
 	element := NewListElement(value, l)
 	return l.insertAt(element, at)
 }

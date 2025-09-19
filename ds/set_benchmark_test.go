@@ -18,7 +18,7 @@ var startingSize = []int{0, 1, 10, 100, 1000, 10000}
 
 func BenchmarkNewSet(b *testing.B) {
 	for _, size := range startingSize {
-		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+		b.Run(fmt.Sprintf("len: %d", size), func(b *testing.B) {
 			for b.Loop() {
 				_ = ds.NewSet(generateIntSlice(size)...)
 			}
@@ -28,7 +28,7 @@ func BenchmarkNewSet(b *testing.B) {
 
 func BenchmarkAdd(b *testing.B) {
 	for _, size := range startingSize {
-		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+		b.Run(fmt.Sprintf("len: %d", size), func(b *testing.B) {
 			set := ds.NewSet[int](generateIntSlice(size)...)
 			for b.Loop() {
 				set.Add(generateIntSlice(sliceSize)...)
@@ -39,7 +39,7 @@ func BenchmarkAdd(b *testing.B) {
 
 func BenchmarkContains(b *testing.B) {
 	for _, size := range startingSize {
-		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+		b.Run(fmt.Sprintf("len: %d", size), func(b *testing.B) {
 			set := ds.NewSet(generateIntSlice(size)...)
 			for b.Loop() {
 				_ = set.Contains(rand.Int())
@@ -50,7 +50,7 @@ func BenchmarkContains(b *testing.B) {
 
 func BenchmarkRemove(b *testing.B) {
 	for _, size := range startingSize {
-		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+		b.Run(fmt.Sprintf("len: %d", size), func(b *testing.B) {
 			set := ds.NewSet(generateIntSlice(size)...)
 			for b.Loop() {
 				set.Remove(rand.Int())
@@ -61,7 +61,7 @@ func BenchmarkRemove(b *testing.B) {
 
 func BenchmarkSize(b *testing.B) {
 	for _, size := range startingSize {
-		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+		b.Run(fmt.Sprintf("len: %d", size), func(b *testing.B) {
 			set := ds.NewSet(generateIntSlice(size)...)
 			for b.Loop() {
 				_ = set.Size()
@@ -72,7 +72,7 @@ func BenchmarkSize(b *testing.B) {
 
 func BenchmarkClear(b *testing.B) {
 	for _, size := range startingSize {
-		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
+		b.Run(fmt.Sprintf("len: %d", size), func(b *testing.B) {
 			set := ds.NewSet(generateIntSlice(size)...)
 			for b.Loop() {
 				set.Clear()

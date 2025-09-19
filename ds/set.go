@@ -56,7 +56,7 @@ func (s *Set[T]) Remove(item T) {
 	delete(s.items, item)
 }
 
-// Size returns the size of the set.
+// Size returns the len of the set.
 func (s *Set[T]) Size() int {
 	return len(s.items)
 }
@@ -144,7 +144,7 @@ func (s *Set[T]) SymmetricDifference(other Set[T]) Set[T] {
 	return result
 }
 
-// Subset returns true of the set is a subset of given set.
+// Subset returns true of the set is a subset of a given set.
 func (s *Set[T]) Subset(other Set[T]) bool {
 	for item := range s.items {
 		if !other.Contains(item) {

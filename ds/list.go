@@ -1,6 +1,8 @@
 package ds
 
-import "github.com/SharkByteSoftware/go-snk/conditionals"
+import (
+	"github.com/SharkByteSoftware/go-snk/conditionals"
+)
 
 // Element an element of a linked list.
 type Element[T comparable] struct {
@@ -9,7 +11,7 @@ type Element[T comparable] struct {
 	Value      T
 }
 
-func NewListElement[T comparable](value T, parent *List[T]) *Element[T] {
+func NewElement[T comparable](value T, parent *List[T]) *Element[T] {
 	return &Element[T]{
 		next:   nil,
 		prev:   nil,
@@ -82,6 +84,8 @@ func (l *List[T]) Remove(element *Element[T]) T {
 		element.next.prev = element.prev
 		element.next = nil
 		element.prev = nil
+		element.parent = nil
+		
 		l.len--
 	}
 
@@ -103,20 +107,26 @@ func (l *List[T]) PushBack(values ...T) {
 }
 
 func (l *List[T]) InsertBefore(value T, mark *Element[T]) *Element[T] {
-	return conditionals.If(l.isElementMemberOfList(mark),
-		l.insertValue(value, mark.prev), nil)
+	if !l.isElementMemberOfList(mark) {
+		return nil
+	}
+
+	return l.insertValue(value, mark.prev)
 }
 
 func (l *List[T]) InsertAfter(value T, mark *Element[T]) *Element[T] {
-	return conditionals.If(l.isElementMemberOfList(mark),
-		l.insertValue(value, mark), nil)
+	if !l.isElementMemberOfList(mark) {
+		return nil
+	}
+
+	return l.insertValue(value, mark)
 }
 
 func (l *List[T]) MoveToFront(element *Element[T]) {
 	if !l.isElementMemberOfList(element) || l.Front() == element {
 		return
 	}
-	
+
 	l.insertValue(l.Remove(element), &l.root)
 }
 
@@ -129,9 +139,19 @@ func (l *List[T]) MoveToBack(element *Element[T]) {
 }
 
 func (l *List[T]) MoveBefore(element *Element[T], mark *Element[T]) {
+	if !l.isElementMemberOfList(element) || !l.isElementMemberOfList(mark) || element == mark {
+		return
+	}
+
+	l.insertValue(l.Remove(element), mark.prev)
 }
 
 func (l *List[T]) MoveAfter(element *Element[T], mark *Element[T]) {
+	if !l.isElementMemberOfList(element) || !l.isElementMemberOfList(mark) || element == mark {
+		return
+	}
+
+	l.insertValue(l.Remove(element), mark.next)
 }
 
 func (l *List[T]) PushBackList(other *List[T]) {}
@@ -153,6 +173,6 @@ func (l *List[T]) insertAt(element *Element[T], atLocation *Element[T]) *Element
 }
 
 func (l *List[T]) insertValue(value T, at *Element[T]) *Element[T] {
-	element := NewListElement(value, l)
+	element := NewElement(value, l)
 	return l.insertAt(element, at)
 }

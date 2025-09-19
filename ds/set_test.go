@@ -42,10 +42,18 @@ func TestSet_Equals(t *testing.T) {
 	assert.True(t, set.Equals(set2))
 
 	set.Add(2, 2, 3, 4, 5)
+	set2.Add(2, 3, 4, 8)
+	assert.False(t, set.Equals(set2))
+
+	set2.Add(88)
 	assert.False(t, set.Equals(set2))
 
 	set.Clear()
 	set2.Clear()
+	assert.True(t, set.Equals(set2))
+
+	set.Add(1, 2, 3, 4, 5)
+	set2.Add(5, 4, 3, 2, 1)
 	assert.True(t, set.Equals(set2))
 }
 

@@ -33,6 +33,18 @@ func TestIf(t *testing.T) {
 	assert.Equal(t, 2, result)
 }
 
+func TestIfNotNil(t *testing.T) {
+	m1 := MyMock{}
+	m1.On("MyFunc")
+
+	conditionals.IfNotNil[MyMock](nil, m1.MyFunc)
+	m1.AssertNotCalled(t, "MyFunc")
+
+	m1.Calls = nil
+	conditionals.IfNotNil(&m1, m1.MyFunc)
+	m1.AssertCalled(t, "MyFunc")
+}
+
 func TestIfCall(t *testing.T) {
 	m1 := MyMock{}
 	m2 := MyMock{}

@@ -1,6 +1,7 @@
 package ds_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/SharkByteSoftware/go-snk/ds"
@@ -189,34 +190,67 @@ func TestList_MoveToBack(t *testing.T) {
 }
 
 func TestList_MoveBefore(t *testing.T) {
-	list := ds.NewList(1, 223, 3, 4, 556)
-
+	list := ds.NewList(223, 1, 556)
 	list.MoveBefore(list.Front(), list.Front())
-	assert.Equal(t, 5, list.Len())
+	assert.Equal(t, 3, list.Len())
+	assert.Equal(t, 223, list.Front().Value)
+	assert.Equal(t, 556, list.Back().Value)
+
+	list = ds.NewList(223, 1, 556)
+	list.MoveBefore(list.Front(), list.Back())
+	assert.Equal(t, 3, list.Len())
 	assert.Equal(t, 1, list.Front().Value)
 	assert.Equal(t, 556, list.Back().Value)
 
+	list = ds.NewList(223, 1, 556)
 	list.MoveBefore(list.Back(), list.Front())
-	assert.Equal(t, 5, list.Len())
+	assert.Equal(t, 3, list.Len())
 	assert.Equal(t, 556, list.Front().Value)
-	assert.Equal(t, 4, list.Back().Value)
+	assert.Equal(t, 1, list.Back().Value)
 
-	list = ds.NewList(1, 223, 3, 4, 556)
-	list.MoveBefore(list.Front(), list.Back())
-	assert.Equal(t, 5, list.Len())
+	list = ds.NewList(223, 1, 556)
+	list.MoveBefore(ds.NewElement(1, nil), list.Back())
+	assert.Equal(t, 3, list.Len())
 	assert.Equal(t, 223, list.Front().Value)
 	assert.Equal(t, 556, list.Back().Value)
 
-	list = ds.NewList(223, 556)
-	list.MoveBefore(ds.NewElement(1, nil), list.Front())
-	assert.Equal(t, 2, list.Len())
-	assert.Equal(t, 223, list.Front().Value)
-	assert.Equal(t, 556, list.Back().Value)
-
-	list = ds.NewList(223, 556)
+	list = ds.NewList(223, 1, 556)
 	list.MoveBefore(list.Front(), ds.NewElement(1, nil))
-	assert.Equal(t, 2, list.Len())
+	assert.Equal(t, 3, list.Len())
+	assert.Equal(t, 223, list.Front().Value)
+	assert.Equal(t, 556, list.Back().Value)
+}
+
+func TestList_MoveAfter(t *testing.T) {
+	list := ds.NewList(223, 1, 556)
+	list.MoveAfter(list.Front(), list.Front())
+	assert.Equal(t, 3, list.Len())
 	assert.Equal(t, 223, list.Front().Value)
 	assert.Equal(t, 556, list.Back().Value)
 
+	list = ds.NewList(223, 1, 556)
+	list.MoveAfter(list.Front(), list.Back())
+	assert.Equal(t, 3, list.Len())
+	assert.Equal(t, 223, list.Front().Value)
+	assert.Equal(t, 556, list.Back().Value)
+
+	list = ds.NewList(223, 1, 556)
+	fmt.Println(list.Values())
+	list.MoveAfter(list.Back(), list.Front())
+	fmt.Println(list.Values())
+	assert.Equal(t, 3, list.Len())
+	assert.Equal(t, 223, list.Front().Value)
+	assert.Equal(t, 1, list.Back().Value)
+
+	list = ds.NewList(223, 1, 556)
+	list.MoveAfter(ds.NewElement(1, nil), list.Back())
+	assert.Equal(t, 3, list.Len())
+	assert.Equal(t, 223, list.Front().Value)
+	assert.Equal(t, 556, list.Back().Value)
+
+	list = ds.NewList(223, 1, 556)
+	list.MoveAfter(list.Front(), ds.NewElement(1, nil))
+	assert.Equal(t, 3, list.Len())
+	assert.Equal(t, 223, list.Front().Value)
+	assert.Equal(t, 556, list.Back().Value)
 }

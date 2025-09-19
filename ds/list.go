@@ -64,13 +64,13 @@ func (l *List[T]) Len() int {
 // Front returns the first element in the list. If the list is empty,
 // it will return nil.
 func (l *List[T]) Front() *Element[T] {
-	return conditionals.If(l.Len() == 0, nil, l.root.next)
+	return conditionals.If(l.IsEmpty(), nil, l.root.next)
 }
 
 // Back returns the last element in the list. If the list is empty,
 // it will return nil.
 func (l *List[T]) Back() *Element[T] {
-	return conditionals.If(l.Len() == 0, nil, l.root.prev)
+	return conditionals.If(l.IsEmpty(), nil, l.root.prev)
 }
 
 // IsEmpty checks to see if the list is empty.
@@ -79,17 +79,11 @@ func (l *List[T]) IsEmpty() bool {
 }
 
 func (l *List[T]) Remove(element *Element[T]) T {
-	if l.isElementMemberOfList(element) {
-		element.prev.next = element.next
-		element.next.prev = element.prev
-		element.next = nil
-		element.prev = nil
-		element.parent = nil
-		
-		l.len--
+	if !l.isElementMemberOfList(element) {
+		return element.Value
 	}
 
-	return element.Value
+	return l.remove(element).Value
 }
 
 // PushFront inserts values to the front of the list.
@@ -106,6 +100,7 @@ func (l *List[T]) PushBack(values ...T) {
 	}
 }
 
+// InsertBefore insert a new value before the mark and returns the element.
 func (l *List[T]) InsertBefore(value T, mark *Element[T]) *Element[T] {
 	if !l.isElementMemberOfList(mark) {
 		return nil
@@ -114,6 +109,7 @@ func (l *List[T]) InsertBefore(value T, mark *Element[T]) *Element[T] {
 	return l.insertValue(value, mark.prev)
 }
 
+// InsertAfter inserts a new value after the mark and returns the element.
 func (l *List[T]) InsertAfter(value T, mark *Element[T]) *Element[T] {
 	if !l.isElementMemberOfList(mark) {
 		return nil
@@ -122,41 +118,55 @@ func (l *List[T]) InsertAfter(value T, mark *Element[T]) *Element[T] {
 	return l.insertValue(value, mark)
 }
 
+// MoveToFront moves the element to the front of the list.
 func (l *List[T]) MoveToFront(element *Element[T]) {
 	if !l.isElementMemberOfList(element) || l.Front() == element {
 		return
 	}
 
-	l.insertValue(l.Remove(element), &l.root)
+	l.insertAt(l.remove(element), &l.root)
 }
 
+// MoveToBack moves the element to the back of the list.
 func (l *List[T]) MoveToBack(element *Element[T]) {
 	if !l.isElementMemberOfList(element) || l.Back() == element {
 		return
 	}
 
-	l.insertValue(l.Remove(element), l.root.prev)
+	l.insertAt(l.remove(element), l.root.prev)
 }
 
+// MoveBefore moves the element before the mark.
 func (l *List[T]) MoveBefore(element *Element[T], mark *Element[T]) {
 	if !l.isElementMemberOfList(element) || !l.isElementMemberOfList(mark) || element == mark {
 		return
 	}
 
-	l.insertValue(l.Remove(element), mark.prev)
+	l.insertAt(l.remove(element), mark.prev)
 }
 
+// MoveAfter moves the element after the mark.
 func (l *List[T]) MoveAfter(element *Element[T], mark *Element[T]) {
 	if !l.isElementMemberOfList(element) || !l.isElementMemberOfList(mark) || element == mark {
 		return
 	}
 
-	l.insertValue(l.Remove(element), mark.next)
+	l.insertAt(l.remove(element), mark.next)
 }
 
 func (l *List[T]) PushBackList(other *List[T]) {}
 
 func (l *List[T]) PushFrontList(other *List[T]) {}
+
+func (l *List[T]) Values() []T {
+	values := make([]T, 0, l.len)
+
+	for e := l.Front(); e != &l.root; e = e.Next() {
+		values = append(values, e.Value)
+	}
+
+	return values
+}
 
 func (l *List[T]) isElementMemberOfList(element *Element[T]) bool {
 	return l == element.parent
@@ -167,6 +177,8 @@ func (l *List[T]) insertAt(element *Element[T], atLocation *Element[T]) *Element
 	element.next = atLocation.next
 	element.prev.next = element
 	element.next.prev = element
+	element.parent = l
+
 	l.len++
 
 	return element
@@ -175,4 +187,16 @@ func (l *List[T]) insertAt(element *Element[T], atLocation *Element[T]) *Element
 func (l *List[T]) insertValue(value T, at *Element[T]) *Element[T] {
 	element := NewElement(value, l)
 	return l.insertAt(element, at)
+}
+
+func (l *List[T]) remove(element *Element[T]) *Element[T] {
+	element.prev.next = element.next
+	element.next.prev = element.prev
+	element.next = nil
+	element.prev = nil
+	element.parent = nil
+
+	l.len--
+
+	return element
 }

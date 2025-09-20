@@ -66,35 +66,35 @@ func TestList_Remove(t *testing.T) {
 
 }
 
-func TestList_PushFront(t *testing.T) {
+func TestList_Prepend(t *testing.T) {
 	list := ds.NewList[int](1)
 	assert.Equal(t, 1, list.Len())
 	assert.Equal(t, 1, list.Front().Value)
 	assert.Equal(t, 1, list.Back().Value)
 
-	list.PushFront(2)
+	list.Prepend(2)
 	assert.Equal(t, 2, list.Len())
 	assert.Equal(t, 2, list.Front().Value)
 	assert.Equal(t, 1, list.Back().Value)
 
-	list.PushFront(12, 33, 2, 4, 6)
+	list.Prepend(12, 33, 2, 4, 6)
 	assert.Equal(t, 7, list.Len())
 	assert.Equal(t, 12, list.Front().Value)
 	assert.Equal(t, 1, list.Back().Value)
 }
 
-func TestList_PushBack(t *testing.T) {
+func TestList_Append(t *testing.T) {
 	list := ds.NewList[int](1)
 	assert.Equal(t, 1, list.Len())
 	assert.Equal(t, 1, list.Front().Value)
 	assert.Equal(t, 1, list.Back().Value)
 
-	list.PushBack(2)
+	list.Append(2)
 	assert.Equal(t, 2, list.Len())
 	assert.Equal(t, 1, list.Front().Value)
 	assert.Equal(t, 2, list.Back().Value)
 
-	list.PushBack(12, 33, 2, 4, 6)
+	list.Append(12, 33, 2, 4, 6)
 	assert.Equal(t, 7, list.Len())
 	assert.Equal(t, 1, list.Front().Value)
 	assert.Equal(t, 6, list.Back().Value)

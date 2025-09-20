@@ -57,11 +57,19 @@ type List[T comparable] struct {
 
 // NewList creates a new linked list from all the values.
 func NewList[T comparable](values ...T) *List[T] {
-	result := &List[T]{}
+	result := &List[T]{
+		root: Element[T]{
+			next:   nil,
+			prev:   nil,
+			parent: nil,
+			Value:  *new(T),
+		},
+		len: 0,
+	}
 
 	result.Init()
 
-	result.PushBack(values...)
+	result.Append(values...)
 
 	return result
 }
@@ -112,6 +120,7 @@ func (l *List[T]) PushFront(value T) *Element[T] {
 	return l.insertAt(NewElement(value, l), &l.root)
 }
 
+// Prepend adds values to the front of the list.
 func (l *List[T]) Prepend(values ...T) {
 	l.checkInit()
 
@@ -120,8 +129,15 @@ func (l *List[T]) Prepend(values ...T) {
 	}
 }
 
-// PushBack adds the values to the end of the list.
-func (l *List[T]) PushBack(values ...T) {
+// PushBack adds the value to the end of the list.
+func (l *List[T]) PushBack(value T) *Element[T] {
+	l.checkInit()
+
+	return l.insertValue(value, l.root.prev)
+}
+
+// Append adds the values to the end of the list.
+func (l *List[T]) Append(values ...T) {
 	l.checkInit()
 
 	for _, value := range values {
@@ -184,11 +200,11 @@ func (l *List[T]) MoveAfter(element *Element[T], mark *Element[T]) {
 }
 
 func (l *List[T]) PushBackList(other *List[T]) {
-	l.PushBack(other.Values()...)
+	l.Append(other.Values()...)
 }
 
 func (l *List[T]) PushFrontList(other *List[T]) {
-	l.PushFront(other.Values()...)
+	l.Prepend(other.Values()...)
 }
 
 func (l *List[T]) Values() []T {

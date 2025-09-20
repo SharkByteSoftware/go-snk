@@ -27,7 +27,7 @@ func FilterWithIndex[S ~[]T, T any](slice S, predicate func(item T, index int) b
 	return result
 }
 
-// Map maps a slice to a slice of another type using a mapper function.
+// Map transforms a slice to a slice of another type using a mapper function.
 func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
 	return MapWithIndex(slice, adapt.ItemIndexAdapter(mapper))
 }
@@ -60,9 +60,7 @@ func Bind[S ~[]T, T any, R any, RS ~[]R](slice S, mapper func(item T) RS) RS {
 	return result
 }
 
-// Fold reduces a slice to a value which is the accumulated result of calling an accumulate func
-// for each item in the slice where each successive call is supplied by the return value of
-// the previous call.
+// Fold transforms and flattens a slice to another type.
 func Fold[S ~[]T, T any, R any](slice S, accumulator func(agg R, item T) R, initial R) R {
 	Apply(slice, func(item T) {
 		initial = accumulator(initial, item)
@@ -120,7 +118,7 @@ func All[S ~[]T, T comparable](slice S, candidate T) bool {
 // Unique returns a slice with all duplicate values removed.
 func Unique[S ~[]T, T comparable](slice S) []T {
 	result := make([]T, 0, len(slice))
-	set := sets.NewSet[T]()
+	set := sets.New[T]()
 
 	Apply(slice, func(item T) {
 		if !set.Contains(item) {

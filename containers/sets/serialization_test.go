@@ -9,18 +9,18 @@ import (
 )
 
 func TestSet_ToJSON(t *testing.T) {
-	set := sets.NewSet[int]()
+	set := sets.New[int]()
 
 	result, err := set.ToJSON()
 	assert.NoError(t, err)
 	assert.Equal(t, "[]", string(result))
 
-	set = sets.NewSet(1)
+	set = sets.New(1)
 	result, err = set.ToJSON()
 	assert.NoError(t, err)
 	assert.Equal(t, "[1]", string(result))
 
-	stringSet := sets.NewSet("one", "two", "three")
+	stringSet := sets.New("one", "two", "three")
 	strResult, err := stringSet.ToJSON()
 	assert.NoError(t, err)
 	for _, item := range stringSet.Values() {
@@ -29,13 +29,13 @@ func TestSet_ToJSON(t *testing.T) {
 }
 
 func TestSet_FromJSON(t *testing.T) {
-	set := sets.NewSet[int]()
+	set := sets.New[int]()
 
 	err := set.FromJSON([]byte("[]"))
 	assert.NoError(t, err)
 	assert.Equal(t, 0, len(set.Values()))
 
-	stringSet := sets.NewSet[string]()
+	stringSet := sets.New[string]()
 	err = stringSet.FromJSON([]byte(`["one"]`))
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(stringSet.Values()))
@@ -50,15 +50,15 @@ func TestSet_FromJSON(t *testing.T) {
 }
 
 func TestSet_MarshalJSON(t *testing.T) {
-	jsonBytes, err := json.Marshal(sets.NewSet[int]())
+	jsonBytes, err := json.Marshal(sets.New[int]())
 	assert.NoError(t, err)
 	assert.Equal(t, "[]", string(jsonBytes))
 
-	jsonBytes, err = json.Marshal(sets.NewSet("one"))
+	jsonBytes, err = json.Marshal(sets.New("one"))
 	assert.NoError(t, err)
 	assert.Equal(t, `["one"]`, string(jsonBytes))
 
-	jsonBytes, err = json.Marshal(sets.NewSet(1, 2, 256))
+	jsonBytes, err = json.Marshal(sets.New(1, 2, 256))
 	assert.NoError(t, err)
 	assert.Len(t, string(jsonBytes), 9)
 
@@ -69,7 +69,7 @@ func TestSet_MarshalJSON(t *testing.T) {
 }
 
 func TestSet_UnmarshalJSON(t *testing.T) {
-	var set = sets.NewSet[int]()
+	var set = sets.New[int]()
 
 	err := json.Unmarshal([]byte(`[]`), &set)
 	assert.NoError(t, err)

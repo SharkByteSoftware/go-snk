@@ -10,8 +10,8 @@ type Set[T comparable] struct {
 	items map[T]struct{}
 }
 
-// NewSet creates a new set with the given items.
-func NewSet[T comparable](items ...T) Set[T] {
+// New creates a new set with the given items.
+func New[T comparable](items ...T) Set[T] {
 	set := Set[T]{items: make(map[T]struct{})}
 	set.Add(items...)
 
@@ -86,7 +86,7 @@ func (s *Set[T]) Intersect(other Set[T]) Set[T] {
 	smallSet := conditional.If(size1 < size2, *s, other)
 	largerSet := conditional.If(size1 < size2, other, *s)
 
-	result := NewSet[T]()
+	result := New[T]()
 
 	for item := range smallSet.items {
 		if largerSet.Contains(item) {
@@ -114,7 +114,7 @@ func (s *Set[T]) Union(other Set[T]) Set[T] {
 
 // Difference returns the difference of the set with the given set.
 func (s *Set[T]) Difference(other Set[T]) Set[T] {
-	result := NewSet[T]()
+	result := New[T]()
 
 	for item := range s.items {
 		if !other.Contains(item) {
@@ -127,7 +127,7 @@ func (s *Set[T]) Difference(other Set[T]) Set[T] {
 
 // SymmetricDifference returns a set with elements from either set but not both.
 func (s *Set[T]) SymmetricDifference(other Set[T]) Set[T] {
-	result := NewSet[T]()
+	result := New[T]()
 
 	s.Apply(func(item T) {
 		if !other.Contains(item) {
@@ -164,5 +164,5 @@ func (s *Set[T]) Apply(apply func(item T)) {
 
 // Clone creates a clone of the set.
 func (s *Set[T]) Clone() Set[T] {
-	return NewSet[T](s.Values()...)
+	return New[T](s.Values()...)
 }

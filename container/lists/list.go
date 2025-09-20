@@ -1,10 +1,10 @@
-package ds
+package lists
 
 import (
 	"github.com/SharkByteSoftware/go-snk/conditionals"
 )
 
-// Element an element of a linked list.
+// Element an element of a linked lists.
 type Element[T comparable] struct {
 	next, prev *Element[T]
 	parent     *List[T]
@@ -48,14 +48,14 @@ func (e *Element[T]) isBack() bool {
 	return e.next == &e.parent.root
 }
 
-// List represents a doubly linked list.  Api compatible with the Go
+// List represents a doubly linked lists.  Api compatible with the Go
 // containers List implementation.
 type List[T comparable] struct {
 	root Element[T]
 	len  int
 }
 
-// NewList creates a new linked list from all the values.
+// NewList creates a new linked lists from all the values.
 func NewList[T comparable](values ...T) *List[T] {
 	result := &List[T]{
 		root: Element[T]{
@@ -83,24 +83,24 @@ func (l *List[T]) Init() *List[T] {
 	return l
 }
 
-// Len returns the number of elements in the list.
+// Len returns the number of elements in the lists.
 func (l *List[T]) Len() int {
 	return l.len
 }
 
-// Front returns the first element in the list. If the list is empty,
+// Front returns the first element in the lists. If the lists is empty,
 // it will return nil.
 func (l *List[T]) Front() *Element[T] {
 	return conditionals.If(l.IsEmpty(), nil, l.root.next)
 }
 
-// Back returns the last element in the list. If the list is empty,
+// Back returns the last element in the lists. If the lists is empty,
 // it will return nil.
 func (l *List[T]) Back() *Element[T] {
 	return conditionals.If(l.IsEmpty(), nil, l.root.prev)
 }
 
-// IsEmpty checks to see if the list is empty.
+// IsEmpty checks to see if the lists is empty.
 func (l *List[T]) IsEmpty() bool {
 	return l.Len() == 0
 }
@@ -113,14 +113,14 @@ func (l *List[T]) Remove(element *Element[T]) T {
 	return l.remove(element).Value
 }
 
-// PushFront inserts values to the front of the list.
+// PushFront inserts values to the front of the lists.
 func (l *List[T]) PushFront(value T) *Element[T] {
 	l.checkInit()
 
 	return l.insertAt(NewElement(value, l), &l.root)
 }
 
-// Prepend adds values to the front of the list.
+// Prepend adds values to the front of the lists.
 func (l *List[T]) Prepend(values ...T) {
 	l.checkInit()
 
@@ -129,14 +129,14 @@ func (l *List[T]) Prepend(values ...T) {
 	}
 }
 
-// PushBack adds the value to the end of the list.
+// PushBack adds the value to the end of the lists.
 func (l *List[T]) PushBack(value T) *Element[T] {
 	l.checkInit()
 
 	return l.insertValue(value, l.root.prev)
 }
 
-// Append adds the values to the end of the list.
+// Append adds the values to the end of the lists.
 func (l *List[T]) Append(values ...T) {
 	l.checkInit()
 
@@ -163,7 +163,7 @@ func (l *List[T]) InsertAfter(value T, mark *Element[T]) *Element[T] {
 	return l.insertValue(value, mark)
 }
 
-// MoveToFront moves the element to the front of the list.
+// MoveToFront moves the element to the front of the lists.
 func (l *List[T]) MoveToFront(element *Element[T]) {
 	if l.isNotMember(element) || l.Front() == element {
 		return
@@ -172,7 +172,7 @@ func (l *List[T]) MoveToFront(element *Element[T]) {
 	l.insertAt(l.remove(element), &l.root)
 }
 
-// MoveToBack moves the element to the back of the list.
+// MoveToBack moves the element to the back of the lists.
 func (l *List[T]) MoveToBack(element *Element[T]) {
 	if l.isNotMember(element) || l.Back() == element {
 		return

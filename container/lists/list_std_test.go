@@ -4,7 +4,7 @@
 
 // These tests are from the std Go library to maintain compatability
 
-package ds
+package lists
 
 import "testing"
 
@@ -66,7 +66,7 @@ func TestList(t *testing.T) {
 	l := NewList[int]()
 	checkListPointers(t, l, []*Element[int]{})
 
-	// Single element list
+	// Single element lists
 	e := l.PushFront(1)
 	checkListPointers(t, l, []*Element[int]{e})
 	l.MoveToFront(e)
@@ -76,7 +76,7 @@ func TestList(t *testing.T) {
 	l.Remove(e)
 	checkListPointers(t, l, []*Element[int]{})
 
-	// Bigger list
+	// Bigger lists
 	e2 := l.PushFront(2)
 	e1 := l.PushFront(1)
 	e3 := l.PushBack(3)
@@ -303,7 +303,7 @@ func TestZeroList(t *testing.T) {
 	checkList(t, l4, []int{1})
 }
 
-// Test that a list l is not modified when calling InsertBefore with a mark that is not an element of l.
+// Test that a lists l is not modified when calling InsertBefore with a mark that is not an element of l.
 func TestInsertBeforeUnknownMark(t *testing.T) {
 	var l List[int]
 	l.PushBack(1)
@@ -313,7 +313,7 @@ func TestInsertBeforeUnknownMark(t *testing.T) {
 	checkList(t, &l, []int{1, 2, 3})
 }
 
-// Test that a list l is not modified when calling InsertAfter with a mark that is not an element of l.
+// Test that a lists l is not modified when calling InsertAfter with a mark that is not an element of l.
 func TestInsertAfterUnknownMark(t *testing.T) {
 	var l List[int]
 	l.PushBack(1)
@@ -323,7 +323,7 @@ func TestInsertAfterUnknownMark(t *testing.T) {
 	checkList(t, &l, []int{1, 2, 3})
 }
 
-// Test that a list l is not modified when calling MoveAfter or MoveBefore with a mark that is not an element of l.
+// Test that a lists l is not modified when calling MoveAfter or MoveBefore with a mark that is not an element of l.
 func TestMoveUnknownMark(t *testing.T) {
 	var l1 List[int]
 	e1 := l1.PushBack(1)

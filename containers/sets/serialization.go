@@ -1,4 +1,4 @@
-package ds
+package sets
 
 import (
 	"encoding/json"

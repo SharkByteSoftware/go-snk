@@ -1,4 +1,4 @@
-package conditionals
+package conditional
 
 // If is a ternary function for returning a value if a condition is true
 // and another if false.
@@ -8,6 +8,15 @@ func If[T any](cond bool, ifTrue T, ifFalse T) T {
 	}
 
 	return ifFalse
+}
+
+// IfNotNil calls a function if x is not nil.
+func IfNotNil[T any](x *T, callee func()) {
+	if x == nil {
+		return
+	}
+
+	callee()
 }
 
 // IfCall is a ternary function for calling a function if a condition is true

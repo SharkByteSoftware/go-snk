@@ -4,14 +4,14 @@ import (
 	"cmp"
 
 	"github.com/SharkByteSoftware/go-snk/adapt"
-	"github.com/SharkByteSoftware/go-snk/constraints"
+	"github.com/SharkByteSoftware/go-snk/constraint"
 )
 
-func Sum[T constraints.Numeric](slice []T) T {
+func Sum[T constraint.Numeric](slice []T) T {
 	return SumBy(slice, adapt.ValueAdapter)
 }
 
-func SumBy[S ~[]T, T any, R constraints.Numeric](slice S, sumFunc func(item T) R) R {
+func SumBy[S ~[]T, T any, R constraint.Numeric](slice S, sumFunc func(item T) R) R {
 	var sum R
 
 	Apply(slice, func(item T) {
@@ -21,11 +21,11 @@ func SumBy[S ~[]T, T any, R constraints.Numeric](slice S, sumFunc func(item T) R
 	return sum
 }
 
-func Product[S ~[]T, T constraints.Numeric](slice S) T {
+func Product[S ~[]T, T constraint.Numeric](slice S) T {
 	return ProductBy(slice, adapt.ValueAdapter)
 }
 
-func ProductBy[S ~[]T, T any, R constraints.Numeric](slice S, productFunc func(item T) R) R {
+func ProductBy[S ~[]T, T any, R constraint.Numeric](slice S, productFunc func(item T) R) R {
 	var product R = 1
 
 	if len(slice) == 0 {
@@ -39,11 +39,11 @@ func ProductBy[S ~[]T, T any, R constraints.Numeric](slice S, productFunc func(i
 	return product
 }
 
-func Mean[S ~[]T, T constraints.Numeric](slice S) T {
+func Mean[S ~[]T, T constraint.Numeric](slice S) T {
 	return MeanBy(slice, adapt.ValueAdapter)
 }
 
-func MeanBy[S ~[]T, T any, R constraints.Numeric](slice S, valueFunc func(item T) R) R {
+func MeanBy[S ~[]T, T any, R constraint.Numeric](slice S, valueFunc func(item T) R) R {
 	count := R(len(slice))
 
 	if count == 0 {

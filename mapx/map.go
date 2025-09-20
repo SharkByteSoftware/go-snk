@@ -2,7 +2,7 @@
 package mapx
 
 import (
-	"github.com/SharkByteSoftware/go-snk/conditionals"
+	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
@@ -47,7 +47,7 @@ func Contains[M map[K]V, K comparable, V any](collection M, keys ...K) bool {
 // Value returns the value for a key or a fallback value.
 func Value[M map[K]V, K comparable, V any](collection M, key K, fallback V) V {
 	value, ok := collection[key]
-	return conditionals.If(ok, value, fallback)
+	return conditional.If(ok, value, fallback)
 }
 
 // Invert inverts the map keys and values.  When there are duplicate values

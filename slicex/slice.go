@@ -5,8 +5,8 @@ import (
 	"slices"
 
 	"github.com/SharkByteSoftware/go-snk/adapt"
-	"github.com/SharkByteSoftware/go-snk/conditionals"
-	"github.com/SharkByteSoftware/go-snk/ds"
+	"github.com/SharkByteSoftware/go-snk/conditional"
+	"github.com/SharkByteSoftware/go-snk/containers/sets"
 )
 
 // Filter filters a slice using a predicate function.
@@ -97,7 +97,7 @@ func FindOr[S ~[]T, T comparable](slice S, candidate T, fallback T) T {
 
 func FindOrBy[S ~[]T, T comparable](slice S, predicate func(item T) bool, fallback T) T {
 	item, found := FindBy(slice, predicate)
-	return conditionals.If(found, item, fallback)
+	return conditional.If(found, item, fallback)
 }
 
 // Any returns true if any item in the slice satisfies the predicate.
@@ -120,7 +120,7 @@ func All[S ~[]T, T comparable](slice S, candidate T) bool {
 // Unique returns a slice with all duplicate values removed.
 func Unique[S ~[]T, T comparable](slice S) []T {
 	result := make([]T, 0, len(slice))
-	set := ds.NewSet[T]()
+	set := sets.NewSet[T]()
 
 	Apply(slice, func(item T) {
 		if !set.Contains(item) {
@@ -179,7 +179,7 @@ func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
 	part2 := make(S, 0)
 
 	Apply(slice, func(item T) {
-		conditionals.IfCall(predicate(item),
+		conditional.IfCall(predicate(item),
 			func() { part1 = append(part1, item) },
 			func() { part2 = append(part2, item) },
 		)

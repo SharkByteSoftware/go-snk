@@ -1,5 +1,5 @@
-// Package constraints provides type constraints.
-package constraints
+// Package constraint provides type constraint.
+package constraint
 
 type Signed interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64

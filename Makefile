@@ -1,10 +1,10 @@
 BASE_DIR = .
 COV_PROFILE = dist/covprofile.out
-TEST_OPTS = -vet=all -cover -covermode=atomic -coverprofile=$(COV_PROFILE)
+TEST_OPTS = -vet=all -covermode=atomic -coverprofile=$(COV_PROFILE)
 
 BENCH_PKGS = \
-	slices \
-	maps \
+	slicex \
+	mapx \
 	ds
 BENCHMARKS = $(BENCH_PKGS:%=bench/%)
 BENCH_COUNT = 1

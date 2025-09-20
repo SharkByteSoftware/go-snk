@@ -1,26 +1,26 @@
-package ds_test
+package sets_test
 
 import (
 	"encoding/json"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/ds"
+	"github.com/SharkByteSoftware/go-snk/containers/sets"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSet_ToJSON(t *testing.T) {
-	set := ds.NewSet[int]()
+	set := sets.NewSet[int]()
 
 	result, err := set.ToJSON()
 	assert.NoError(t, err)
 	assert.Equal(t, "[]", string(result))
 
-	set = ds.NewSet(1)
+	set = sets.NewSet(1)
 	result, err = set.ToJSON()
 	assert.NoError(t, err)
 	assert.Equal(t, "[1]", string(result))
 
-	stringSet := ds.NewSet("one", "two", "three")
+	stringSet := sets.NewSet("one", "two", "three")
 	strResult, err := stringSet.ToJSON()
 	assert.NoError(t, err)
 	for _, item := range stringSet.Values() {
@@ -29,13 +29,13 @@ func TestSet_ToJSON(t *testing.T) {
 }
 
 func TestSet_FromJSON(t *testing.T) {
-	set := ds.NewSet[int]()
+	set := sets.NewSet[int]()
 
 	err := set.FromJSON([]byte("[]"))
 	assert.NoError(t, err)
 	assert.Equal(t, 0, len(set.Values()))
 
-	stringSet := ds.NewSet[string]()
+	stringSet := sets.NewSet[string]()
 	err = stringSet.FromJSON([]byte(`["one"]`))
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(stringSet.Values()))
@@ -50,26 +50,26 @@ func TestSet_FromJSON(t *testing.T) {
 }
 
 func TestSet_MarshalJSON(t *testing.T) {
-	jsonBytes, err := json.Marshal(ds.NewSet[int]())
+	jsonBytes, err := json.Marshal(sets.NewSet[int]())
 	assert.NoError(t, err)
 	assert.Equal(t, "[]", string(jsonBytes))
 
-	jsonBytes, err = json.Marshal(ds.NewSet("one"))
+	jsonBytes, err = json.Marshal(sets.NewSet("one"))
 	assert.NoError(t, err)
 	assert.Equal(t, `["one"]`, string(jsonBytes))
 
-	jsonBytes, err = json.Marshal(ds.NewSet(1, 2, 256))
+	jsonBytes, err = json.Marshal(sets.NewSet(1, 2, 256))
 	assert.NoError(t, err)
 	assert.Len(t, string(jsonBytes), 9)
 
-	var set ds.Set[int]
+	var set sets.Set[int]
 	err = json.Unmarshal(jsonBytes, &set)
 	assert.NoError(t, err)
 	assert.Len(t, set.Values(), 3)
 }
 
 func TestSet_UnmarshalJSON(t *testing.T) {
-	var set = ds.NewSet[int]()
+	var set = sets.NewSet[int]()
 
 	err := json.Unmarshal([]byte(`[]`), &set)
 	assert.NoError(t, err)
@@ -84,7 +84,7 @@ func TestSet_UnmarshalJSON(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, set.Values(), 3)
 
-	var stringSet ds.Set[string]
+	var stringSet sets.Set[string]
 	err = json.Unmarshal([]byte(`["one"]`), &stringSet)
 	assert.NoError(t, err)
 	assert.Len(t, stringSet.Values(), 1)

@@ -1,14 +1,13 @@
 package ds_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/SharkByteSoftware/go-snk/ds"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewList(t *testing.T) {
+func TestList_NewList(t *testing.T) {
 	list := ds.NewList[int]()
 	assert.Equal(t, 0, list.Len())
 	assert.Nil(t, list.Front())
@@ -231,13 +230,11 @@ func TestList_MoveAfter(t *testing.T) {
 	list = ds.NewList(223, 1, 556)
 	list.MoveAfter(list.Front(), list.Back())
 	assert.Equal(t, 3, list.Len())
-	assert.Equal(t, 223, list.Front().Value)
-	assert.Equal(t, 556, list.Back().Value)
+	assert.Equal(t, 1, list.Front().Value)
+	assert.Equal(t, 223, list.Back().Value)
 
 	list = ds.NewList(223, 1, 556)
-	fmt.Println(list.Values())
 	list.MoveAfter(list.Back(), list.Front())
-	fmt.Println(list.Values())
 	assert.Equal(t, 3, list.Len())
 	assert.Equal(t, 223, list.Front().Value)
 	assert.Equal(t, 1, list.Back().Value)

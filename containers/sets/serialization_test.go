@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/container/sets"
+	"github.com/SharkByteSoftware/go-snk/containers/sets"
 	"github.com/stretchr/testify/assert"
 )
 

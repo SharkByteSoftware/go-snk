@@ -3,7 +3,7 @@ package lists_test
 import (
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/container/lists"
+	"github.com/SharkByteSoftware/go-snk/containers/lists"
 	"github.com/stretchr/testify/assert"
 )
 

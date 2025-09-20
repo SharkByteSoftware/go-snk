@@ -6,7 +6,7 @@ import (
 
 	"github.com/SharkByteSoftware/go-snk/adapt"
 	"github.com/SharkByteSoftware/go-snk/conditional"
-	"github.com/SharkByteSoftware/go-snk/container/sets"
+	"github.com/SharkByteSoftware/go-snk/containers/sets"
 )
 
 // Filter filters a slice using a predicate function.

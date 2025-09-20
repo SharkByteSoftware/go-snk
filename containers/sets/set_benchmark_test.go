@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/container/sets"
+	"github.com/SharkByteSoftware/go-snk/containers/sets"
 )
 
 const (

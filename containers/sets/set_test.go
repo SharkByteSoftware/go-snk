@@ -3,7 +3,7 @@ package sets_test
 import (
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/container/sets"
+	"github.com/SharkByteSoftware/go-snk/containers/sets"
 	"github.com/stretchr/testify/assert"
 )
 

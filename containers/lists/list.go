@@ -55,8 +55,8 @@ type List[T comparable] struct {
 	len  int
 }
 
-// NewList creates a new linked lists from all the values.
-func NewList[T comparable](values ...T) *List[T] {
+// New creates a new linked lists from all the values.
+func New[T comparable](values ...T) *List[T] {
 	result := &List[T]{
 		root: Element[T]{
 			next:   nil,

@@ -120,7 +120,7 @@ func All[S ~[]T, T comparable](slice S, candidate T) bool {
 // Unique returns a slice with all duplicate values removed.
 func Unique[S ~[]T, T comparable](slice S) []T {
 	result := make([]T, 0, len(slice))
-	set := sets.NewSet[T]()
+	set := sets.New[T]()
 
 	Apply(slice, func(item T) {
 		if !set.Contains(item) {

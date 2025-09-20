@@ -8,17 +8,17 @@ import (
 )
 
 func TestNewSet(t *testing.T) {
-	set := sets.NewSet[int]()
+	set := sets.New[int]()
 	assert.NotNil(t, set)
 	assert.Equal(t, 0, set.Size())
 
-	set = sets.NewSet(1, 2, 3, 4, 5)
+	set = sets.New(1, 2, 3, 4, 5)
 	assert.NotNil(t, set)
 	assert.Equal(t, 5, set.Size())
 }
 
 func TestSet_Add(t *testing.T) {
-	set := sets.NewSet[int]()
+	set := sets.New[int]()
 	assert.Equal(t, 0, set.Size())
 
 	set.Add(1, 2, 3, 4, 5)
@@ -26,7 +26,7 @@ func TestSet_Add(t *testing.T) {
 }
 
 func TestSet_IsEmpty(t *testing.T) {
-	set := sets.NewSet[int]()
+	set := sets.New[int]()
 	assert.True(t, set.IsEmpty())
 
 	set.Add(1, 2, 3, 4, 5)
@@ -34,11 +34,11 @@ func TestSet_IsEmpty(t *testing.T) {
 }
 
 func TestSet_Equals(t *testing.T) {
-	set := sets.NewSet[int]()
+	set := sets.New[int]()
 	assert.True(t, set.Equals(set))
 
 	set.Add(1)
-	set2 := sets.NewSet[int](1)
+	set2 := sets.New[int](1)
 	assert.True(t, set.Equals(set2))
 
 	set.Add(2, 2, 3, 4, 5)
@@ -58,14 +58,14 @@ func TestSet_Equals(t *testing.T) {
 }
 
 func TestSet_Contains(t *testing.T) {
-	set := sets.NewSet[int](1, 2, 3, 4, 5)
+	set := sets.New[int](1, 2, 3, 4, 5)
 	assert.Equal(t, 5, set.Size())
 	assert.True(t, set.Contains(1))
 	assert.True(t, set.Contains(5))
 }
 
 func TestSet_Remove(t *testing.T) {
-	set := sets.NewSet[int](1, 2, 3, 4, 5)
+	set := sets.New[int](1, 2, 3, 4, 5)
 	assert.Equal(t, 5, set.Size())
 	assert.True(t, set.Contains(5))
 
@@ -75,15 +75,15 @@ func TestSet_Remove(t *testing.T) {
 }
 
 func TestSet_Size(t *testing.T) {
-	set := sets.NewSet[int](1, 2, 3, 4, 5)
+	set := sets.New[int](1, 2, 3, 4, 5)
 	assert.Equal(t, 5, set.Size())
 
-	set = sets.NewSet[int]()
+	set = sets.New[int]()
 	assert.Equal(t, 0, set.Size())
 }
 
 func TestSet_Clear(t *testing.T) {
-	set := sets.NewSet[int](1, 2, 3, 4, 5)
+	set := sets.New[int](1, 2, 3, 4, 5)
 	assert.Equal(t, 5, set.Size())
 
 	set.Clear()
@@ -91,7 +91,7 @@ func TestSet_Clear(t *testing.T) {
 }
 
 func TestSet_Values(t *testing.T) {
-	set := sets.NewSet[int](1, 2, 3, 4, 5)
+	set := sets.New[int](1, 2, 3, 4, 5)
 	assert.Equal(t, 5, set.Size())
 
 	values := set.Values()
@@ -106,8 +106,8 @@ func TestSet_Values(t *testing.T) {
 }
 
 func TestSet_Intersect(t *testing.T) {
-	set1 := sets.NewSet[int](1, 2, 3, 4, 5)
-	set2 := sets.NewSet[int](2, 3, 4, 5, 6)
+	set1 := sets.New[int](1, 2, 3, 4, 5)
+	set2 := sets.New[int](2, 3, 4, 5, 6)
 
 	result := set1.Intersect(set1)
 	assert.Equal(t, set1.Size(), result.Size())
@@ -125,8 +125,8 @@ func TestSet_Intersect(t *testing.T) {
 }
 
 func TestSet_Union(t *testing.T) {
-	set1 := sets.NewSet[int](1, 2, 3, 4, 5)
-	set2 := sets.NewSet[int](4, 5, 6, 7, 256)
+	set1 := sets.New[int](1, 2, 3, 4, 5)
+	set2 := sets.New[int](4, 5, 6, 7, 256)
 
 	result := set1.Union(set1)
 	assert.Equal(t, 5, result.Size())
@@ -144,9 +144,9 @@ func TestSet_Union(t *testing.T) {
 }
 
 func TestSet_Difference(t *testing.T) {
-	set1 := sets.NewSet[int](1, 2, 3, 4, 5)
-	set2 := sets.NewSet[int](4, 5, 6, 7, 256)
-	nullSet := sets.NewSet[int]()
+	set1 := sets.New[int](1, 2, 3, 4, 5)
+	set2 := sets.New[int](4, 5, 6, 7, 256)
+	nullSet := sets.New[int]()
 
 	result := set1.Difference(set1)
 	assert.Equal(t, 0, result.Size())
@@ -165,9 +165,9 @@ func TestSet_Difference(t *testing.T) {
 }
 
 func TestSet_SymmetricDifference(t *testing.T) {
-	set1 := sets.NewSet[int](1, 2, 3, 4, 5)
-	set2 := sets.NewSet[int](4, 5, 6, 7, 256)
-	set3 := sets.NewSet[int](1, 2, 3, 4, 5, 4, 5, 6, 7, 256, 512, 1024, 2048, 8192)
+	set1 := sets.New[int](1, 2, 3, 4, 5)
+	set2 := sets.New[int](4, 5, 6, 7, 256)
+	set3 := sets.New[int](1, 2, 3, 4, 5, 4, 5, 6, 7, 256, 512, 1024, 2048, 8192)
 
 	result := set1.SymmetricDifference(set1)
 	assert.Equal(t, 0, result.Size())
@@ -186,9 +186,9 @@ func TestSet_SymmetricDifference(t *testing.T) {
 }
 
 func TestSet_Subset(t *testing.T) {
-	set1 := sets.NewSet[int](1, 2, 3, 4, 5)
-	set2 := sets.NewSet[int](4, 5, 6, 7, 256)
-	set3 := sets.NewSet[int](1, 2, 3, 4, 5, 4, 5, 6, 7, 256, 512, 1024, 2048, 8192)
+	set1 := sets.New[int](1, 2, 3, 4, 5)
+	set2 := sets.New[int](4, 5, 6, 7, 256)
+	set3 := sets.New[int](1, 2, 3, 4, 5, 4, 5, 6, 7, 256, 512, 1024, 2048, 8192)
 
 	assert.True(t, set1.Subset(set1))
 	assert.False(t, set1.Subset(set2))

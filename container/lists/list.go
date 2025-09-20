@@ -1,7 +1,7 @@
 package lists
 
 import (
-	"github.com/SharkByteSoftware/go-snk/conditionals"
+	"github.com/SharkByteSoftware/go-snk/conditional"
 )
 
 // Element an element of a linked lists.
@@ -91,13 +91,13 @@ func (l *List[T]) Len() int {
 // Front returns the first element in the lists. If the lists is empty,
 // it will return nil.
 func (l *List[T]) Front() *Element[T] {
-	return conditionals.If(l.IsEmpty(), nil, l.root.next)
+	return conditional.If(l.IsEmpty(), nil, l.root.next)
 }
 
 // Back returns the last element in the lists. If the lists is empty,
 // it will return nil.
 func (l *List[T]) Back() *Element[T] {
-	return conditionals.If(l.IsEmpty(), nil, l.root.prev)
+	return conditional.If(l.IsEmpty(), nil, l.root.prev)
 }
 
 // IsEmpty checks to see if the lists is empty.

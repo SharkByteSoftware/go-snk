@@ -1,4 +1,4 @@
-package conditionals
+package conditional
 
 // If is a ternary function for returning a value if a condition is true
 // and another if false.

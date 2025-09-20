@@ -1,8 +1,8 @@
-// Package ds provides a set data structure.
-package ds
+// Package graphs provides a set data structure.
+package sets
 
 import (
-	"github.com/SharkByteSoftware/go-snk/conditionals"
+	"github.com/SharkByteSoftware/go-snk/conditional"
 )
 
 // Set is a set data structure.
@@ -83,8 +83,8 @@ func (s *Set[T]) Values() []T {
 func (s *Set[T]) Intersect(other Set[T]) Set[T] {
 	size1 := s.Size()
 	size2 := other.Size()
-	smallSet := conditionals.If(size1 < size2, *s, other)
-	largerSet := conditionals.If(size1 < size2, other, *s)
+	smallSet := conditional.If(size1 < size2, *s, other)
+	largerSet := conditional.If(size1 < size2, other, *s)
 
 	result := NewSet[T]()
 
@@ -101,8 +101,8 @@ func (s *Set[T]) Intersect(other Set[T]) Set[T] {
 func (s *Set[T]) Union(other Set[T]) Set[T] {
 	size1 := s.Size()
 	size2 := other.Size()
-	smallSet := conditionals.If(size1 < size2, *s, other)
-	largerSet := conditionals.If(size1 < size2, other, *s)
+	smallSet := conditional.If(size1 < size2, *s, other)
+	largerSet := conditional.If(size1 < size2, other, *s)
 
 	result := largerSet.Clone()
 	for item := range smallSet.items {

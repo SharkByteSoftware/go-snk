@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/SharkByteSoftware/go-snk/adapt"
-	"github.com/SharkByteSoftware/go-snk/conditionals"
+	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 	"github.com/stretchr/testify/assert"
 )
@@ -165,7 +165,7 @@ func TestGroupBy(t *testing.T) {
 	assert.Len(t, result, 7)
 
 	stringMap := slicex.GroupBy(duplicateList, func(item int) string {
-		return conditionals.If(item%2 == 0, "even", "odd")
+		return conditional.If(item%2 == 0, "even", "odd")
 	})
 	assert.Len(t, stringMap, 2)
 	assert.Len(t, stringMap["even"], 6)

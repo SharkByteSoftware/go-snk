@@ -26,3 +26,7 @@ func KeySelectorAdapter[K comparable, V any](key K, _ V) K {
 func ValueSelectorAdapter[K comparable, V any](_ K, value V) V {
 	return value
 }
+
+func ValueReturnFuncAdapter[V any](value V) func() V {
+	return func() V { return value }
+}

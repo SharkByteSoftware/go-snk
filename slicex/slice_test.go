@@ -19,7 +19,7 @@ var nestedNumberList = [][]int{
 	numberList,
 }
 
-func TestFilter(t *testing.T) {
+func TestSlice_Filter(t *testing.T) {
 	result := slicex.Filter(numberList, func(n int) bool { return n%2 == 0 })
 	assert.Equal(t, []int{2, 4, 256}, result)
 
@@ -33,7 +33,7 @@ func TestFilter(t *testing.T) {
 	assert.Equal(t, []int{}, result)
 }
 
-func TestMap(t *testing.T) {
+func TestSlice_Map(t *testing.T) {
 	result := slicex.Map(numberList, func(n int) string { return strconv.Itoa(n) })
 	assert.Equal(t, []string{"1", "2", "3", "4", "5", "333", "256"}, result)
 	assert.Equal(t, len(numberList), cap(result))
@@ -43,13 +43,13 @@ func TestMap(t *testing.T) {
 	assert.Equal(t, 0, cap(result))
 }
 
-func TestUniqueMap(t *testing.T) {
+func TestSlice_UniqueMap(t *testing.T) {
 	result := slicex.UniqueMap(duplicateList, func(n int) string { return strconv.Itoa(n) })
 	assert.Equal(t, []string{"1", "2", "3", "4", "5", "333", "256"}, result)
 	assert.Len(t, result, 7)
 }
 
-func TestBind(t *testing.T) {
+func TestSlice_Bind(t *testing.T) {
 	x := [][]int{{1, 2}, {3, 4}}
 	_ = slicex.Bind(x, adapt.ValueAdapter)
 
@@ -57,7 +57,7 @@ func TestBind(t *testing.T) {
 	assert.Equal(t, append(numberList, numberList...), result)
 }
 
-func TestFold(t *testing.T) {
+func TestSlice_Fold(t *testing.T) {
 	accumulator := func(agg int, item []int) int {
 		return agg + item[0]
 	}
@@ -66,7 +66,7 @@ func TestFold(t *testing.T) {
 	assert.Equal(t, 2, result)
 }
 
-func TestFind(t *testing.T) {
+func TestSlice_Find(t *testing.T) {
 	result, found := slicex.Find(numberList, 88)
 	assert.False(t, found)
 	assert.Equal(t, 0, result)
@@ -76,7 +76,7 @@ func TestFind(t *testing.T) {
 	assert.Equal(t, 256, result)
 }
 
-func TestFindOr(t *testing.T) {
+func TestSlice_FindOr(t *testing.T) {
 	result := slicex.FindOr(numberList, 88, 8192)
 	assert.Equal(t, 8192, result)
 
@@ -84,7 +84,7 @@ func TestFindOr(t *testing.T) {
 	assert.Equal(t, 256, result)
 }
 
-func TestAny(t *testing.T) {
+func TestSlice_Any(t *testing.T) {
 	result := slicex.Any(numberList, 0)
 	assert.False(t, result)
 
@@ -95,7 +95,7 @@ func TestAny(t *testing.T) {
 	assert.True(t, result)
 }
 
-func TestAll(t *testing.T) {
+func TestSlice_All(t *testing.T) {
 	result := slicex.All(numberList, 1)
 	assert.False(t, result)
 
@@ -103,7 +103,7 @@ func TestAll(t *testing.T) {
 	assert.True(t, result)
 }
 
-func TestUnique(t *testing.T) {
+func TestSlice_Unique(t *testing.T) {
 	result := slicex.Unique([]int{})
 	assert.Equal(t, []int{}, result)
 
@@ -120,7 +120,7 @@ func TestUnique(t *testing.T) {
 	assert.Equal(t, []int{1, 2}, result)
 }
 
-func TestReverse(t *testing.T) {
+func TestSlice_Reverse(t *testing.T) {
 	var orderedList = []int{1, 2, 3, 4, 5, 256}
 	var oddNumberedOrderedList = []int{1, 2, 3, 4, 5, 256, 333}
 
@@ -139,13 +139,13 @@ func TestReverse(t *testing.T) {
 	assert.IsDecreasing(t, result)
 }
 
-func TestApply(t *testing.T) {
+func TestSlice_Apply(t *testing.T) {
 	var nums string
 	slicex.Apply(numberList, func(n int) { nums += strconv.Itoa(n) })
 	assert.Equal(t, "12345333256", nums)
 }
 
-func TestToMap(t *testing.T) {
+func TestSlice_ToMap(t *testing.T) {
 	mapperFunc := func(item int) string { return strconv.Itoa(item) }
 
 	result := slicex.ToMap([]int{}, mapperFunc)
@@ -157,7 +157,7 @@ func TestToMap(t *testing.T) {
 	assert.Equal(t, numberList[0], result[strconv.Itoa(numberList[0])])
 }
 
-func TestGroupBy(t *testing.T) {
+func TestSlice_GroupBy(t *testing.T) {
 	result := slicex.GroupBy(numberList, func(item int) int { return item })
 	assert.Len(t, result, len(numberList))
 
@@ -172,7 +172,7 @@ func TestGroupBy(t *testing.T) {
 	assert.Len(t, stringMap["odd"], 8)
 }
 
-func TestPartition(t *testing.T) {
+func TestSlice_Partition(t *testing.T) {
 	r1, r2 := slicex.Partition([]int{}, func(item int) bool { return true })
 	assert.Len(t, r1, 0)
 	assert.Len(t, r2, 0)

@@ -17,6 +17,24 @@ var numberMap = map[int]string{
 	256: "five",
 }
 
+var numberMapSame = map[int]string{
+	0:   "same",
+	8:   "same",
+	2:   "same",
+	3:   "same",
+	12:  "same",
+	256: "same",
+}
+
+var numberMapOther = map[int]string{
+	0:   "other",
+	8:   "other",
+	2:   "other",
+	3:   "other",
+	12:  "other",
+	256: "other",
+}
+
 var contNumberMap = map[int]string{
 	200: "zero",
 	201: "one",
@@ -36,7 +54,7 @@ var dupValueMap = map[int]string{
 	8192: "five",
 }
 
-func TestKeys(t *testing.T) {
+func TestMap_Keys(t *testing.T) {
 	keys := mapx.Keys(numberMap)
 
 	assert.Len(t, keys, 6)
@@ -45,7 +63,7 @@ func TestKeys(t *testing.T) {
 	}
 }
 
-func TestValues(t *testing.T) {
+func TestMap_Values(t *testing.T) {
 	values := mapx.Values(numberMap)
 
 	assert.Len(t, values, 6)
@@ -54,7 +72,7 @@ func TestValues(t *testing.T) {
 	}
 }
 
-func TestUniqueValues(t *testing.T) {
+func TestMap_UniqueValues(t *testing.T) {
 	values := mapx.UniqueValues(numberMap)
 	assert.Len(t, values, 6)
 	for _, v := range numberMap {
@@ -68,7 +86,7 @@ func TestUniqueValues(t *testing.T) {
 	assert.Contains(t, values, "five")
 }
 
-func TestContains(t *testing.T) {
+func TestMap_Contains(t *testing.T) {
 	assert.True(t, mapx.Contains(numberMap, 256))
 
 	assert.False(t, mapx.Contains(numberMap, 257))
@@ -76,7 +94,7 @@ func TestContains(t *testing.T) {
 	assert.False(t, mapx.Contains(map[int]int{}, 0))
 }
 
-func TestValue(t *testing.T) {
+func TestMap_Value(t *testing.T) {
 	result := mapx.Value(numberMap, 0, "negative")
 	assert.Equal(t, "zero", result)
 
@@ -87,7 +105,7 @@ func TestValue(t *testing.T) {
 	assert.Equal(t, "negative", result)
 }
 
-func TestInvert(t *testing.T) {
+func TestMap_Invert(t *testing.T) {
 	inverted := mapx.Invert(numberMap)
 	assert.Len(t, inverted, 6)
 	for k, v := range inverted {
@@ -100,7 +118,7 @@ func TestInvert(t *testing.T) {
 	assert.Contains(t, inverted, "five", "zero", "two")
 }
 
-func TestCombine(t *testing.T) {
+func TestMap_Combine(t *testing.T) {
 	result := mapx.Combine(numberMap, numberMap)
 	assert.Len(t, result, 6)
 	assert.Equal(t, numberMap, result)
@@ -122,7 +140,46 @@ func TestCombine(t *testing.T) {
 	}
 }
 
-func TestToSlice(t *testing.T) {
+func TestMap_CombineWithSelect(t *testing.T) {
+	selectFive := func(prev string, curr string) bool { return curr == "five" }
+
+	result := mapx.CombineWithSelect(selectFive, numberMap, dupValueMap)
+	assert.Len(t, result, 7)
+
+	selectSame := func(prev string, curr string) bool { return curr == "same" }
+	result = mapx.CombineWithSelect(selectSame, numberMap, numberMapSame)
+	assert.Len(t, result, 6)
+	for _, v := range result {
+		assert.Equal(t, "same", v)
+	}
+
+	selectOther := func(prev string, curr string) bool { return curr == "other" }
+	result = mapx.CombineWithSelect(selectOther, numberMapSame, numberMapOther)
+	assert.Len(t, result, 6)
+	for _, v := range result {
+		assert.Equal(t, "other", v)
+	}
+
+	count := 0
+	countFunc := func(prev string, curr string) bool { count++; return true }
+
+	result = mapx.CombineWithSelect(countFunc, numberMap, numberMap)
+	assert.Equal(t, len(numberMap), count)
+
+	count = 0
+	result = mapx.CombineWithSelect(countFunc, numberMap, dupValueMap)
+	assert.Equal(t, len(numberMap), count)
+
+	count = 0
+	result = mapx.CombineWithSelect(countFunc, numberMap, map[int]string{0: "zero", 1: "one"})
+	assert.Equal(t, 1, count)
+
+	count = 0
+	result = mapx.CombineWithSelect(countFunc, numberMap, map[int]string{234: "zero", 555: "one"})
+	assert.Equal(t, 0, count)
+}
+
+func TestMap_ToSlice(t *testing.T) {
 	stringResult := mapx.ToSlice(numberMap, adapt.ValueSelectorAdapter)
 
 	assert.Len(t, stringResult, 6)
@@ -137,7 +194,7 @@ func TestToSlice(t *testing.T) {
 	}
 }
 
-func TestFilter(t *testing.T) {
+func TestMap_Filter(t *testing.T) {
 	result := mapx.Filter(numberMap, func(k int, v string) bool { return true })
 	assert.Equal(t, numberMap, result)
 

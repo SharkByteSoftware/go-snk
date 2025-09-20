@@ -91,19 +91,19 @@ go get github.com/SharkByteSoftware/go-snk@latest
 
 ### mapx - Helpers for maps
 
-| Helpers      | Description                                                  |
-|--------------|--------------------------------------------------------------|
-| Keys         | Returns a slice of the map's keys                            |
-| Values       | Returns a slice of the map's values                          |
-| UniqueValues | Returns a slice of unique values from the map                |
-| Contains     | Checks if the map contains all specified keys                |
-| Value        | Returns the value for a key or a fallback value if not found |
-| Invert       | Inverts the map, swapping keys and values                    |
-| Combine      | Combines multiple maps into a single map                     |
-| ToSlice      | Converts a map to a slice using a mapper function            |
-| Filter       | Filters a map based on a predicate function                  |
-| Apply        | Applies a function to each key-value pair in the map         |
-
+| Helpers           | Description                                                         |
+|-------------------|---------------------------------------------------------------------|
+| Keys              | Returns a slice of the map's keys                                   |
+| Values            | Returns a slice of the map's values                                 |
+| UniqueValues      | Returns a slice of unique values from the map                       |
+| Contains          | Checks if the map contains all specified keys                       |
+| Value             | Returns the value for a key or a fallback value if not found        |
+| Invert            | Inverts the map, swapping keys and values                           |
+| Combine           | Combines multiple maps into a single map                            |
+| CombineWithSelect | Combines multiple maps and uses a select function on key collisions |
+| ToSlice           | Converts a map to a slice using a mapper function                   |
+| Filter            | Filters a map based on a predicate function                         |
+| Apply             | Applies a function to each key-value pair in the map                |
 
 ## Conditionals and Constraints
 
@@ -151,7 +151,6 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | PushFrontList | Prepends all values from another list to the front      |
 | Values        | Returns a slice of all values in the list               |
 
-{#element-table}
 
 | Element    | Description                                                     |
 |------------|-----------------------------------------------------------------|

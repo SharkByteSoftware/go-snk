@@ -34,7 +34,7 @@ working with complex data manipulations in Go.
 
 ### Prerequisites
 
-- **Go version**: go-snk [Go](https://go.dev/) version [1.25](https://go.dev/doc/devel/release#go1.25.0) or above
+- **Go version**: go-snk [Go](https://go.dev/) version [1.24](https://go.dev/doc/devel/release#go1.24.0) or above
 - **Basic Go knowledge**: Familiarity with Go syntax and package management is helpful
 
 ### Installation

@@ -5,7 +5,9 @@ TEST_OPTS = -vet=all -covermode=atomic -coverprofile=$(COV_PROFILE)
 BENCH_PKGS = \
 	slicex \
 	mapx \
-	ds
+	containers/sets \
+	containers/lists
+
 BENCHMARKS = $(BENCH_PKGS:%=bench/%)
 BENCH_COUNT = 1
 
@@ -21,7 +23,7 @@ test: | dist
 bench: $(BENCHMARKS)
 bench/%:
 	$(printTarget)
-	cd $(@F) && go test -benchmem -count $(BENCH_COUNT) -bench .
+	cd $(*) && go test -benchmem -count $(BENCH_COUNT) -bench .
 
 vet:
 	$(printTarget)

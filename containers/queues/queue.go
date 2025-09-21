@@ -8,11 +8,11 @@ func New[T any]() *Queue[T] {
 
 func (q *Queue[T]) Enqueue(value T) {}
 
-func (q *Queue[T]) Dequeue() (value T, ok bool) {
+func (q *Queue[T]) Dequeue() (T, bool) {
 	return *new(T), false
 }
 
-func (q *Queue[T]) Peek() (value T, ok bool) {
+func (q *Queue[T]) Peek() (T, bool) {
 	return *new(T), false
 }
 

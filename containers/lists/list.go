@@ -5,13 +5,13 @@ import (
 )
 
 // Element an element of a linked lists.
-type Element[T comparable] struct {
+type Element[T any] struct {
 	next, prev *Element[T]
 	parent     *List[T]
 	Value      T
 }
 
-func NewElement[T comparable](value T, parent *List[T]) *Element[T] {
+func NewElement[T any](value T, parent *List[T]) *Element[T] {
 	return &Element[T]{
 		next:   nil,
 		prev:   nil,
@@ -50,13 +50,13 @@ func (e *Element[T]) isBack() bool {
 
 // List represents a doubly linked lists.  Api compatible with the Go
 // containers List implementation.
-type List[T comparable] struct {
+type List[T any] struct {
 	root Element[T]
 	len  int
 }
 
 // New creates a new linked lists from all the values.
-func New[T comparable](values ...T) *List[T] {
+func New[T any](values ...T) *List[T] {
 	result := &List[T]{
 		root: Element[T]{
 			next:   nil,
@@ -105,6 +105,8 @@ func (l *List[T]) IsEmpty() bool {
 	return l.Len() == 0
 }
 
+// Remove deletes the element from the list and returns the value.  If element is not
+// a member of the list it does nothing.  Element must not be nil.
 func (l *List[T]) Remove(element *Element[T]) T {
 	if l.isNotMember(element) {
 		return element.Value
@@ -169,7 +171,7 @@ func (l *List[T]) MoveToFront(element *Element[T]) {
 		return
 	}
 
-	l.insertAt(l.remove(element), &l.root)
+	l.move(element, &l.root)
 }
 
 // MoveToBack moves the element to the back of the lists.
@@ -178,7 +180,7 @@ func (l *List[T]) MoveToBack(element *Element[T]) {
 		return
 	}
 
-	l.insertAt(l.remove(element), l.root.prev)
+	l.move(element, l.root.prev)
 }
 
 // MoveBefore moves the element before the mark.
@@ -199,12 +201,12 @@ func (l *List[T]) MoveAfter(element *Element[T], mark *Element[T]) {
 	l.move(element, mark)
 }
 
-func (l *List[T]) PushBackList(other *List[T]) {
-	l.Append(other.Values()...)
-}
-
 func (l *List[T]) PushFrontList(other *List[T]) {
 	l.Prepend(other.Values()...)
+}
+
+func (l *List[T]) PushBackList(other *List[T]) {
+	l.Append(other.Values()...)
 }
 
 func (l *List[T]) Values() []T {

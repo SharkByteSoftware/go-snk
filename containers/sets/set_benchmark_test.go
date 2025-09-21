@@ -10,7 +10,6 @@ import (
 
 const (
 	sliceSize  = 1000
-	sliceCount = 5
 	maxRandInt = 1000
 )
 
@@ -132,15 +131,6 @@ func generateIntSlice(size int) []int {
 	result := make([]int, size)
 	for i := range result {
 		result[i] = rand.Intn(maxRandInt)
-	}
-
-	return result
-}
-
-func generateNestedIntSlices(count int, size int) [][]int {
-	result := make([][]int, count)
-	for i := range result {
-		result[i] = generateIntSlice(size)
 	}
 
 	return result

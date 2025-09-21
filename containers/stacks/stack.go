@@ -32,7 +32,7 @@ func (s *Stack[T]) Pop() (T, bool) {
 	return s.members.Remove(s.members.Front()), true
 }
 
-// Peek returns the top element on the stack without removing it.   If stack is emtpy,
+// Peek returns the top element on the stack without removing it.   If stack is empty,
 // it returns a default value and false.
 func (s *Stack[T]) Peek() (T, bool) {
 	if s.members.IsEmpty() {

@@ -178,9 +178,19 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | Subset              | Returns true if the set is a subset of the given set                 |
 | Apply               | Applies a function to each item in the set                           |
 
+### Stacks
+
+| Stack  | Description                                                                     |
+|--------|---------------------------------------------------------------------------------|
+| New    | Creates a new stack using a linked list                                         |
+| Push   | Adds a value to the top of the stack                                            |
+| Pop    | Removes and returns the top element; returns default and false if empty         |
+| Peek   | Returns the top element without removing it; returns default and false if empty |
+| Size   | Returns the number of elements in the stack                                     |
+| Values | Returns a slice of all elements in the stack                                    |
+
 ## Roadmap
 
-- [ ] Stacks
 - [ ] Queues
 - [ ] Graphs
 

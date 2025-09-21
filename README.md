@@ -1,6 +1,6 @@
 <div align="center">
     <a href="https://github.com/SharkByteSoftware/go-snk">
-        <img width="" height="" alt="sink-logo" src="img/logo.png" />
+        <img width="" height="130" alt="sink-logo" src="img/logo.png" />
     </a>
 </div>
 

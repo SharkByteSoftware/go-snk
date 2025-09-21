@@ -136,12 +136,3 @@ func generateIntSlice(size int) []int {
 
 	return result
 }
-
-func generateNestedIntSlices(count int, size int) [][]int {
-	result := make([][]int, count)
-	for i := range result {
-		result[i] = generateIntSlice(size)
-	}
-
-	return result
-}

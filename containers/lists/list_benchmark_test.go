@@ -7,12 +7,6 @@ import (
 	"github.com/SharkByteSoftware/go-snk/containers/lists"
 )
 
-const (
-	sliceSize  = 1000
-	sliceCount = 5
-	maxRandInt = 1000
-)
-
 var startingSize = []int{0, 1, 10, 100, 1000, 10000}
 
 func BenchmarkList_PushFront(b *testing.B) {

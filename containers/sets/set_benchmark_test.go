@@ -10,7 +10,6 @@ import (
 
 const (
 	sliceSize  = 1000
-	sliceCount = 5
 	maxRandInt = 1000
 )
 

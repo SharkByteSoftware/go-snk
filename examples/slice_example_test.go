@@ -17,7 +17,12 @@ func ExampleFilter() {
 	// Output: [2 4]
 }
 
-//FilterWithIndex
+func ExampleFilterWithIndex() {
+	list := []int64{1, 2, 3, 4}
+
+	result := slicex.FilterWithIndex(list)
+}
+
 //
 //Map
 //

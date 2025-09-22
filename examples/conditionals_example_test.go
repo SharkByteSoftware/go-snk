@@ -14,7 +14,7 @@ func ExampleIf() {
 
 	fmt.Println(resultTrue)
 	fmt.Println(resultFalse)
-	// output:
+	// Output:
 	// true
 }
 
@@ -25,7 +25,7 @@ func ExampleIfNotNil() {
 
 	conditional.IfNotNil(new(int), f)
 
-	// output:
+	// Output:
 	// function is called
 }
 
@@ -44,7 +44,7 @@ func ExampleIfCall() {
 	conditional.IfCall(data > 1, ft, ff)
 	conditional.IfCall(data < 1, ft, ff)
 
-	// output:
+	// Output:
 	// function is called when condition is true
 	// function is called when condition is false
 }
@@ -72,7 +72,7 @@ func ExampleIfCallReturn() {
 	})
 	fmt.Println(result2)
 
-	// output:
+	// Output:
 	// 5
 	// 6
 }

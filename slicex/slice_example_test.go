@@ -1,8 +1,7 @@
-package examples
+package slicex_test
 
 import (
 	"fmt"
-
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
@@ -17,11 +16,11 @@ func ExampleFilter() {
 	// Output: [2 4]
 }
 
-func ExampleFilterWithIndex() {
-	list := []int64{1, 2, 3, 4}
-
-	result := slicex.FilterWithIndex(list)
-}
+//func ExampleFilterWithIndex() {
+//	list := []int64{1, 2, 3, 4}
+//
+//	result := slicex.FilterWithIndex(list)
+//}
 
 //
 //Map

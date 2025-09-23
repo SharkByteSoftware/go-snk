@@ -1,4 +1,4 @@
-package examples
+package conditional_test
 
 import (
 	"fmt"

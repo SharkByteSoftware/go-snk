@@ -6,16 +6,22 @@ func NewPriorityQueue[T any](comparator func(prev T, curr T) int) *PriorityQueue
 	return &PriorityQueue[T]{}
 }
 
-func (q *PriorityQueue[T]) Enqueue(value T) {}
+func (q *PriorityQueue[T]) Enqueue(value T) {
+	// TODO: implement
+	panic("implement me")
+}
 
 func (q *PriorityQueue[T]) Dequeue() (T, bool) {
-	return *new(T), false
+	// TODO: implement
+	panic("implement me")
 }
 
 func (q *PriorityQueue[T]) Peek() (T, bool) {
-	return *new(T), false
+	// TODO: implement
+	panic("implement me")
 }
 
 func (q *PriorityQueue[T]) Values() []T {
-	return []T{}
+	// TODO: implement
+	panic("implement me")
 }

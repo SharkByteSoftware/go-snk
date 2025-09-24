@@ -192,6 +192,7 @@ go get github.com/SharkByteSoftware/go-snk@latest
 ## Roadmap
 
 - [ ] Queues
+- [ ] Pipeline
 - [ ] Graphs
 
 ## License

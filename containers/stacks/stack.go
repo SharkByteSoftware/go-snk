@@ -11,9 +11,9 @@ type Stack[T comparable] struct {
 }
 
 // New creates a new stack of a given type.
-func New[T comparable]() *Stack[T] {
+func New[T comparable](values ...T) *Stack[T] {
 	return &Stack[T]{
-		members: lists.New[T](),
+		members: lists.New[T](values...),
 	}
 }
 

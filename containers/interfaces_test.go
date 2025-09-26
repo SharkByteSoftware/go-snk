@@ -17,10 +17,7 @@ func TestContainers_Interface(t *testing.T) {
 	set := sets.New(1, 2, 3)
 	runAssertions[int](t, set)
 
-	stack := stacks.New[int]()
-	stack.Push(1)
-	stack.Push(2)
-	stack.Push(3)
+	stack := stacks.New[int](1, 2, 3)
 	runAssertions[int](t, stack)
 }
 

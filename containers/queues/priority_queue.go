@@ -21,7 +21,22 @@ func (q *PriorityQueue[T]) Peek() (T, bool) {
 	panic("implement me")
 }
 
+func (q *PriorityQueue[T]) IsEmpty() bool {
+	// TODO implement me
+	panic("implement me")
+}
+
+func (q *PriorityQueue[T]) Size() int {
+	// TODO implement me
+	panic("implement me")
+}
+
+func (q *PriorityQueue[T]) Clear() {
+	// TODO implement me
+	panic("implement me")
+}
+
 func (q *PriorityQueue[T]) Values() []T {
-	// TODO: implement
+	// TODO implement me
 	panic("implement me")
 }

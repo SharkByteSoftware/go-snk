@@ -100,11 +100,6 @@ func (l *List[T]) Back() *Element[T] {
 	return conditional.If(l.IsEmpty(), nil, l.root.prev)
 }
 
-// IsEmpty checks to see if the lists is empty.
-func (l *List[T]) IsEmpty() bool {
-	return l.Len() == 0
-}
-
 // Remove deletes the element from the list and returns the value.  If element is not
 // a member of the list it does nothing.  Element must not be nil.
 func (l *List[T]) Remove(element *Element[T]) T {
@@ -207,6 +202,19 @@ func (l *List[T]) PushFrontList(other *List[T]) {
 
 func (l *List[T]) PushBackList(other *List[T]) {
 	l.Append(other.Values()...)
+}
+
+// IsEmpty checks to see if the lists is empty.
+func (l *List[T]) IsEmpty() bool {
+	return l.Len() == 0
+}
+
+func (l *List[T]) Size() int {
+	return l.len
+}
+
+func (l *List[T]) Clear() {
+	l.Init()
 }
 
 func (l *List[T]) Values() []T {

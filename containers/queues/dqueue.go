@@ -21,7 +21,22 @@ func (q *DQueue[T]) Peek() (T, bool) {
 	panic("implement me")
 }
 
+func (q *DQueue[T]) IsEmpty() bool {
+	// TODO implement me
+	panic("implement me")
+}
+
+func (q *DQueue[T]) Size() int {
+	// TODO implement me
+	panic("implement me")
+}
+
+func (q *DQueue[T]) Clear() {
+	// TODO implement me
+	panic("implement me")
+}
+
 func (q *DQueue[T]) Values() []T {
-	// TODO: implement
+	// TODO implement me
 	panic("implement me")
 }

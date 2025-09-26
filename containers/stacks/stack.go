@@ -42,9 +42,17 @@ func (s *Stack[T]) Peek() (T, bool) {
 	return s.members.Front().Value, true
 }
 
+func (s *Stack[T]) IsEmpty() bool {
+	return s.members.IsEmpty()
+}
+
 // Size returns the number of elements on the stack.
 func (s *Stack[T]) Size() int {
 	return s.members.Len()
+}
+
+func (s *Stack[T]) Clear() {
+	s.members = lists.New[T]()
 }
 
 // Values returns a slice with all the elements fromt he stack.

@@ -11,11 +11,11 @@ type Set[T comparable] struct {
 }
 
 // New creates a new set with the given items.
-func New[T comparable](items ...T) Set[T] {
+func New[T comparable](items ...T) *Set[T] {
 	set := Set[T]{items: make(map[T]struct{})}
 	set.Add(items...)
 
-	return set
+	return &set
 }
 
 // Add adds the given items to the set.
@@ -31,7 +31,7 @@ func (s *Set[T]) IsEmpty() bool {
 }
 
 // Equals returns true of the two sets contain the same items.
-func (s *Set[T]) Equals(other Set[T]) bool {
+func (s *Set[T]) Equals(other *Set[T]) bool {
 	if len(s.items) != len(other.items) {
 		return false
 	}
@@ -80,11 +80,11 @@ func (s *Set[T]) Values() []T {
 }
 
 // Intersect returns the intersection of the set with the given set.
-func (s *Set[T]) Intersect(other Set[T]) Set[T] {
+func (s *Set[T]) Intersect(other *Set[T]) *Set[T] {
 	size1 := s.Size()
 	size2 := other.Size()
-	smallSet := conditional.If(size1 < size2, *s, other)
-	largerSet := conditional.If(size1 < size2, other, *s)
+	smallSet := conditional.If(size1 < size2, s, other)
+	largerSet := conditional.If(size1 < size2, other, s)
 
 	result := New[T]()
 
@@ -98,11 +98,11 @@ func (s *Set[T]) Intersect(other Set[T]) Set[T] {
 }
 
 // Union returns the union of the set with the given set.
-func (s *Set[T]) Union(other Set[T]) Set[T] {
+func (s *Set[T]) Union(other *Set[T]) *Set[T] {
 	size1 := s.Size()
 	size2 := other.Size()
-	smallSet := conditional.If(size1 < size2, *s, other)
-	largerSet := conditional.If(size1 < size2, other, *s)
+	smallSet := conditional.If(size1 < size2, s, other)
+	largerSet := conditional.If(size1 < size2, other, s)
 
 	result := largerSet.Clone()
 	for item := range smallSet.items {
@@ -113,7 +113,7 @@ func (s *Set[T]) Union(other Set[T]) Set[T] {
 }
 
 // Difference returns the difference of the set with the given set.
-func (s *Set[T]) Difference(other Set[T]) Set[T] {
+func (s *Set[T]) Difference(other *Set[T]) *Set[T] {
 	result := New[T]()
 
 	for item := range s.items {
@@ -126,7 +126,7 @@ func (s *Set[T]) Difference(other Set[T]) Set[T] {
 }
 
 // SymmetricDifference returns a set with elements from either set but not both.
-func (s *Set[T]) SymmetricDifference(other Set[T]) Set[T] {
+func (s *Set[T]) SymmetricDifference(other *Set[T]) *Set[T] {
 	result := New[T]()
 
 	s.Apply(func(item T) {
@@ -145,7 +145,7 @@ func (s *Set[T]) SymmetricDifference(other Set[T]) Set[T] {
 }
 
 // Subset returns true of the set is a subset of a given set.
-func (s *Set[T]) Subset(other Set[T]) bool {
+func (s *Set[T]) Subset(other *Set[T]) bool {
 	for item := range s.items {
 		if !other.Contains(item) {
 			return false
@@ -163,6 +163,6 @@ func (s *Set[T]) Apply(apply func(item T)) {
 }
 
 // Clone creates a clone of the set.
-func (s *Set[T]) Clone() Set[T] {
+func (s *Set[T]) Clone() *Set[T] {
 	return New[T](s.Values()...)
 }

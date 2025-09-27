@@ -42,6 +42,15 @@ dist:
 	$(printTarget)
 	@mkdir -p $(@)
 
+godoc:
+	$(printTarget)
+	@go install golang.org/x/tools/cmd/godoc@latest
+	godoc -v -http=:6060
+
+browse:
+	open http://localhost:6060/pkg/github.com/SharkByteSoftware/go-snk
+
+
 #Helper function to pretty print targets as they execute
 TARGET_COLOR := \033[0;32m
 NO_COLOR := \033[m

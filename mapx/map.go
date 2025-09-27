@@ -1,4 +1,4 @@
-// Package mapx provides functions for working with mapx.
+// Package mapx provides helper functions for working with maps.
 package mapx
 
 import (

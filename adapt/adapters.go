@@ -1,3 +1,4 @@
+// Package adapt contains useful adapters to make using some of the functions easier to use.
 package adapt
 
 // ItemIndexAdapter is a function adapter that ignores the index.
@@ -25,8 +26,4 @@ func KeySelectorAdapter[K comparable, V any](key K, _ V) K {
 // ValueSelectorAdapter is a function adapter that ignores the key and returns the value.
 func ValueSelectorAdapter[K comparable, V any](_ K, value V) V {
 	return value
-}
-
-func ValueReturnFuncAdapter[V any](value V) func() V {
-	return func() V { return value }
 }

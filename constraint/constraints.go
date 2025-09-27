@@ -1,4 +1,4 @@
-// Package constraint provides type constraint.
+// Package constraint provides useful type constraints.
 package constraint
 
 type Signed interface {

@@ -1,54 +1,11 @@
+// Package lists provides various inked lists implementations
 package lists
 
 import (
 	"github.com/SharkByteSoftware/go-snk/conditional"
 )
 
-// Element an element of a linked lists.
-type Element[T any] struct {
-	next, prev *Element[T]
-	parent     *List[T]
-	Value      T
-}
-
-func NewElement[T any](value T, parent *List[T]) *Element[T] {
-	return &Element[T]{
-		next:   nil,
-		prev:   nil,
-		parent: parent,
-		Value:  value,
-	}
-}
-
-func (e *Element[T]) Next() *Element[T] {
-	if !e.isMemberOfList() || e.isBack() {
-		return nil
-	}
-
-	return e.next
-}
-
-func (e *Element[T]) Prev() *Element[T] {
-	if !e.isMemberOfList() || e.isFront() {
-		return nil
-	}
-
-	return e.prev
-}
-
-func (e *Element[T]) isMemberOfList() bool {
-	return e.parent != nil
-}
-
-func (e *Element[T]) isFront() bool {
-	return e.prev == &e.parent.root
-}
-
-func (e *Element[T]) isBack() bool {
-	return e.next == &e.parent.root
-}
-
-// List represents a doubly linked lists.  Api compatible with the Go
+// List represents a doubly linked lists.  Api ~compatible with the Go
 // containers List implementation.
 type List[T any] struct {
 	root Element[T]

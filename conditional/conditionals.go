@@ -1,3 +1,5 @@
+// Package conditional contains helper utilities such as a ternary operators and other
+// functions for conditional types of operations.
 package conditional
 
 // If is a ternary function for returning a value if a condition is true

@@ -1,3 +1,4 @@
+// Package queues provides queue implementations.
 package queues
 
 type DQueue[T any] struct{}

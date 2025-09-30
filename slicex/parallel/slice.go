@@ -1,11 +1,29 @@
 package parallel
 
+import (
+	"sync"
+)
+
 // Map transforms a slice to a slice of another type using a mapper function.
 // The mapper function is called in parallel, and results are returned in order
 // they appear in the slice.
 func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
-	// TODO: implement
-	panic("implement me")
+	result := make([]R, len(slice))
+
+	var waitGroup sync.WaitGroup
+	waitGroup.Add(len(slice))
+
+	for idx, item := range slice {
+		go func() {
+			result[idx] = mapper(item)
+
+			waitGroup.Done()
+		}()
+	}
+
+	waitGroup.Wait()
+
+	return result
 }
 
 // Apply applies a function to each item in the slice.  The apply function is called

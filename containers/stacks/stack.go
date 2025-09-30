@@ -51,6 +51,7 @@ func (s *Stack[T]) Size() int {
 	return s.members.Len()
 }
 
+// Clear removes all elements from the stack.
 func (s *Stack[T]) Clear() {
 	s.members = lists.New[T]()
 }

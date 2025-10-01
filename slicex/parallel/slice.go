@@ -16,13 +16,13 @@ func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(len(slice))
 
-	for idx, item := range slice {
+	slicex.ApplyWithIndex(slice, func(item T, idx int) {
 		go func() {
 			result[idx] = mapper(item)
 
 			waitGroup.Done()
 		}()
-	}
+	})
 
 	waitGroup.Wait()
 
@@ -56,9 +56,9 @@ func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map
 		return predicate(item)
 	})
 
-	for idx, item := range slice {
+	slicex.ApplyWithIndex(slice, func(item T, idx int) {
 		result[keys[idx]] = append(result[keys[idx]], item)
-	}
+	})
 
 	return result
 }
@@ -73,9 +73,9 @@ func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
 		return conditional.If(predicate(item), &result1, &result2)
 	})
 
-	for idx, item := range slice {
+	slicex.ApplyWithIndex(slice, func(item T, idx int) {
 		*result[idx] = append(*result[idx], item)
-	}
+	})
 
 	return result1, result2
 }

@@ -34,6 +34,21 @@ func TestDQueue_Enqueue(t *testing.T) {
 	assert.Equal(t, 1, v)
 }
 
+func TestDQueue_EnqueueFront(t *testing.T) {
+	q := queues.NewQueue[int]()
+
+	q.EnqueueFront(1)
+	q.EnqueueFront(2)
+	q.EnqueueFront(3)
+
+	assert.Equal(t, 3, q.Size())
+	assert.False(t, q.IsEmpty())
+
+	v, ok := q.Dequeue()
+	assert.True(t, ok)
+	assert.Equal(t, 3, v)
+}
+
 func TestDQueue_Dequeue(t *testing.T) {
 	q := queues.NewQueue(1, 2, 4)
 
@@ -57,6 +72,29 @@ func TestDQueue_Dequeue(t *testing.T) {
 	assert.Equal(t, 0, q.Size())
 }
 
+func TestDQueue_DequeueBack(t *testing.T) {
+	q := queues.NewQueue(1, 2, 4)
+
+	v, ok := q.DequeueBack()
+	assert.True(t, ok)
+	assert.Equal(t, 2, q.Size())
+	assert.Equal(t, 4, v)
+
+	v, ok = q.DequeueBack()
+	assert.True(t, ok)
+	assert.Equal(t, 1, q.Size())
+	assert.Equal(t, 2, v)
+
+	v, ok = q.DequeueBack()
+	assert.True(t, ok)
+	assert.Equal(t, 0, q.Size())
+	assert.Equal(t, 1, v)
+
+	v, ok = q.DequeueBack()
+	assert.False(t, ok)
+	assert.Equal(t, 0, q.Size())
+}
+
 func TestDQueue_Peek(t *testing.T) {
 	q := queues.NewQueue[int]()
 
@@ -75,6 +113,26 @@ func TestDQueue_Peek(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, 2, q.Size())
 	assert.Equal(t, 1, v)
+}
+
+func TestDQueue_PeekBack(t *testing.T) {
+	q := queues.NewQueue[int]()
+
+	v, ok := q.PeekBack()
+	assert.False(t, ok)
+	assert.Equal(t, v, 0)
+
+	q.Enqueue(1)
+	v, ok = q.PeekBack()
+	assert.True(t, ok)
+	assert.Equal(t, 1, q.Size())
+	assert.Equal(t, 1, v)
+
+	q.Enqueue(2)
+	v, ok = q.PeekBack()
+	assert.True(t, ok)
+	assert.Equal(t, 2, q.Size())
+	assert.Equal(t, 2, v)
 }
 
 func TestDQueue_Clear(t *testing.T) {

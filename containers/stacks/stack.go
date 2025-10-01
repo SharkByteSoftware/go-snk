@@ -48,7 +48,7 @@ func (s *Stack[T]) IsEmpty() bool {
 
 // Size returns the number of elements on the stack.
 func (s *Stack[T]) Size() int {
-	return s.members.Len()
+	return s.members.Size()
 }
 
 // Clear removes all elements from the stack.

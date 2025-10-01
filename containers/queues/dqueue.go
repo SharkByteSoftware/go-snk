@@ -72,7 +72,7 @@ func (q *DQueue[T]) IsEmpty() bool {
 
 // Size returns the number of elements in the queue.
 func (q *DQueue[T]) Size() int {
-	return q.members.Len()
+	return q.members.Size()
 }
 
 // Clear removes all elements from the queue.

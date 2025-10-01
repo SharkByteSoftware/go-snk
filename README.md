@@ -198,6 +198,22 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | Size   | Returns the number of elements in the stack                                     |
 | Values | Returns a slice of all elements in the stack                                    |
 
+### Queues
+
+| DQueue       | Description                                                                     |
+|--------------|---------------------------------------------------------------------------------|
+| NewQueue     | Creates a new double-ended queue with optional initial values                   |
+| Enqueue      | Adds a value to the back of the queue                                           |
+| EnqueueFront | Adds a value to the front of the queue                                          |
+| Dequeue      | Removes and returns the front value; returns default and false if empty         |
+| DequeueBack  | Removes and returns the back value; returns default and false if empty          |
+| Peek         | Returns the front value without removing it; returns default and false if empty |
+| PeekBack     | Returns the back value without removing it; returns default and false if empty  |
+| IsEmpty      | Checks if the queue is empty                                                    |
+| Size         | Returns the number of elements in the queue                                     |
+| Clear        | Removes all elements from the queue                                             |
+| Values       | Returns a slice of all values in the queue                                      |
+
 ## Roadmap
 
 - [ ] Queues

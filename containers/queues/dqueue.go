@@ -3,6 +3,7 @@ package queues
 
 import "github.com/SharkByteSoftware/go-snk/containers/lists"
 
+// DQueue provides an implementation of a double-ended queue based on a linked list.
 type DQueue[T any] struct {
 	members *lists.List[T]
 }
@@ -17,6 +18,10 @@ func (q *DQueue[T]) Enqueue(value T) {
 	q.members.PushBack(value)
 }
 
+func (q *DQueue[T]) EnqueueFront(value T) {
+	q.members.PushFront(value)
+}
+
 func (q *DQueue[T]) Dequeue() (T, bool) {
 	if q.members.IsEmpty() {
 		return *new(T), false
@@ -25,12 +30,28 @@ func (q *DQueue[T]) Dequeue() (T, bool) {
 	return q.members.Remove(q.members.Front()), true
 }
 
+func (q *DQueue[T]) DequeueBack() (T, bool) {
+	if q.members.IsEmpty() {
+		return *new(T), false
+	}
+
+	return q.members.Remove(q.members.Back()), true
+}
+
 func (q *DQueue[T]) Peek() (T, bool) {
 	if q.members.IsEmpty() {
 		return *new(T), false
 	}
 
 	return q.members.Front().Value, true
+}
+
+func (q *DQueue[T]) PeekBack() (T, bool) {
+	if q.members.IsEmpty() {
+		return *new(T), false
+	}
+
+	return q.members.Back().Value, true
 }
 
 func (q *DQueue[T]) IsEmpty() bool {

@@ -65,16 +65,16 @@ func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map
 // Partition splits a slice into two slices based on a predicate.  The predicate is called
 // in parallel, and the results are returned in the order they appear in the slice.
 func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
-	result1 := make(S, 0)
-	result2 := make(S, 0)
+	part1 := make(S, 0)
+	part2 := make(S, 0)
 
-	result := Map(slice, func(item T) *S {
-		return conditional.If(predicate(item), &result1, &result2)
+	part := Map(slice, func(item T) *S {
+		return conditional.If(predicate(item), &part1, &part2)
 	})
 
 	slicex.ApplyWithIndex(slice, func(item T, idx int) {
-		*result[idx] = append(*result[idx], item)
+		*part[idx] = append(*part[idx], item)
 	})
 
-	return result1, result2
+	return part1, part2
 }

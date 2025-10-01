@@ -89,6 +89,15 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | Min          | Finds the minimum value in a slice of comparable values               |
 | MinBy        | Finds the minimum value in a slice using a custom comparison function |
 
+### slicex/parallel
+
+| Function  | Description                                                                                         |
+|-----------|-----------------------------------------------------------------------------------------------------|
+| Map       | Transforms a slice to a slice of another type using a mapper function in parallel, preserving order |
+| Apply     | Applies a function to each item in a slice in parallel                                              |
+| GroupBy   | Groups a slice into a map of slices based on a predicate function in parallel                       |
+| Partition | Splits a slice into two slices based on a predicate function in parallel, preserving order          |
+
 ### mapx - Helpers for maps
 
 | Helpers           | Description                                                         |

@@ -38,7 +38,6 @@ func Apply[S ~[]T, T any](slice S, apply func(item T)) {
 	slicex.Apply(slice, func(item T) {
 		go func() {
 			apply(item)
-
 			waitGroup.Done()
 		}()
 	})

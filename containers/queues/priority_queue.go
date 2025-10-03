@@ -1,6 +1,9 @@
 package queues
 
-import "github.com/SharkByteSoftware/go-snk/slicex"
+import (
+	"container/heap"
+	"github.com/SharkByteSoftware/go-snk/slicex"
+)
 
 type Item[T any] struct {
 	value    T
@@ -25,6 +28,25 @@ func (pq *PriorityQueue[T]) Swap(i, j int) {
 	pq.items[i], pq.items[j] = pq.items[j], pq.items[i]
 	pq.items[i].index = i
 	pq.items[j].index = j
+}
+
+// update modifies the priority and value of an Item in the queue.
+func (pq *PriorityQueue[T]) update(item *Item[T], value T, priority int) {
+	item.value = value
+	item.priority = priority
+	heap.Fix(pq, item.index)
+}
+
+func (pq *PriorityQueue[T]) Push(x any) {
+	pq.Enqueue(x.(T))
+}
+
+func (pq *PriorityQueue[T]) Pop() any {
+	x, ok := pq.Dequeue()
+	if !ok {
+		return nil
+	}
+	return x
 }
 
 func NewPriorityQueue[T any](comparator func(prev T, curr T) int) PriorityQueue[T] {

@@ -18,17 +18,13 @@ func ExampleNew() {
 }
 
 func ExampleSet_Add() {
+	set := sets.New[int]()
 
+	set.Add(1, 2, 3)
+
+	values := set.Values()
+	slices.Sort(values)
+
+	fmt.Println(values)
+	// Output: [1 2 3]
 }
-
-//func ExampleAdd() {
-//	s := sets.New[int]()
-//
-//	s.Add(1, 2, 2, 3, 3)
-//
-//	values := s.Values()
-//	slices.Sort(values)
-//
-//	fmt.Println(values)
-//	// Output [1 2 3]
-//}

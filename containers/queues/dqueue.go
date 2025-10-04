@@ -3,7 +3,7 @@ package queues
 
 import "github.com/SharkByteSoftware/go-snk/containers/lists"
 
-// DQueue provides an implementation of a double-ended queue based on a linked list.
+// DQueue implements a double-ended queue based on a linked list.
 type DQueue[T any] struct {
 	members *lists.List[T]
 }

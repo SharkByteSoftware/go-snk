@@ -1,5 +1,7 @@
+// Package containers provides a variety of container types.
 package containers
 
+// Container is the base interface for all data structures to implement.
 type Container[T any] interface {
 	IsEmpty() bool
 	Size() int
@@ -7,6 +9,7 @@ type Container[T any] interface {
 	Values() []T
 }
 
+// Queue is a base interface for all queue implementations to implement.
 type Queue[T any] interface {
 	Container[T]
 
@@ -15,6 +18,7 @@ type Queue[T any] interface {
 	Peek() (T, bool)
 }
 
+// Stack is a base interface for all stack implementations to implement.
 type Stack[T any] interface {
 	Container[T]
 

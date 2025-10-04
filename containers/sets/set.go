@@ -1,11 +1,11 @@
-// Package graphs provides a set data structure.
+// Package sets provides a set data structure.
 package sets
 
 import (
 	"github.com/SharkByteSoftware/go-snk/conditional"
 )
 
-// Set is a set data structure.
+// Set implements a set data structure.
 type Set[T comparable] struct {
 	items map[T]struct{}
 }
@@ -25,26 +25,6 @@ func (s *Set[T]) Add(item ...T) {
 	}
 }
 
-// IsEmpty returns true of the set contains zero items.
-func (s *Set[T]) IsEmpty() bool {
-	return len(s.items) == 0
-}
-
-// Equals returns true of the two sets contain the same items.
-func (s *Set[T]) Equals(other *Set[T]) bool {
-	if len(s.items) != len(other.items) {
-		return false
-	}
-
-	for item := range s.items {
-		if !other.Contains(item) {
-			return false
-		}
-	}
-
-	return true
-}
-
 // Contains returns true if the set contains the given item.
 func (s *Set[T]) Contains(item T) bool {
 	_, ok := s.items[item]
@@ -54,29 +34,6 @@ func (s *Set[T]) Contains(item T) bool {
 // Remove removes the given item from the set.
 func (s *Set[T]) Remove(item T) {
 	delete(s.items, item)
-}
-
-// Size returns the len of the set.
-func (s *Set[T]) Size() int {
-	return len(s.items)
-}
-
-// Clear clears the set.
-func (s *Set[T]) Clear() {
-	s.items = make(map[T]struct{})
-}
-
-// Values returns a slice of the set values.
-func (s *Set[T]) Values() []T {
-	items := make([]T, len(s.items))
-
-	idx := 0
-	for item := range s.items {
-		items[idx] = item
-		idx++
-	}
-
-	return items
 }
 
 // Intersect returns the intersection of the set with the given set.
@@ -162,7 +119,50 @@ func (s *Set[T]) Apply(apply func(item T)) {
 	}
 }
 
+// Equals returns true of the two sets contain the same items.
+func (s *Set[T]) Equals(other *Set[T]) bool {
+	if len(s.items) != len(other.items) {
+		return false
+	}
+
+	for item := range s.items {
+		if !other.Contains(item) {
+			return false
+		}
+	}
+
+	return true
+}
+
 // Clone creates a clone of the set.
 func (s *Set[T]) Clone() *Set[T] {
 	return New[T](s.Values()...)
+}
+
+// IsEmpty returns true of the set contains zero items.
+func (s *Set[T]) IsEmpty() bool {
+	return len(s.items) == 0
+}
+
+// Size returns the len of the set.
+func (s *Set[T]) Size() int {
+	return len(s.items)
+}
+
+// Clear clears the set.
+func (s *Set[T]) Clear() {
+	s.items = make(map[T]struct{})
+}
+
+// Values returns a slice of the set values.
+func (s *Set[T]) Values() []T {
+	items := make([]T, len(s.items))
+
+	idx := 0
+	for item := range s.items {
+		items[idx] = item
+		idx++
+	}
+
+	return items
 }

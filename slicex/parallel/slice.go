@@ -1,3 +1,4 @@
+// Package parallel provides versions of slicex functions that execute in parallel.
 package parallel
 
 import (

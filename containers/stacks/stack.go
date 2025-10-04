@@ -42,6 +42,7 @@ func (s *Stack[T]) Peek() (T, bool) {
 	return s.members.Front().Value, true
 }
 
+// IsEmpty returns true if the stack is empty.
 func (s *Stack[T]) IsEmpty() bool {
 	return s.members.IsEmpty()
 }

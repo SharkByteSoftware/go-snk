@@ -64,7 +64,7 @@ linters:
     - makezero
     - mirror
     - misspell
-#    - mnd
+    - mnd
     - musttag
     - nakedret
     - nestif
@@ -85,7 +85,7 @@ linters:
     - protogetter
     - reassign
     - recvcheck
-#    - revive
+    - revive
     - rowserrcheck
     - sloglint
     - spancheck

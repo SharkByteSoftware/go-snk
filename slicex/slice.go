@@ -93,6 +93,8 @@ func FindOr[S ~[]T, T comparable](slice S, candidate T, fallback T) T {
 	return FindOrBy(slice, adapt.ItemEqualsAdapter(candidate), fallback)
 }
 
+// FindOrBy returns the first item in the slice that satisfies the predicate,
+// or the fallback value if not found.
 func FindOrBy[S ~[]T, T comparable](slice S, predicate func(item T) bool, fallback T) T {
 	item, found := FindBy(slice, predicate)
 	return conditional.If(found, item, fallback)
@@ -135,6 +137,7 @@ func Apply[S ~[]T, T any](slice S, apply func(item T)) {
 	ApplyWithIndex(slice, func(item T, _ int) { apply(item) })
 }
 
+// ApplyWithIndex applies a function to each item in the slice and provides the index of the item.
 func ApplyWithIndex[S ~[]T, T any](slice S, apply func(item T, index int)) {
 	for idx, value := range slice {
 		apply(value, idx)

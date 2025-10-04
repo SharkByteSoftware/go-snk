@@ -31,6 +31,7 @@ func New[T any](values ...T) *List[T] {
 	return result
 }
 
+// Init initializes a list.
 func (l *List[T]) Init() *List[T] {
 	l.root.next = &l.root
 	l.root.prev = &l.root
@@ -153,10 +154,12 @@ func (l *List[T]) MoveAfter(element *Element[T], mark *Element[T]) {
 	l.move(element, mark)
 }
 
+// PushFrontList pushes all the elements of the provided list to the front of the list.
 func (l *List[T]) PushFrontList(other *List[T]) {
 	l.Prepend(other.Values()...)
 }
 
+// PushBackList pushes all the elements of the other list to the back of the list.
 func (l *List[T]) PushBackList(other *List[T]) {
 	l.Append(other.Values()...)
 }
@@ -166,14 +169,17 @@ func (l *List[T]) IsEmpty() bool {
 	return l.Len() == 0
 }
 
+// Size returns the size of the list.
 func (l *List[T]) Size() int {
 	return l.len
 }
 
+// Clear empties the list.
 func (l *List[T]) Clear() {
 	l.Init()
 }
 
+// Values returns a slice of all the values in the list.
 func (l *List[T]) Values() []T {
 	values := make([]T, 0, l.len)
 

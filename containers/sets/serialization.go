@@ -6,8 +6,8 @@ import (
 )
 
 // ToJSON outputs the JSON representation of the set.
-func (set *Set[T]) ToJSON() ([]byte, error) {
-	result, err := json.Marshal(set.Values())
+func (s *Set[T]) ToJSON() ([]byte, error) {
+	result, err := json.Marshal(s.Values())
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal set: %w", err)
 	}
@@ -16,7 +16,7 @@ func (set *Set[T]) ToJSON() ([]byte, error) {
 }
 
 // FromJSON populates the set from the input JSON representation.
-func (set *Set[T]) FromJSON(data []byte) error {
+func (s *Set[T]) FromJSON(data []byte) error {
 	var items []T
 
 	err := json.Unmarshal(data, &items)
@@ -24,16 +24,18 @@ func (set *Set[T]) FromJSON(data []byte) error {
 		return fmt.Errorf("failed to unmarshal set: %w", err)
 	}
 
-	set.Clear()
-	set.Add(items...)
+	s.Clear()
+	s.Add(items...)
 
 	return nil
 }
 
+// UnmarshalJSON @implements json.Unmarshaler.
 func (s *Set[T]) UnmarshalJSON(bytes []byte) error {
 	return s.FromJSON(bytes)
 }
 
-func (s Set[T]) MarshalJSON() ([]byte, error) {
+// MarshalJSON @implements json.Marshaler.
+func (s *Set[T]) MarshalJSON() ([]byte, error) {
 	return s.ToJSON()
 }

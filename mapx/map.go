@@ -44,8 +44,8 @@ func Contains[M map[K]V, K comparable, V any](collection M, keys ...K) bool {
 	return true
 }
 
-// Value returns the value for a key or a fallback value.
-func Value[M map[K]V, K comparable, V any](collection M, key K, fallback V) V {
+// ValueOr returns the value for a key or a fallback value.
+func ValueOr[M map[K]V, K comparable, V any](collection M, key K, fallback V) V {
 	value, ok := collection[key]
 	return conditional.If(ok, value, fallback)
 }

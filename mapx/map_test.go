@@ -94,14 +94,14 @@ func TestMap_Contains(t *testing.T) {
 	assert.False(t, mapx.Contains(map[int]int{}, 0))
 }
 
-func TestMap_Value(t *testing.T) {
-	result := mapx.Value(numberMap, 0, "negative")
+func TestMap_ValueOr(t *testing.T) {
+	result := mapx.ValueOr(numberMap, 0, "negative")
 	assert.Equal(t, "zero", result)
 
-	result = mapx.Value(numberMap, 257, "negative")
+	result = mapx.ValueOr(numberMap, 257, "negative")
 	assert.Equal(t, "negative", result)
 
-	result = mapx.Value(map[int]string{}, 12, "negative")
+	result = mapx.ValueOr(map[int]string{}, 12, "negative")
 	assert.Equal(t, "negative", result)
 }
 

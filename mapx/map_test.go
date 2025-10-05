@@ -94,14 +94,14 @@ func TestMap_Contains(t *testing.T) {
 	assert.False(t, mapx.Contains(map[int]int{}, 0))
 }
 
-func TestMap_Value(t *testing.T) {
-	result := mapx.Value(numberMap, 0, "negative")
+func TestMap_ValueOr(t *testing.T) {
+	result := mapx.ValueOr(numberMap, 0, "negative")
 	assert.Equal(t, "zero", result)
 
-	result = mapx.Value(numberMap, 257, "negative")
+	result = mapx.ValueOr(numberMap, 257, "negative")
 	assert.Equal(t, "negative", result)
 
-	result = mapx.Value(map[int]string{}, 12, "negative")
+	result = mapx.ValueOr(map[int]string{}, 12, "negative")
 	assert.Equal(t, "negative", result)
 }
 
@@ -138,45 +138,6 @@ func TestMap_Combine(t *testing.T) {
 		assert.Contains(t, result, k)
 		assert.Equal(t, v, result[k])
 	}
-}
-
-func TestMap_CombineWithSelect(t *testing.T) {
-	selectFive := func(prev string, curr string) bool { return curr == "five" }
-
-	result := mapx.CombineWithSelect(selectFive, numberMap, dupValueMap)
-	assert.Len(t, result, 7)
-
-	selectSame := func(prev string, curr string) bool { return curr == "same" }
-	result = mapx.CombineWithSelect(selectSame, numberMap, numberMapSame)
-	assert.Len(t, result, 6)
-	for _, v := range result {
-		assert.Equal(t, "same", v)
-	}
-
-	selectOther := func(prev string, curr string) bool { return curr == "other" }
-	result = mapx.CombineWithSelect(selectOther, numberMapSame, numberMapOther)
-	assert.Len(t, result, 6)
-	for _, v := range result {
-		assert.Equal(t, "other", v)
-	}
-
-	count := 0
-	countFunc := func(prev string, curr string) bool { count++; return true }
-
-	result = mapx.CombineWithSelect(countFunc, numberMap, numberMap)
-	assert.Equal(t, len(numberMap), count)
-
-	count = 0
-	result = mapx.CombineWithSelect(countFunc, numberMap, dupValueMap)
-	assert.Equal(t, len(numberMap), count)
-
-	count = 0
-	result = mapx.CombineWithSelect(countFunc, numberMap, map[int]string{0: "zero", 1: "one"})
-	assert.Equal(t, 1, count)
-
-	count = 0
-	result = mapx.CombineWithSelect(countFunc, numberMap, map[int]string{234: "zero", 555: "one"})
-	assert.Equal(t, 0, count)
 }
 
 func TestMap_ToSlice(t *testing.T) {

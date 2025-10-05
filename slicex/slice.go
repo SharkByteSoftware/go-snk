@@ -145,7 +145,7 @@ func ApplyWithIndex[S ~[]T, T any](slice S, apply func(item T, index int)) {
 	}
 }
 
-// Reverse returns the reverses of slice.
+// Reverse returns a slice with the revers of the slice.
 func Reverse[S ~[]T, T any](slice S) S {
 	result := slices.Clone(slice)
 	slices.Reverse(result)

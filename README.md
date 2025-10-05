@@ -109,7 +109,6 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | ValueOr           | Returns the value for a key or a fallback value if not found        |
 | Invert            | Inverts the map, swapping keys and values                           |
 | Combine           | Combines multiple maps into a single map                            |
-| CombineWithSelect | Combines multiple maps and uses a select function on key collisions |
 | ToSlice           | Converts a map to a slice using a mapper function                   |
 | Filter            | Filters a map based on a predicate function                         |
 | Apply             | Applies a function to each key-value pair in the map                |

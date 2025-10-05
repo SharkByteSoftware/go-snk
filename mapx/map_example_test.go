@@ -112,3 +112,72 @@ func ExampleInvert() {
 	fmt.Println(inverted)
 	// Output: map[five:256 four:12 one:8 three:3 two:2 zero:0]
 }
+
+func ExampleCombine() {
+	var numMap1 = map[int]string{0: "zero", 8: "one", 2: "two"}
+	var numMap2 = map[int]string{3: "three", 12: "four", 256: "five"}
+
+	result := mapx.Combine(numMap1, numMap2)
+
+	fmt.Println(result)
+	// Output: map[0:zero 2:two 3:three 8:one 12:four 256:five]
+}
+
+func ExampleToSlice() {
+	var numMap = map[int]string{
+		0:   "zero",
+		8:   "one",
+		2:   "two",
+		3:   "three",
+		12:  "four",
+		256: "five",
+	}
+
+	values := mapx.ToSlice(numMap, func(key int, value string) string {
+		return fmt.Sprintf("%d-%s", key, value)
+	})
+
+	slices.Sort(values)
+
+	fmt.Println(values)
+	// Output: [0-zero 12-four 2-two 256-five 3-three 8-one]
+}
+
+func ExampleFilter() {
+	var numMap = map[int]string{
+		0:   "zero",
+		8:   "one",
+		2:   "two",
+		3:   "three",
+		12:  "four",
+		256: "five",
+	}
+
+	result := mapx.Filter(numMap, func(key int, value string) bool {
+		return key%2 != 0
+	})
+
+	fmt.Println(result)
+	// Output: map[3:three]
+}
+
+func ExampleApply() {
+	var numMap = map[int]string{
+		0:   "zero",
+		8:   "one",
+		2:   "two",
+		3:   "three",
+		12:  "four",
+		256: "five",
+	}
+
+	var result string
+	mapx.Apply(numMap, func(key int, value string) {
+		if key == 256 {
+			result = value
+		}
+	})
+
+	fmt.Println(result)
+	// Output: five
+}

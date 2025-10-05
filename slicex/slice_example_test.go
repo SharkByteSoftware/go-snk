@@ -7,19 +7,19 @@ import (
 )
 
 func ExampleFilter() {
-	numberList := []int{1, 2, 3, 4, 5, 6}
+	numbers := []int{1, 2, 3, 4, 5, 6}
 
-	values := slicex.Filter(numberList, func(item int) bool { return item%2 == 0 })
+	values := slicex.Filter(numbers, func(item int) bool { return item%2 == 0 })
 
 	fmt.Println(values)
 	// Output: [2 4 6]
 }
 
 func ExampleFilterWithIndex() {
-	numberList := []int{1, 2, 3, 4, 5, 6}
+	numbers := []int{1, 2, 3, 4, 5, 6}
 
-	values := slicex.FilterWithIndex(numberList, func(_ int, idx int) bool {
-		return numberList[idx]%3 == 0
+	values := slicex.FilterWithIndex(numbers, func(_ int, idx int) bool {
+		return numbers[idx]%3 == 0
 	})
 
 	fmt.Println(values)
@@ -27,19 +27,19 @@ func ExampleFilterWithIndex() {
 }
 
 func ExampleMap() {
-	numberList := []int{1, 2, 3, 4, 5, 6}
+	numbers := []int{1, 2, 3, 4, 5, 6}
 
-	values := slicex.Map(numberList, func(item int) string { return fmt.Sprintf("'%d'", item) })
+	values := slicex.Map(numbers, func(item int) string { return fmt.Sprintf("'%d'", item) })
 
 	fmt.Println(values)
 	// Output: ['1' '2' '3' '4' '5' '6']
 }
 
 func ExampleMapWithIndex() {
-	numberList := []int{1, 2, 3, 4, 5, 6}
+	numbers := []int{1, 2, 3, 4, 5, 6}
 
-	values := slicex.MapWithIndex(numberList, func(_ int, idx int) string {
-		return fmt.Sprintf("'%d'", numberList[idx])
+	values := slicex.MapWithIndex(numbers, func(_ int, idx int) string {
+		return fmt.Sprintf("'%d'", numbers[idx])
 	})
 
 	fmt.Println(values)
@@ -47,48 +47,48 @@ func ExampleMapWithIndex() {
 }
 
 func ExampleUnique() {
-	numberList := []int{1, 1, 2, 2, 2, 5, 5, 5, 5}
+	numbers := []int{1, 1, 2, 2, 2, 5, 5, 5, 5}
 
-	values := slicex.Unique(numberList)
+	values := slicex.Unique(numbers)
 
 	fmt.Println(values)
 	// Output: [1 2 5]
 }
 
 func ExampleUniqueMap() {
-	numberList := []int{1, 1, 2, 2, 2, 5, 5, 5, 5}
+	numbers := []int{1, 1, 2, 2, 2, 5, 5, 5, 5}
 
-	values := slicex.UniqueMap(numberList, func(item int) string { return fmt.Sprintf("'%d'", item) })
+	values := slicex.UniqueMap(numbers, func(item int) string { return fmt.Sprintf("'%d'", item) })
 
 	fmt.Println(values)
 	// Output: ['1' '2' '5']
 }
 
 func ExampleBind() {
-	nestedNumberList := [][]int{
+	nestedNumbers := [][]int{
 		{1, 2, 3},
 		{4, 5, 6},
 		{7, 8, 9},
 	}
 
-	values := slicex.Bind(nestedNumberList, func(item []int) []int { return item })
+	values := slicex.Bind(nestedNumbers, func(item []int) []int { return item })
 
 	fmt.Println(values)
 	// Output: [1 2 3 4 5 6 7 8 9]
 }
 
 func ExampleReduce() {
-	nestedNumberList := [][]int{
+	nestedNumbers := [][]int{
 		{1, 2, 3},
 		{4, 5, 6},
 		{7, 8, 9},
 	}
 
-	accumulator := func(agg int, items []int) int {
+	acc := func(agg int, items []int) int {
 		return agg * slicex.Sum(items)
 	}
 
-	result := slicex.Reduce(nestedNumberList, accumulator, 1)
+	result := slicex.Reduce(nestedNumbers, acc, 1)
 
 	fmt.Println(result)
 	// Output: 2160
@@ -115,10 +115,10 @@ func ExampleFindBy() {
 }
 
 func ExampleFindOr() {
-	numberList := []int{1, 2, 3, 4, 5, 6}
+	numbers := []int{1, 2, 3, 4, 5, 6}
 
-	value1 := slicex.FindOr(numberList, 22, 256)
-	value2 := slicex.FindOr(numberList, 6, 256)
+	value1 := slicex.FindOr(numbers, 22, 256)
+	value2 := slicex.FindOr(numbers, 6, 256)
 
 	fmt.Println(value1, value2)
 	// Output: 256 6
@@ -137,42 +137,42 @@ func ExampleFindOrBy() {
 }
 
 func ExampleAny() {
-	numberList := []int{2, 2, 2, 4, 5, 6}
+	numbers := []int{2, 2, 2, 4, 5, 6}
 
-	result1 := slicex.Any(numberList, 2)
-	result2 := slicex.Any(numberList, 22)
+	result1 := slicex.Any(numbers, 2)
+	result2 := slicex.Any(numbers, 22)
 
 	fmt.Println(result1, result2)
 	// Output: true false
 }
 
 func ExampleAnyBy() {
-	numberList := []int{2, 2, 2, 4, 12, 6}
+	numbers := []int{2, 2, 2, 4, 12, 6}
 
-	result1 := slicex.AnyBy(numberList, func(item int) bool { return item%2 == 0 })
-	result2 := slicex.AnyBy(numberList, func(item int) bool { return item%2 != 0 })
+	result1 := slicex.AnyBy(numbers, func(item int) bool { return item%2 == 0 })
+	result2 := slicex.AnyBy(numbers, func(item int) bool { return item%2 != 0 })
 
 	fmt.Println(result1, result2)
 	// Output: true false
 }
 
 func ExampleAll() {
-	numberList1 := []int{2, 2, 2}
-	numberList2 := []int{2, 2, 5}
+	numbers1 := []int{2, 2, 2}
+	numbers2 := []int{2, 2, 5}
 
-	result1 := slicex.All(numberList1, 2)
-	result2 := slicex.All(numberList2, 2)
+	result1 := slicex.All(numbers1, 2)
+	result2 := slicex.All(numbers2, 2)
 
 	fmt.Println(result1, result2)
 	// Output: true false
 }
 
 func ExampleApply() {
-	numberList := []int{1, 2, 3, 4, 5, 6}
+	numbers := []int{1, 2, 3, 4, 5, 6}
 
 	var sum int
 
-	slicex.Apply(numberList, func(item int) {
+	slicex.Apply(numbers, func(item int) {
 		sum += item
 	})
 
@@ -181,41 +181,41 @@ func ExampleApply() {
 }
 
 func ExampleApplyWithIndex() {
-	numberList := []int{1, 2, 3, 4, 5, 6}
+	numbers := []int{1, 2, 3, 4, 5, 6}
 
 	var sum int
 
-	slicex.ApplyWithIndex(numberList, func(_ int, index int) {
-		sum += numberList[index]
-		numberList[index] = sum
+	slicex.ApplyWithIndex(numbers, func(_ int, index int) {
+		sum += numbers[index]
+		numbers[index] = sum
 	})
 
-	fmt.Println(sum, numberList)
+	fmt.Println(sum, numbers)
 	// Output: 21 [1 3 6 10 15 21]
 }
 
 func ExampleReverse() {
-	numberList := []int{1, 2, 3, 4, 5, 6}
+	numbers := []int{1, 2, 3, 4, 5, 6}
 
-	values := slicex.Reverse(numberList)
+	values := slicex.Reverse(numbers)
 
 	fmt.Println(values)
 	// Output: [6 5 4 3 2 1]
 }
 
 func ExampleToMap() {
-	numberList := []int{1, 2, 3, 4, 5, 6}
+	numbers := []int{1, 2, 3, 4, 5, 6}
 
-	result := slicex.ToMap(numberList, func(item int) string { return fmt.Sprintf("%d~key", item) })
+	result := slicex.ToMap(numbers, func(item int) string { return fmt.Sprintf("%d~key", item) })
 
 	fmt.Println(result)
 	// Output: map[1~key:1 2~key:2 3~key:3 4~key:4 5~key:5 6~key:6]
 }
 
 func ExampleGroupBy() {
-	numberList := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
+	numbers := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
 
-	result := slicex.GroupBy(numberList, func(item int) int {
+	result := slicex.GroupBy(numbers, func(item int) int {
 		return item % 4
 	})
 
@@ -224,55 +224,55 @@ func ExampleGroupBy() {
 }
 
 func ExamplePartition() {
-	numberList := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
+	numbers := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
 
-	even, odd := slicex.Partition(numberList, func(item int) bool { return item%2 == 0 })
+	even, odd := slicex.Partition(numbers, func(item int) bool { return item%2 == 0 })
 
 	fmt.Println(even, odd)
 	// Output: [2 4 6 8 10] [1 3 5 9]
 }
 
 func ExampleSum() {
-	numberList := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
+	numbers := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
 
-	sum := slicex.Sum(numberList)
+	sum := slicex.Sum(numbers)
 
 	fmt.Println(sum)
 	// Output: 48
 }
 
 func ExampleProduct() {
-	numberList := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
+	numbers := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
 
-	product := slicex.Product(numberList)
+	product := slicex.Product(numbers)
 
 	fmt.Println(product)
 	// Output: 518400
 }
 
 func ExampleMean() {
-	numberList := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
+	numbers := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
 
-	mean := slicex.Mean(numberList)
+	mean := slicex.Mean(numbers)
 
 	fmt.Println(mean)
 	// Output: 5
 }
 
 func ExampleMax() {
-	numberList := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
+	numbers := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
 
-	max := slicex.Max(numberList)
+	maximum := slicex.Max(numbers)
 
-	fmt.Println(max)
+	fmt.Println(maximum)
 	// Output: 30
 }
 
 func ExampleMin() {
-	numberList := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
+	numbers := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
 
-	min := slicex.Min(numberList)
+	minimum := slicex.Min(numbers)
 
-	fmt.Println(min)
+	fmt.Println(minimum)
 	// Output: -1
 }

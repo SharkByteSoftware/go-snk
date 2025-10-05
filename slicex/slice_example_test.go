@@ -52,7 +52,7 @@ func ExampleUnique() {
 	values := slicex.Unique(numberList)
 
 	fmt.Println(values)
-	// Output [1 2 5]
+	// Output: [1 2 5]
 }
 
 func ExampleUniqueMap() {
@@ -61,7 +61,7 @@ func ExampleUniqueMap() {
 	values := slicex.UniqueMap(numberList, func(item int) string { return fmt.Sprintf("'%d'", item) })
 
 	fmt.Println(values)
-	// Output ['1' '2' '5']
+	// Output: ['1' '2' '5']
 }
 
 func ExampleBind() {
@@ -74,7 +74,7 @@ func ExampleBind() {
 	values := slicex.Bind(nestedNumberList, func(item []int) []int { return item })
 
 	fmt.Println(values)
-	// Output [1 2 3 4 5 6 7 8 9]
+	// Output: [1 2 3 4 5 6 7 8 9]
 }
 
 func ExampleReduce() {

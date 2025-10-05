@@ -57,12 +57,12 @@ func TestSlice_Bind(t *testing.T) {
 	assert.Equal(t, append(numberList, numberList...), result)
 }
 
-func TestSlice_Fold(t *testing.T) {
+func TestSlice_Reduce(t *testing.T) {
 	accumulator := func(agg int, item []int) int {
 		return agg + item[0]
 	}
 
-	result := slicex.Fold(nestedNumberList, accumulator, 0)
+	result := slicex.Reduce(nestedNumberList, accumulator, 0)
 	assert.Equal(t, 2, result)
 }
 

@@ -61,12 +61,12 @@ func BenchmarkBind(b *testing.B) {
 	}
 }
 
-func BenchmarkFold(b *testing.B) {
+func BenchmarkReduce(b *testing.B) {
 	for _, size := range startingSize {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateNestedIntSlices(size, size)
 			for b.Loop() {
-				_ = slicex.Fold(ints, accumulator, 0)
+				_ = slicex.Reduce(ints, accumulator, 0)
 			}
 		})
 	}

@@ -231,3 +231,48 @@ func ExamplePartition() {
 	fmt.Println(even, odd)
 	// Output: [2 4 6 8 10] [1 3 5 9]
 }
+
+func ExampleSum() {
+	numberList := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
+
+	sum := slicex.Sum(numberList)
+
+	fmt.Println(sum)
+	// Output: 48
+}
+
+func ExampleProduct() {
+	numberList := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
+
+	product := slicex.Product(numberList)
+
+	fmt.Println(product)
+	// Output: 518400
+}
+
+func ExampleMean() {
+	numberList := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
+
+	mean := slicex.Mean(numberList)
+
+	fmt.Println(mean)
+	// Output: 5
+}
+
+func ExampleMax() {
+	numberList := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
+
+	max := slicex.Max(numberList)
+
+	fmt.Println(max)
+	// Output: 30
+}
+
+func ExampleMin() {
+	numberList := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
+
+	min := slicex.Min(numberList)
+
+	fmt.Println(min)
+	// Output: -1
+}

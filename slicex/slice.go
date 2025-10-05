@@ -49,7 +49,8 @@ func UniqueMap[S ~[]T, T any, R comparable](slice S, mapper func(item T) R) []R 
 }
 
 // Bind transforms and flattens a slice from one type to another using a mapper
-// function.
+// function. Function should return a slice or `nil`, if `nil` is returned then no
+// value is added to the final result.
 func Bind[S ~[]T, T any, R any, RS ~[]R](slice S, mapper func(item T) RS) RS {
 	result := make([]R, 0, len(slice))
 
@@ -60,8 +61,8 @@ func Bind[S ~[]T, T any, R any, RS ~[]R](slice S, mapper func(item T) RS) RS {
 	return result
 }
 
-// Fold transforms and flattens a slice to another type.
-func Fold[S ~[]T, T any, R any](slice S, accumulator func(agg R, item T) R, initial R) R {
+// Reduce transforms and flattens a slice to another type.
+func Reduce[S ~[]T, T any, R any](slice S, accumulator func(agg R, item T) R, initial R) R {
 	Apply(slice, func(item T) {
 		initial = accumulator(initial, item)
 	})

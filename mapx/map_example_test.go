@@ -8,7 +8,7 @@ import (
 )
 
 func ExampleKeys() {
-	var numberMap = map[int]string{
+	var numMap = map[int]string{
 		0:   "zero",
 		8:   "one",
 		2:   "two",
@@ -17,7 +17,7 @@ func ExampleKeys() {
 		256: "five",
 	}
 
-	keys := mapx.Keys(numberMap)
+	keys := mapx.Keys(numMap)
 
 	slices.Sort(keys)
 
@@ -26,7 +26,7 @@ func ExampleKeys() {
 }
 
 func ExampleValues() {
-	var numberMap = map[int]string{
+	var numMap = map[int]string{
 		0:   "zero",
 		8:   "one",
 		2:   "two",
@@ -35,7 +35,7 @@ func ExampleValues() {
 		256: "five",
 	}
 
-	values := mapx.Values(numberMap)
+	values := mapx.Values(numMap)
 
 	slices.Sort(values)
 
@@ -44,7 +44,7 @@ func ExampleValues() {
 }
 
 func ExampleUniqueValues() {
-	var dupValueMap = map[int]string{
+	var dupMap = map[int]string{
 		0:    "zero",
 		8:    "zero",
 		2:    "two",
@@ -54,7 +54,7 @@ func ExampleUniqueValues() {
 		8192: "five",
 	}
 
-	values := mapx.UniqueValues(dupValueMap)
+	values := mapx.UniqueValues(dupMap)
 
 	slices.Sort(values)
 
@@ -63,7 +63,7 @@ func ExampleUniqueValues() {
 }
 
 func ExampleContains() {
-	var numberMap = map[int]string{
+	var numMap = map[int]string{
 		0:   "zero",
 		8:   "one",
 		2:   "two",
@@ -72,16 +72,16 @@ func ExampleContains() {
 		256: "five",
 	}
 
-	result1 := mapx.Contains(numberMap, 0)
-	result2 := mapx.Contains(numberMap, 1)
-	result3 := mapx.Contains(numberMap, 2, 8, 256)
+	result1 := mapx.Contains(numMap, 0)
+	result2 := mapx.Contains(numMap, 1)
+	result3 := mapx.Contains(numMap, 2, 8, 256)
 
 	fmt.Println(result1, result2, result3)
 	// Output: true false true
 }
 
 func ExampleValueOr() {
-	var numberMap = map[int]string{
+	var numMap = map[int]string{
 		0:   "zero",
 		8:   "one",
 		2:   "two",
@@ -90,15 +90,15 @@ func ExampleValueOr() {
 		256: "five",
 	}
 
-	result1 := mapx.ValueOr(numberMap, 0, "nothing")
-	result2 := mapx.ValueOr(numberMap, 1, "nothing")
+	result1 := mapx.ValueOr(numMap, 0, "nothing")
+	result2 := mapx.ValueOr(numMap, 1, "nothing")
 
 	fmt.Println(result1, result2)
 	// Output: zero nothing
 }
 
 func ExampleInvert() {
-	var numberMap = map[int]string{
+	var numMap = map[int]string{
 		0:   "zero",
 		8:   "one",
 		2:   "two",
@@ -107,7 +107,7 @@ func ExampleInvert() {
 		256: "five",
 	}
 
-	inverted := mapx.Invert(numberMap)
+	inverted := mapx.Invert(numMap)
 
 	fmt.Println(inverted)
 	// Output: map[five:256 four:12 one:8 three:3 two:2 zero:0]

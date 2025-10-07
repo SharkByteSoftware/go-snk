@@ -49,7 +49,8 @@ func UniqueMap[S ~[]T, T any, R comparable](slice S, mapper func(item T) R) []R 
 }
 
 // Bind transforms and flattens a slice from one type to another using a mapper
-// function.
+// function. Function should return a slice or `nil`, if `nil` is returned then no
+// value is added to the final result.
 func Bind[S ~[]T, T any, R any, RS ~[]R](slice S, mapper func(item T) RS) RS {
 	result := make([]R, 0, len(slice))
 
@@ -60,8 +61,8 @@ func Bind[S ~[]T, T any, R any, RS ~[]R](slice S, mapper func(item T) RS) RS {
 	return result
 }
 
-// Fold transforms and flattens a slice to another type.
-func Fold[S ~[]T, T any, R any](slice S, accumulator func(agg R, item T) R, initial R) R {
+// Reduce transforms and flattens a slice to another type.
+func Reduce[S ~[]T, T any, R any](slice S, accumulator func(agg R, item T) R, initial R) R {
 	Apply(slice, func(item T) {
 		initial = accumulator(initial, item)
 	})
@@ -93,6 +94,8 @@ func FindOr[S ~[]T, T comparable](slice S, candidate T, fallback T) T {
 	return FindOrBy(slice, adapt.ItemEqualsAdapter(candidate), fallback)
 }
 
+// FindOrBy returns the first item in the slice that satisfies the predicate,
+// or the fallback value if not found.
 func FindOrBy[S ~[]T, T comparable](slice S, predicate func(item T) bool, fallback T) T {
 	item, found := FindBy(slice, predicate)
 	return conditional.If(found, item, fallback)
@@ -135,13 +138,14 @@ func Apply[S ~[]T, T any](slice S, apply func(item T)) {
 	ApplyWithIndex(slice, func(item T, _ int) { apply(item) })
 }
 
+// ApplyWithIndex applies a function to each item in the slice and provides the index of the item.
 func ApplyWithIndex[S ~[]T, T any](slice S, apply func(item T, index int)) {
 	for idx, value := range slice {
 		apply(value, idx)
 	}
 }
 
-// Reverse returns the reverses of slice.
+// Reverse returns a slice with the revers of the slice.
 func Reverse[S ~[]T, T any](slice S) S {
 	result := slices.Clone(slice)
 	slices.Reverse(result)

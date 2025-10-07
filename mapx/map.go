@@ -44,8 +44,8 @@ func Contains[M map[K]V, K comparable, V any](collection M, keys ...K) bool {
 	return true
 }
 
-// Value returns the value for a key or a fallback value.
-func Value[M map[K]V, K comparable, V any](collection M, key K, fallback V) V {
+// ValueOr returns the value for a key or a fallback value.
+func ValueOr[M map[K]V, K comparable, V any](collection M, key K, fallback V) V {
 	value, ok := collection[key]
 	return conditional.If(ok, value, fallback)
 }
@@ -71,28 +71,6 @@ func Combine[M map[K]V, K comparable, V any](maps ...M) M {
 	slicex.Apply(maps, func(item M) {
 		for key, value := range item {
 			result[key] = value
-		}
-	})
-
-	return result
-}
-
-// CombineWithSelect returns a single combined map of all the provided maps and uses select function
-// when there is a key collision.   If select returns true, then the previous value is overwritten.
-func CombineWithSelect[M map[K]V, K comparable, V any](selector func(V, V) bool, maps ...M) M {
-	size := slicex.SumBy(maps, func(item M) int { return len(item) })
-	result := make(M, size)
-
-	slicex.Apply(maps, func(item M) {
-		for key, value := range item {
-			if !Contains(result, key) {
-				result[key] = value
-				continue
-			}
-
-			if selector(result[key], value) {
-				result[key] = value
-			}
 		}
 	})
 

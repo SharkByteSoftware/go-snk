@@ -7,12 +7,12 @@ func Empty[T any]() T {
 	return empty
 }
 
-// SafeDeref returns the pointer value or type types empty value.
+// SafeDeref returns the pointer value of or the types empty value.
 func SafeDeref[T any](ptr *T) T {
 	return SafeDerefOr(ptr, Empty[T]())
 }
 
-// SafeDerefOr reurns the pointer value or the specified fallback value.
+// SafeDerefOr returns the pointer value or the specified fallback value.
 func SafeDerefOr[T any](ptr *T, fallback T) T {
 	if ptr == nil {
 		return fallback

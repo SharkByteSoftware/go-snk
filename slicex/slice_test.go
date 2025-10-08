@@ -4,8 +4,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/adapt"
 	"github.com/SharkByteSoftware/go-snk/conditional"
+	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 	"github.com/stretchr/testify/assert"
 )

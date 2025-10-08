@@ -3,8 +3,8 @@ package slicex
 import (
 	"cmp"
 
-	"github.com/SharkByteSoftware/go-snk/adapt"
 	"github.com/SharkByteSoftware/go-snk/constraint"
+	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 )
 
 // Sum returns the sum of all the values of the slice.

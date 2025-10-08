@@ -4,9 +4,9 @@ package slicex
 import (
 	"slices"
 
-	"github.com/SharkByteSoftware/go-snk/adapt"
 	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/containers/sets"
+	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 )
 
 // Filter filters a slice using a predicate function.

@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/adapt"
+	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 

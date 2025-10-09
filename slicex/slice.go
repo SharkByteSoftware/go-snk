@@ -114,8 +114,11 @@ func AnyBy[S ~[]T, T comparable](slice S, predicate func(item T) bool) bool {
 
 // All returns true if all items in the slice are equal to the given candidate.
 func All[S ~[]T, T comparable](slice S, candidate T) bool {
-	found := Filter(slice, func(item T) bool { return item == candidate })
-	return len(found) == len(slice)
+	_, found := FindBy(slice, func(item T) bool {
+		return candidate != item
+	})
+
+	return !found
 }
 
 // Unique returns a slice with all duplicate values removed.

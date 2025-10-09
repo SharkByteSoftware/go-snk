@@ -60,7 +60,7 @@ func (l *List[T]) Back() *Element[T] {
 }
 
 // Remove deletes the element from the list and returns the value. If the element is not
-// a member of the list it does nothing.  Element must not be nil.
+// a member of the list, it does nothing.  Element must not be nil.
 func (l *List[T]) Remove(element *Element[T]) T {
 	if l.isNotMember(element) {
 		return element.Value

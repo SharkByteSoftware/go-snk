@@ -3,23 +3,24 @@ package lists
 
 import (
 	"github.com/SharkByteSoftware/go-snk/conditional"
+	"github.com/SharkByteSoftware/go-snk/helpers"
 )
 
-// List represents a doubly linked lists.  Api ~compatible with the Go
+// List represents a doubly linked list.  Api ~compatible with the Go
 // containers List implementation.
 type List[T any] struct {
 	root Element[T]
 	len  int
 }
 
-// New creates a new linked lists from all the values.
+// New creates a new linked list from all the values.
 func New[T any](values ...T) *List[T] {
 	result := &List[T]{
 		root: Element[T]{
 			next:   nil,
 			prev:   nil,
 			parent: nil,
-			Value:  *new(T),
+			Value:  helpers.Empty[T](),
 		},
 		len: 0,
 	}
@@ -46,19 +47,19 @@ func (l *List[T]) Len() int {
 	return l.len
 }
 
-// Front returns the first element in the lists. If the lists is empty,
+// Front returns the first element in the lists. If the list is empty,
 // it will return nil.
 func (l *List[T]) Front() *Element[T] {
 	return conditional.If(l.IsEmpty(), nil, l.root.next)
 }
 
-// Back returns the last element in the lists. If the lists is empty,
+// Back returns the last element in the lists. If the list is empty,
 // it will return nil.
 func (l *List[T]) Back() *Element[T] {
 	return conditional.If(l.IsEmpty(), nil, l.root.prev)
 }
 
-// Remove deletes the element from the list and returns the value.  If element is not
+// Remove deletes the element from the list and returns the value. If the element is not
 // a member of the list it does nothing.  Element must not be nil.
 func (l *List[T]) Remove(element *Element[T]) T {
 	if l.isNotMember(element) {
@@ -100,7 +101,7 @@ func (l *List[T]) Append(values ...T) {
 	}
 }
 
-// InsertBefore insert a new value before the mark and returns the element.
+// InsertBefore inserts a new value before the mark and returns the element.
 func (l *List[T]) InsertBefore(value T, mark *Element[T]) *Element[T] {
 	if l.isNotMember(mark) {
 		return nil
@@ -164,7 +165,7 @@ func (l *List[T]) PushBackList(other *List[T]) {
 	l.Append(other.Values()...)
 }
 
-// IsEmpty checks to see if the lists is empty.
+// IsEmpty returns true of the list is empty.
 func (l *List[T]) IsEmpty() bool {
 	return l.Len() == 0
 }

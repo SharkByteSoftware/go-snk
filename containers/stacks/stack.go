@@ -22,7 +22,7 @@ func (s *Stack[T]) Push(value T) {
 	s.members.PushFront(value)
 }
 
-// Pop removes the top element of the stack and returns it.  If stack is empty,
+// Pop removes the top element of the stack and returns it.  If the stack is empty,
 // it returns a default value and false.
 func (s *Stack[T]) Pop() (T, bool) {
 	if s.members.IsEmpty() {
@@ -32,7 +32,7 @@ func (s *Stack[T]) Pop() (T, bool) {
 	return s.members.Remove(s.members.Front()), true
 }
 
-// Peek returns the top element on the stack without removing it.   If stack is empty,
+// Peek returns the top element on the stack without removing it.   If the stack is empty,
 // it returns a default value and false.
 func (s *Stack[T]) Peek() (T, bool) {
 	if s.members.IsEmpty() {
@@ -57,7 +57,7 @@ func (s *Stack[T]) Clear() {
 	s.members = lists.New[T]()
 }
 
-// Values returns a slice with all the elements fromt he stack.
+// Values returns a slice with all the elements from the stack.
 func (s *Stack[T]) Values() []T {
 	return s.members.Values()
 }

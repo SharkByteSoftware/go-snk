@@ -3,7 +3,7 @@ package mapx_test
 import (
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/adapt"
+	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 	"github.com/SharkByteSoftware/go-snk/mapx"
 	"github.com/stretchr/testify/assert"
 )

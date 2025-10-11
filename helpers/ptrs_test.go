@@ -84,7 +84,7 @@ func TestAsValue(t *testing.T) {
 	assert.Equal(t, "", helpers.AsValue[string](nil))
 }
 
-func TestSafeAsValueOr(t *testing.T) {
+func TestAsValueOr(t *testing.T) {
 	value := &testType{"test", 10}
 	fallback := testType{"fallback", 20}
 

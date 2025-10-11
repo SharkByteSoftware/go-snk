@@ -6,6 +6,7 @@ import (
 
 	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/containers/sets"
+	"github.com/SharkByteSoftware/go-snk/helpers"
 	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 )
 
@@ -154,6 +155,13 @@ func Reverse[S ~[]T, T any](slice S) S {
 	slices.Reverse(result)
 
 	return result
+}
+
+// Compact returns a slice with all the non-zero items.
+func Compact[S ~[]T, T comparable](slice S) S {
+	return Filter(slice, func(item T) bool {
+		return !helpers.IsEmpty(item)
+	})
 }
 
 // ToMap converts a slice to a map using the predicate to determine the map key.

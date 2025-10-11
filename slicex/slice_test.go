@@ -139,6 +139,21 @@ func TestSlice_Reverse(t *testing.T) {
 	assert.IsDecreasing(t, result)
 }
 
+func TestSlice_Compact(t *testing.T) {
+	numberList := []int{1, 2, 3, 4, 5}
+
+	result := slicex.Compact(numberList)
+	assert.Equal(t, numberList, result)
+
+	numberList = []int{0, 2, 3, 4, 0}
+	result = slicex.Compact(numberList)
+	assert.Equal(t, numberList[1:4], result)
+
+	strList := []string{"", "one", "two", "three", ""}
+	strResult := slicex.Compact(strList)
+	assert.Equal(t, strList[1:4], strResult)
+}
+
 func TestSlice_Apply(t *testing.T) {
 	var nums string
 	slicex.Apply(numberList, func(n int) { nums += strconv.Itoa(n) })

@@ -72,6 +72,7 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | Unique    | Removes duplicates from a slice                              |
 | Apply     | Applies a function to each element in a slice                |
 | Reverse   | Reverses the order of elements in a slice                    |
+| Compact   | Compact returns a slice with all the non-zero items.         |
 | ToMap     | Converts a slice to a map using a key selector function      |
 | GroupBy   | Groups elements of a slice by a key selector function        |
 | Partition | Splits a slice into two based on a predicate function        |

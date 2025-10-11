@@ -113,7 +113,7 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | Filter            | Filters a map based on a predicate function                         |
 | Apply             | Applies a function to each key-value pair in the map                |
 
-## Conditionals and Constraints
+## Conditionals
 
 | Conditional  | Description                                                            |
 |--------------|------------------------------------------------------------------------|
@@ -121,16 +121,6 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | IfNotNil     | Calls a function if the input pointer is not nil                       |
 | IfCall       | Calls one of two functions based on a condition                        |
 | IfCallReturn | Calls one of two functions based on a condition and returns the result |
-
-
-| Constraint | Description                                                                         |
-|------------|-------------------------------------------------------------------------------------|
-| Signed     | Interface for signed integer types (int, int8, int16, int32, int64)                 |
-| Unsigned   | Interface for unsigned integer types (uint, uint8, uint16, uint32, uint64, uintptr) |
-| Integers   | Interface combining Signed and Unsigned integer types                               |
-| Floats     | Interface for floating-point types (float32, float64)                               |
-| Complex    | Interface for complex number types (complex64, complex128)                          |
-| Numeric    | Interface combining Integers and Floats types                                       |
 
 ### Containers
 

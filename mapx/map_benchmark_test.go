@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/adapt"
+	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 	"github.com/SharkByteSoftware/go-snk/mapx"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )

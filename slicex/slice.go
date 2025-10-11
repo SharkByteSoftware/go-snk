@@ -4,9 +4,10 @@ package slicex
 import (
 	"slices"
 
-	"github.com/SharkByteSoftware/go-snk/adapt"
 	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/containers/sets"
+	"github.com/SharkByteSoftware/go-snk/helpers"
+	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 )
 
 // Filter filters a slice using a predicate function.
@@ -114,8 +115,11 @@ func AnyBy[S ~[]T, T comparable](slice S, predicate func(item T) bool) bool {
 
 // All returns true if all items in the slice are equal to the given candidate.
 func All[S ~[]T, T comparable](slice S, candidate T) bool {
-	found := Filter(slice, func(item T) bool { return item == candidate })
-	return len(found) == len(slice)
+	_, found := FindBy(slice, func(item T) bool {
+		return candidate != item
+	})
+
+	return !found
 }
 
 // Unique returns a slice with all duplicate values removed.
@@ -151,6 +155,13 @@ func Reverse[S ~[]T, T any](slice S) S {
 	slices.Reverse(result)
 
 	return result
+}
+
+// Compact returns a slice with all the non-zero items.
+func Compact[S ~[]T, T comparable](slice S) S {
+	return Filter(slice, func(item T) bool {
+		return !helpers.IsEmpty(item)
+	})
 }
 
 // ToMap converts a slice to a map using the predicate to determine the map key.

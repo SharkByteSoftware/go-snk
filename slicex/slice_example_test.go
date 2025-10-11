@@ -203,6 +203,14 @@ func ExampleReverse() {
 	// Output: [6 5 4 3 2 1]
 }
 
+func ExampleCompact() {
+	numbers := []int{0, 2, 3, 4, 5, 0}
+
+	values := slicex.Compact(numbers)
+	fmt.Println(values)
+	// Output: [2 3 4 5]
+}
+
 func ExampleToMap() {
 	numbers := []int{1, 2, 3, 4, 5, 6}
 

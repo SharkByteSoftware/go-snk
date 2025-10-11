@@ -21,14 +21,11 @@ A utility library that provides a variety of functions for working with slices, 
 
 ## About
 
-The **go-snk** project is a robust Go library designed to enhance productivity with a collection of utility functions
-and data structures for efficient manipulation of slices, maps, sets, and linked lists. Use functional programming-inspired 
-slice helpers like `Filter`, `Map`, `Reduce`, and `UniqueMap` or aggregation functions such as `Sum`, `Product`, `Mean`, 
-`Max`, and `Min`. Leverage seamless key-value pair management operations for maps, like `Keys`, `Values`, `Invert`, 
-and `Combine`. Use methods like `PushFront`, `InsertAfter`, and `MoveToBack` with an included generic doubly linked list 
-structure or helpers for set operations like `Union`, `Intersect`, and `SymmetricDifference`. Built with Go generics, 
-**go-snk** ensures type safety and flexibility, making it an essential tool for developers working with complex data 
-manipulations in Go.
+**go-snk**: A versatile Go utility library to streamline and clean up your projects with a single import. Powered by Go generics, 
+it offers type-safe, flexible tools for data manipulation, including functional slice operations (`Filter`, `Map`, `Reduce`, `UniqueMap`), 
+aggregation functions (`Sum`, `Mean`, `Max`), map management (`Keys`, `Values`, `Invert`, `Combine`), set operations (`Union`, `Intersect`, 
+`SymmetricDifference`), and a generic doubly linked list (`PushFront`, `InsertAfter`, `MoveToBack`). Simplify your codebase and boost 
+productivity with go-snk's all-in-one toolkit.
 
 ## Getting Started
 

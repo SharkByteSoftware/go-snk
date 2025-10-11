@@ -14,7 +14,7 @@ type Package struct {
 }
 
 func TestIntPriorityQueueAscending(t *testing.T) {
-	intQueue := NewPriorityQueue[int](func(prev int, curr int) int {
+	intQueue := NewPriorityQueueWithDefault[int](func(prev int, curr int) int {
 		if prev < curr {
 			return -1
 		}
@@ -56,7 +56,7 @@ func TestIntPriorityQueueAscending(t *testing.T) {
 }
 
 func TestIntPriorityQueueDescending(t *testing.T) {
-	intQueue := NewPriorityQueue[int](func(prev int, curr int) int {
+	intQueue := NewPriorityQueueWithDefault[int](func(prev int, curr int) int {
 		if prev > curr {
 			return -1
 		}
@@ -98,7 +98,7 @@ func TestIntPriorityQueueDescending(t *testing.T) {
 }
 
 func TestPackagePriorityQueue(t *testing.T) {
-	packageQueue := NewPriorityQueue[Package](func(prev Package, curr Package) int {
+	packageQueue := NewPriorityQueueWithDefault[Package](func(prev Package, curr Package) int {
 		if prev.Weight < curr.Weight {
 			return -1
 		}
@@ -137,4 +137,9 @@ func TestPackagePriorityQueue(t *testing.T) {
 	assert.Equal(t, 5, topAgainAgain.Weight)
 	assert.True(t, okAgainAgainAgain)
 	assert.Equal(t, 2, packageQueue.Len()) // 6,7
+
+	v := packageQueue.Values()
+	assert.Equal(t, 2, len(v))
+	v = append(v, Package{Weight: 1})
+
 }

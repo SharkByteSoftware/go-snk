@@ -76,6 +76,22 @@ func TestSlice_Find(t *testing.T) {
 	assert.Equal(t, 256, result)
 }
 
+func TestSlice_FindBy(t *testing.T) {
+	type myStruct struct {
+		Name  string
+		Age   int
+		Other []myStruct
+	}
+
+	p := []myStruct{{Name: "one", Age: 1}, {Name: "two", Age: 2}, {Name: "three", Age: 3}}
+
+	result, found := slicex.FindBy(p, func(item myStruct) bool {
+		return item.Name == "one"
+	})
+	assert.True(t, found)
+	assert.Equal(t, myStruct{Name: "one", Age: 1}, result)
+}
+
 func TestSlice_FindOr(t *testing.T) {
 	result := slicex.FindOr(numberList, 88, 8192)
 	assert.Equal(t, 8192, result)

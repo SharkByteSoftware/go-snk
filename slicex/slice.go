@@ -77,7 +77,7 @@ func Find[S ~[]T, T comparable](slice S, candidate T) (T, bool) {
 }
 
 // FindBy returns the first item in the slice that satisfies the predicate.
-func FindBy[S ~[]T, T comparable](slice S, predicate func(item T) bool) (T, bool) {
+func FindBy[S ~[]T, T any](slice S, predicate func(item T) bool) (T, bool) {
 	for _, value := range slice {
 		if predicate(value) {
 			return value, true

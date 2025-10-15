@@ -1,6 +1,7 @@
 package slicex_test
 
 import (
+	"slices"
 	"strconv"
 	"testing"
 
@@ -219,4 +220,56 @@ func TestSlice_Partition(t *testing.T) {
 	r1, r2 = slicex.Partition(numberList, func(item int) bool { return item%2 == 0 })
 	assert.Len(t, r1, 3)
 	assert.Len(t, r2, 4)
+}
+
+func TestSlice_Intersect(t *testing.T) {
+	slice1 := []int{1, 2, 3, 4, 5}
+	slice2 := []int{2, 3, 4, 5, 6}
+
+	result := slicex.Intersect(slice1, slice1)
+	slices.Sort(result)
+	assert.Len(t, result, len(slice1))
+	assert.Equal(t, slice1, result)
+
+	result = slicex.Intersect(slice1, slice2)
+	assert.Len(t, result, 4)
+	assert.NotContains(t, result, 1)
+	assert.NotContains(t, result, 6)
+
+	result = slicex.Intersect(slice2, slice1)
+	assert.Len(t, result, 4)
+	assert.NotContains(t, result, 1)
+	assert.NotContains(t, result, 6)
+}
+
+func TestSlice_Union(t *testing.T) {
+	slice1 := []int{1, 2, 3, 4, 5}
+	slice2 := []int{4, 5, 6, 7, 256}
+
+	result := slicex.Union(slice1, slice1)
+	slices.Sort(result)
+	assert.Len(t, result, 5)
+	assert.Equal(t, slice1, result)
+
+	result = slicex.Union(slice1, slice2)
+	assert.Len(t, result, 8)
+	assert.Subset(t, result, slice1)
+	assert.Subset(t, result, slice2)
+
+	result = slicex.Union(slice2, slice1)
+	assert.Len(t, result, 8)
+	assert.Subset(t, result, slice1)
+	assert.Subset(t, result, slice2)
+}
+
+func TestSlice_Difference(t *testing.T) {
+	slice1 := []int{1, 2, 3, 4, 5}
+	slice2 := []int{4, 5, 6, 7, 256}
+
+	result := slicex.Difference(slice1, slice1)
+	assert.Len(t, result, 0)
+
+	result = slicex.Difference(slice1, slice2)
+	assert.Len(t, result, 3)
+	assert.Subset(t, result, []int{1, 2, 3})
 }

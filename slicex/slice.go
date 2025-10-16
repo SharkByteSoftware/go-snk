@@ -137,6 +137,23 @@ func Unique[S ~[]T, T comparable](slice S) []T {
 	return result
 }
 
+// UniqueBy returns a slice with unique values determined by a predicate function.
+func UniqueBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) []T {
+	result := make([]T, 0, len(slice))
+	set := sets.New[R]()
+
+	Apply(slice, func(item T) {
+		key := predicate(item)
+		if !set.Contains(key) {
+			set.Add(key)
+
+			result = append(result, item)
+		}
+	})
+
+	return result
+}
+
 // Apply applies a function to each item in the slice.
 func Apply[S ~[]T, T any](slice S, apply func(item T)) {
 	ApplyWithIndex(slice, func(item T, _ int) { apply(item) })

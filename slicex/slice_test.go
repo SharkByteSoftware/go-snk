@@ -137,6 +137,29 @@ func TestSlice_Unique(t *testing.T) {
 	assert.Equal(t, []int{1, 2}, result)
 }
 
+func TestSlice_UniqueBy(t *testing.T) {
+	type myStruct struct {
+		Name string
+		Age  int
+	}
+
+	myStructs := []myStruct{
+		{"one", 1},
+		{"two", 2},
+		{"three", 3},
+		{"three", 3},
+		{"one", 1},
+	}
+
+	result := slicex.UniqueBy(myStructs, func(item myStruct) string { return item.Name })
+	assert.Len(t, result, 3)
+	assert.Equal(t, myStructs[:3], result)
+
+	result = slicex.UniqueBy(myStructs, func(item myStruct) int { return item.Age })
+	assert.Len(t, result, 3)
+	assert.Equal(t, myStructs[:3], result)
+}
+
 func TestSlice_Reverse(t *testing.T) {
 	var orderedList = []int{1, 2, 3, 4, 5, 256}
 	var oddNumberedOrderedList = []int{1, 2, 3, 4, 5, 256, 333}

@@ -20,6 +20,22 @@ var nestedNumberList = [][]int{
 	numberList,
 }
 
+func TestSlice_FirstOr(t *testing.T) {
+	result := slicex.FirstOr([]int{}, 20)
+	assert.Equal(t, 20, result)
+
+	result = slicex.FirstOr([]int{1, 2}, 10)
+	assert.Equal(t, 1, result)
+}
+
+func TestSlice_FirstOrEmpty(t *testing.T) {
+	result := slicex.FirstOrEmpty([]int{})
+	assert.Equal(t, 0, result)
+
+	result = slicex.FirstOrEmpty([]int{1, 2, 4})
+	assert.Equal(t, 1, result)
+}
+
 func TestSlice_Filter(t *testing.T) {
 	result := slicex.Filter(numberList, func(n int) bool { return n%2 == 0 })
 	assert.Equal(t, []int{2, 4, 256}, result)

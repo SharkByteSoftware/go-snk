@@ -10,6 +10,22 @@ import (
 	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 )
 
+// FirstOr returns the first item in the slice or a fallback value
+// if the slice is empty.
+func FirstOr[T any](slice []T, fallback T) T {
+	if len(slice) == 0 {
+		return fallback
+	}
+
+	return slice[0]
+}
+
+// FirstOrEmpty returns the first item in the slice or the empty value if
+// the slice is empty.
+func FirstOrEmpty[T any](slice []T) T {
+	return FirstOr(slice, helpers.Empty[T]())
+}
+
 // Filter filters a slice using a predicate function.
 func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) []T {
 	return FilterWithIndex(slice, adapt.ItemIndexAdapter(predicate))

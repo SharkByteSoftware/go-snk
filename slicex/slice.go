@@ -10,6 +10,22 @@ import (
 	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 )
 
+// FirstOr returns the first item in the slice or a fallback value
+// if the slice is empty.
+func FirstOr[T any](slice []T, fallback T) T {
+	if len(slice) == 0 {
+		return fallback
+	}
+
+	return slice[0]
+}
+
+// FirstOrEmpty returns the first item in the slice or the empty value if
+// the slice is empty.
+func FirstOrEmpty[T any](slice []T) T {
+	return FirstOr(slice, helpers.Empty[T]())
+}
+
 // Filter filters a slice using a predicate function.
 func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) []T {
 	return FilterWithIndex(slice, adapt.ItemIndexAdapter(predicate))
@@ -130,6 +146,23 @@ func Unique[S ~[]T, T comparable](slice S) []T {
 	Apply(slice, func(item T) {
 		if !set.Contains(item) {
 			set.Add(item)
+			result = append(result, item)
+		}
+	})
+
+	return result
+}
+
+// UniqueBy returns a slice with unique values determined by a predicate function.
+func UniqueBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) []T {
+	result := make([]T, 0, len(slice))
+	set := sets.New[R]()
+
+	Apply(slice, func(item T) {
+		key := predicate(item)
+		if !set.Contains(key) {
+			set.Add(key)
+
 			result = append(result, item)
 		}
 	})

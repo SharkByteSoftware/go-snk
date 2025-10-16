@@ -20,6 +20,22 @@ var nestedNumberList = [][]int{
 	numberList,
 }
 
+func TestSlice_FirstOr(t *testing.T) {
+	result := slicex.FirstOr([]int{}, 20)
+	assert.Equal(t, 20, result)
+
+	result = slicex.FirstOr([]int{1, 2}, 10)
+	assert.Equal(t, 1, result)
+}
+
+func TestSlice_FirstOrEmpty(t *testing.T) {
+	result := slicex.FirstOrEmpty([]int{})
+	assert.Equal(t, 0, result)
+
+	result = slicex.FirstOrEmpty([]int{1, 2, 4})
+	assert.Equal(t, 1, result)
+}
+
 func TestSlice_Filter(t *testing.T) {
 	result := slicex.Filter(numberList, func(n int) bool { return n%2 == 0 })
 	assert.Equal(t, []int{2, 4, 256}, result)
@@ -135,6 +151,29 @@ func TestSlice_Unique(t *testing.T) {
 
 	result = slicex.Unique([]int{1, 1, 1, 1, 1, 1, 1, 2})
 	assert.Equal(t, []int{1, 2}, result)
+}
+
+func TestSlice_UniqueBy(t *testing.T) {
+	type myStruct struct {
+		Name string
+		Age  int
+	}
+
+	myStructs := []myStruct{
+		{"one", 1},
+		{"two", 2},
+		{"three", 3},
+		{"three", 3},
+		{"one", 1},
+	}
+
+	result := slicex.UniqueBy(myStructs, func(item myStruct) string { return item.Name })
+	assert.Len(t, result, 3)
+	assert.Equal(t, myStructs[:3], result)
+
+	result = slicex.UniqueBy(myStructs, func(item myStruct) int { return item.Age })
+	assert.Len(t, result, 3)
+	assert.Equal(t, myStructs[:3], result)
 }
 
 func TestSlice_Reverse(t *testing.T) {

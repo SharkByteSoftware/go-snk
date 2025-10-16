@@ -54,28 +54,31 @@ go get github.com/SharkByteSoftware/go-snk@latest
 
 ### slicex - Helpers for slices
 
-| Helpers    | Description                                                  |
-|------------|--------------------------------------------------------------|
-| Filter     | Filters a slice using a predicate                            |
-| Map        | Transforms a slice to a slice of another type using a mapper |
-| UniqueMap  | Similar to Map but removes duplicates from the result        |
-| Reduce     | Transforms and flattens a slice to another type              |
-| Find       | Returns the first element matching a condition               |
-| FindBy     | Returns the first element matching a predicate function      |
-| FindOr     | Returns the first matching element or a default value        |
-| Any        | Checks if any element satisfies a condition                  |
-| AnyBy      | Checks if any element satisfies a predicate function         |
-| All        | Checks if all elements satisfy a condition                   |
-| Unique     | Removes duplicates from a slice                              |
-| Apply      | Applies a function to each element in a slice                |
-| Reverse    | Reverses the order of elements in a slice                    |
-| Compact    | Compact returns a slice with all the non-zero items.         |
-| ToMap      | Converts a slice to a map using a key selector function      |
-| GroupBy    | Groups elements of a slice by a key selector function        |
-| Partition  | Splits a slice into two based on a predicate function        |
-| Intersect  | Returns a slice with the intersection of two slices          |
-| Union      | Returns a slice with the union of two slices                 |
-| Difference | Returns a slice with the difference of two slices            |                             
+| Helpers      | Description                                                                |
+|--------------|----------------------------------------------------------------------------|
+| FirstOr      | Returns the first item of a slice or a fallback value of slice is empty    |
+| FirstOrEmpty | Returns the first item of a slice or the empty value if the slice is empty |
+| Filter       | Filters a slice using a predicate                                          |
+| Map          | Transforms a slice to a slice of another type using a mapper               |
+| UniqueMap    | Similar to Map but removes duplicates from the result                      |
+| Reduce       | Transforms and flattens a slice to another type                            |
+| Find         | Returns the first element matching a condition                             |
+| FindBy       | Returns the first element matching a predicate function                    |
+| FindOr       | Returns the first matching element or a default value                      |
+| Any          | Checks if any element satisfies a condition                                |
+| AnyBy        | Checks if any element satisfies a predicate function                       |
+| All          | Checks if all elements satisfy a condition                                 |
+| Unique       | Removes duplicates from a slice                                            |
+| UniqueBy     | Removes duplicates from a slice as determined by a predicate function      |
+| Apply        | Applies a function to each element in a slice                              |
+| Reverse      | Reverses the order of elements in a slice                                  |
+| Compact      | Compact returns a slice with all the non-zero items.                       |
+| ToMap        | Converts a slice to a map using a key selector function                    |
+| GroupBy      | Groups elements of a slice by a key selector function                      |
+| Partition    | Splits a slice into two based on a predicate function                      |
+| Intersect    | Returns a slice with the intersection of two slices                        |
+| Union        | Returns a slice with the union of two slices                               |
+| Difference   | Returns a slice with the difference of two slices                          |                             
 
 | Math Helpers | Description                                                           |
 |--------------|-----------------------------------------------------------------------|

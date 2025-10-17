@@ -60,6 +60,26 @@ func MapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, idx int) R)
 	return result
 }
 
+// FilterMap filters and transforms a slice to a slice of another type using a mapper function.
+func FilterMap[S ~[]T, T any, R any](slice S, mapper func(item T) (R, bool)) []R {
+	return FilterMapWithIndex(slice, func(item T, _ int) (R, bool) {
+		return mapper(item)
+	})
+}
+
+// FilterMapWithIndex filters and transforms a slice to a slice of another type using a mapper function.
+func FilterMapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, index int) (R, bool)) []R {
+	result := make([]R, 0, len(slice))
+
+	ApplyWithIndex(slice, func(item T, idx int) {
+		if value, ok := mapper(item, idx); ok {
+			result = append(result, value)
+		}
+	})
+
+	return result
+}
+
 // UniqueMap maps a slice to a slice of another type using a mapper function and removes duplicate values.
 func UniqueMap[S ~[]T, T any, R comparable](slice S, mapper func(item T) R) []R {
 	return Unique(Map(slice, mapper))
@@ -113,7 +133,7 @@ func FindOr[S ~[]T, T comparable](slice S, candidate T, fallback T) T {
 
 // FindOrBy returns the first item in the slice that satisfies the predicate,
 // or the fallback value if not found.
-func FindOrBy[S ~[]T, T comparable](slice S, predicate func(item T) bool, fallback T) T {
+func FindOrBy[S ~[]T, T any](slice S, predicate func(item T) bool, fallback T) T {
 	item, found := FindBy(slice, predicate)
 	return conditional.If(found, item, fallback)
 }
@@ -124,7 +144,7 @@ func Any[S ~[]T, T comparable](slice S, candidate T) bool {
 }
 
 // AnyBy returns true if any item in the slice satisfies the predicate.
-func AnyBy[S ~[]T, T comparable](slice S, predicate func(item T) bool) bool {
+func AnyBy[S ~[]T, T any](slice S, predicate func(item T) bool) bool {
 	_, found := FindBy(slice, predicate)
 	return found
 }
@@ -134,6 +154,13 @@ func All[S ~[]T, T comparable](slice S, candidate T) bool {
 	_, found := FindBy(slice, func(item T) bool {
 		return candidate != item
 	})
+
+	return !found
+}
+
+// AllBy returns true if all items in the slice satisfy the predicate.
+func AllBy[S ~[]T, T any](slice S, predicate func(item T) bool) bool {
+	_, found := FindBy(slice, func(item T) bool { return !predicate(item) })
 
 	return !found
 }

@@ -27,11 +27,6 @@ linters:
             - "$gostd"
             - "github.com/SharkByteSoftware/go-snk"
 
-  exclusions:
-    paths:
-      - docs/docs.go
-      - internal/models/ups.go
-
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0

@@ -60,6 +60,18 @@ func TestSlice_Map(t *testing.T) {
 	assert.Equal(t, 0, cap(result))
 }
 
+func TestSlice_FilterMap(t *testing.T) {
+	result := slicex.FilterMap(numberList, func(item int) (string, bool) {
+		if item%2 == 0 {
+			return "", false
+		}
+
+		return strconv.Itoa(item), true
+	})
+
+	assert.Equal(t, []string{"1", "3", "5", "333"}, result)
+}
+
 func TestSlice_UniqueMap(t *testing.T) {
 	result := slicex.UniqueMap(duplicateList, func(n int) string { return strconv.Itoa(n) })
 	assert.Equal(t, []string{"1", "2", "3", "4", "5", "333", "256"}, result)
@@ -134,6 +146,18 @@ func TestSlice_All(t *testing.T) {
 
 	result = slicex.All(allSame, 1)
 	assert.True(t, result)
+}
+
+func TestSlice_AllBy(t *testing.T) {
+	type myStruct struct {
+		Name string
+		Age  int
+	}
+
+	p := []myStruct{{Name: "one", Age: 1}, {Name: "two", Age: 1}, {Name: "three", Age: 1}}
+
+	assert.True(t, slicex.AllBy(p, func(item myStruct) bool { return item.Age == 1 }))
+	assert.False(t, slicex.AllBy(p, func(item myStruct) bool { return item.Name == "three" }))
 }
 
 func TestSlice_Unique(t *testing.T) {

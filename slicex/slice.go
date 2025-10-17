@@ -97,7 +97,7 @@ func FindOr[S ~[]T, T comparable](slice S, candidate T, fallback T) T {
 
 // FindOrBy returns the first item in the slice that satisfies the predicate,
 // or the fallback value if not found.
-func FindOrBy[S ~[]T, T comparable](slice S, predicate func(item T) bool, fallback T) T {
+func FindOrBy[S ~[]T, T any](slice S, predicate func(item T) bool, fallback T) T {
 	item, found := FindBy(slice, predicate)
 	return conditional.If(found, item, fallback)
 }
@@ -108,7 +108,7 @@ func Any[S ~[]T, T comparable](slice S, candidate T) bool {
 }
 
 // AnyBy returns true if any item in the slice satisfies the predicate.
-func AnyBy[S ~[]T, T comparable](slice S, predicate func(item T) bool) bool {
+func AnyBy[S ~[]T, T any](slice S, predicate func(item T) bool) bool {
 	_, found := FindBy(slice, predicate)
 	return found
 }
@@ -120,6 +120,12 @@ func All[S ~[]T, T comparable](slice S, candidate T) bool {
 	})
 
 	return !found
+}
+
+// AllBy returns true if all items in the slice satisfy the predicate.
+func AllBy[S ~[]T, T any](slice S, predicate func(item T) bool) bool {
+	// TODO: implement
+	panic("not implemented")
 }
 
 // Unique returns a slice with all duplicate values removed.

@@ -97,12 +97,16 @@ go get github.com/SharkByteSoftware/go-snk@latest
 
 ### slicex/parallel
 
-| Function  | Description                                                                                         |
-|-----------|-----------------------------------------------------------------------------------------------------|
-| Map       | Transforms a slice to a slice of another type using a mapper function in parallel, preserving order |
-| Apply     | Applies a function to each item in a slice in parallel                                              |
-| GroupBy   | Groups a slice into a map of slices based on a predicate function in parallel                       |
-| Partition | Splits a slice into two slices based on a predicate function in parallel, preserving order          |
+| Function           | Description                                                                                         |
+|--------------------|-----------------------------------------------------------------------------------------------------|
+| Map                | Transforms a slice to a slice of another type using a mapper function in parallel, preserving order |
+| MapWithLimit       | Same as Map but limits the concurrency                                                              |
+| Apply              | Applies a function to each item in a slice in parallel                                              |
+| ApplyWithLimit     | Same as Apply but limits the concurrency                                                            |
+| GroupBy            | Groups a slice into a map of slices based on a predicate function in parallel                       |
+| GroupByWithLimit   | Same as GroupBy but limits the concurrencyl                                                         |
+| Partition          | Splits a slice into two slices based on a predicate function in parallel, preserving order          |
+| PartitionWithLimit | Same as Partition but limits the concurrency                                                        |
 
 ### mapx - Helpers for maps
 

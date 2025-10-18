@@ -86,7 +86,7 @@ func Apply[S ~[]T, T any](slice S, apply func(item T)) {
 }
 
 // ApplyWithLimit applies a function to each item in the slice.  The apply function is called
-// in parallel.
+// in parallel with a max concurrency.
 func ApplyWithLimit[S ~[]T, T any](slice S, apply func(item T), concurrency int) {
 	concurrency = min(concurrency, len(slice))
 
@@ -132,7 +132,7 @@ func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map
 }
 
 // GroupByWithLimit returns a map of slices grouped by a key produced by a predicate function.
-// The predicate is called in parallel, and the results are returned in the order they
+// The predicate is called in parallel with a max concurrency, and the results are returned in the order they
 // appear in the slice.
 func GroupByWithLimit[S ~[]T, T any, R comparable](slice S, predicate func(item T) R, concurrency int) map[R]S {
 	concurrency = min(concurrency, len(slice))
@@ -170,7 +170,7 @@ func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
 }
 
 // PartitionWithLimit splits a slice into two slices based on a predicate.  The predicate is called
-// in parallel, and the results are returned in the order they appear in the slice.
+// in parallel with a max concurrency, and the results are returned in the order they appear in the slice.
 func PartitionWithLimit[S ~[]T, T any](slice S, predicate func(item T) bool, concurrency int) (S, S) {
 	concurrency = min(concurrency, len(slice))
 

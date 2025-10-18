@@ -54,7 +54,7 @@ browse:
 update-pkg-go-dev:
 	$(printTarget)
 	$(eval LATEST_TAG := $(shell git ls-remote --tags origin | grep -E 'v[0-9]+\.[0-9]+\.[0-9]+$$' | tail -n 1 | awk '{print $$2}' | sed 's#refs/tags/##'))
-	@echo "Refreshing pkg.go.dev for $(LATEST_TAG)"
+	@echo "Refreshing pkg.go.dev with: $(LATEST_TAG)"
 	@curl -s "https://proxy.golang.org/github.com/!shark!byte!software/go-snk/@v/$(LATEST_TAG).info" | jq
 
 #Helper function to pretty print targets as they execute

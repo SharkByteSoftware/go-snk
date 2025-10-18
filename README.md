@@ -60,6 +60,7 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | FirstOrEmpty | Returns the first item of a slice or the empty value if the slice is empty |
 | Filter       | Filters a slice using a predicate                                          |
 | Map          | Transforms a slice to a slice of another type using a mapper               |
+| FilterMap    | Filters and transforms a slice to a slice of another type using a mapper   |
 | UniqueMap    | Similar to Map but removes duplicates from the result                      |
 | Reduce       | Transforms and flattens a slice to another type                            |
 | Find         | Returns the first element matching a condition                             |
@@ -67,7 +68,8 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | FindOr       | Returns the first matching element or a default value                      |
 | Any          | Checks if any element satisfies a condition                                |
 | AnyBy        | Checks if any element satisfies a predicate function                       |
-| All          | Checks if all elements satisfy a condition                                 |
+| All          | Checks if all elements are equal to a given candidate                      |
+| AllBy        | Checks if all elements satisfy a predicate                                 |
 | Unique       | Removes duplicates from a slice                                            |
 | UniqueBy     | Removes duplicates from a slice as determined by a predicate function      |
 | Apply        | Applies a function to each element in a slice                              |

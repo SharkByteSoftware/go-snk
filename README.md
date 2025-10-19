@@ -123,7 +123,7 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | Filter            | Filters a map based on a predicate function                         |
 | Apply             | Applies a function to each key-value pair in the map                |
 
-## Conditionals
+### Conditionals
 
 | Conditional  | Description                                                            |
 |--------------|------------------------------------------------------------------------|

@@ -6,6 +6,8 @@ linters:
     - wsl
     - ireturn
     - godox
+    - exhaustruct
+    - wrapcheck
 
   settings:
     wsl_v5:

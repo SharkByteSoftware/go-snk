@@ -276,6 +276,15 @@ func ExampleMax() {
 	// Output: 30
 }
 
+func ExampleMaxBy() {
+	numbers := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
+
+	maximum := slicex.MaxBy(numbers, func(a int, b int) bool { return a < b })
+
+	fmt.Println(maximum)
+	// Output: 30
+}
+
 func ExampleMin() {
 	numbers := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
 

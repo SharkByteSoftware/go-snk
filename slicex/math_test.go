@@ -60,6 +60,17 @@ func TestMax(t *testing.T) {
 	assert.Equal(t, 0, max)
 }
 
+func TestMaxBy(t *testing.T) {
+	result := slicex.MaxBy(numberList, func(a int, b int) bool { return a < b })
+	assert.Equal(t, 333, result)
+
+	result = slicex.MaxBy(duplicateList, func(a int, b int) bool { return a < b })
+	assert.Equal(t, 333, result)
+
+	result = slicex.MaxBy([]int{}, func(a int, b int) bool { return a < b })
+	assert.Equal(t, 0, result)
+}
+
 func TestMin(t *testing.T) {
 	min := slicex.Min(numberList)
 	assert.Equal(t, 1, min)

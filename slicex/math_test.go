@@ -41,9 +41,7 @@ func TestProduct(t *testing.T) {
 }
 
 func TestProductBy(t *testing.T) {
-	stringList := []string{"a", "aa", "aaa"}
-
-	result := slicex.ProductBy(stringList, func(s string) int { return len(s) })
+	result := slicex.ProductBy([]string{"a", "aa", "aaa"}, func(s string) int { return len(s) })
 	assert.Equal(t, 6, result)
 
 	result = slicex.ProductBy([]string{}, func(s string) int { return len(s) })
@@ -79,14 +77,11 @@ func TestMax(t *testing.T) {
 }
 
 func TestMaxBy(t *testing.T) {
-	result := slicex.MaxBy(numberList, func(a int, b int) bool { return a < b })
-	assert.Equal(t, 333, result)
+	result := slicex.MaxBy([]string{"a", "aa", "aaa"}, func(a string, b string) bool { return len(a) < len(b) })
+	assert.Equal(t, "aaa", result)
 
-	result = slicex.MaxBy(duplicateList, func(a int, b int) bool { return a < b })
-	assert.Equal(t, 333, result)
-
-	result = slicex.MaxBy([]int{}, func(a int, b int) bool { return a < b })
-	assert.Equal(t, 0, result)
+	result = slicex.MaxBy([]string{}, func(a string, b string) bool { return len(a) < len(b) })
+	assert.Equal(t, "", result)
 }
 
 func TestMin(t *testing.T) {

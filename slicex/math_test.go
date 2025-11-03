@@ -19,11 +19,11 @@ func TestSum(t *testing.T) {
 }
 
 func TestSumBy(t *testing.T) {
-	emptyResult := slicex.SumBy([]int{}, func(i int) int { return i * i })
-	assert.Equal(t, 0, emptyResult)
+	result := slicex.SumBy([]int{}, func(i int) int { return i * i })
+	assert.Equal(t, 0, result)
 
-	intResult := slicex.SumBy([]int{1, 2, 3}, func(i int) int { return i * i })
-	assert.Equal(t, 14, intResult)
+	result = slicex.SumBy([]int{1, 2, 3}, func(i int) int { return i * i })
+	assert.Equal(t, 14, result)
 }
 
 func TestProduct(t *testing.T) {

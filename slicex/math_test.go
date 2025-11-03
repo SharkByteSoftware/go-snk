@@ -40,6 +40,16 @@ func TestProduct(t *testing.T) {
 	assert.Equal(t, 1, product)
 }
 
+func TestProductBy(t *testing.T) {
+	stringList := []string{"a", "aa", "aaa"}
+
+	result := slicex.ProductBy(stringList, func(s string) int { return len(s) })
+	assert.Equal(t, 6, result)
+
+	result = slicex.ProductBy([]string{}, func(s string) int { return len(s) })
+	assert.Equal(t, 1, result)
+}
+
 func TestMean(t *testing.T) {
 	mean := slicex.Mean(numberList)
 	assert.Equal(t, 86, mean)

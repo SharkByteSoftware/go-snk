@@ -267,6 +267,15 @@ func ExampleProduct() {
 	// Output: 518400
 }
 
+func ExampleProductBy() {
+	strings := []string{"a", "aa", "aaa"}
+
+	product := slicex.ProductBy(strings, func(s string) int { return len(s) })
+
+	fmt.Println(product)
+	// Output: 6
+}
+
 func ExampleMean() {
 	numbers := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
 

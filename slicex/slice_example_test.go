@@ -249,6 +249,15 @@ func ExampleSum() {
 	// Output: 48
 }
 
+func ExampleSumBy() {
+	numbers := []int{1, 2, 3}
+
+	sum := slicex.SumBy(numbers, func(n int) int { return n * n })
+
+	fmt.Println(sum)
+	// Output: 14
+}
+
 func ExampleProduct() {
 	numbers := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
 

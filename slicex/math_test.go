@@ -18,6 +18,14 @@ func TestSum(t *testing.T) {
 	assert.Equal(t, 6.0, float64Result)
 }
 
+func TestSumBy(t *testing.T) {
+	emptyResult := slicex.SumBy([]int{}, func(i int) int { return i * i })
+	assert.Equal(t, 0, emptyResult)
+
+	intResult := slicex.SumBy([]int{1, 2, 3}, func(i int) int { return i * i })
+	assert.Equal(t, 14, intResult)
+}
+
 func TestProduct(t *testing.T) {
 	product := slicex.Product(numberList)
 	assert.Equal(t, 10229760, product)

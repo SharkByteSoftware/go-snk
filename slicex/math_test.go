@@ -97,3 +97,11 @@ func TestMin(t *testing.T) {
 	min = slicex.Min([]int{})
 	assert.Equal(t, 0, min)
 }
+
+func TestMinBy(t *testing.T) {
+	result := slicex.MinBy([]string{"a", "aa", "aaa"}, func(a string, b string) bool { return len(a) > len(b) })
+	assert.Equal(t, "a", result)
+
+	result = slicex.MinBy([]string{}, func(a string, b string) bool { return len(a) > len(b) })
+	assert.Equal(t, "", result)
+}

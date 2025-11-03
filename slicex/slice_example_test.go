@@ -295,12 +295,12 @@ func ExampleMax() {
 }
 
 func ExampleMaxBy() {
-	numbers := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
+	strings := []string{"a", "aa", "aaa"}
 
-	maximum := slicex.MaxBy(numbers, func(a int, b int) bool { return a < b })
+	longest := slicex.MaxBy(strings, func(a string, b string) bool { return len(a) < len(b) })
 
-	fmt.Println(maximum)
-	// Output: 30
+	fmt.Println(longest)
+	// Output: aaa
 }
 
 func ExampleMin() {
@@ -310,4 +310,13 @@ func ExampleMin() {
 
 	fmt.Println(minimum)
 	// Output: -1
+}
+
+func ExampleMinBy() {
+	strings := []string{"a", "aa", "aaa"}
+
+	shortest := slicex.MinBy(strings, func(a string, b string) bool { return len(a) > len(b) })
+
+	fmt.Println(shortest)
+	// Output: a
 }

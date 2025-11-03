@@ -1,7 +1,6 @@
 package slicex_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/SharkByteSoftware/go-snk/slicex"
@@ -67,8 +66,6 @@ func TestMean(t *testing.T) {
 }
 
 func TestMeanBy(t *testing.T) {
-	fmt.Println(slicex.SumBy([]int{-1, 0, 1, 2}, func(i int) int { return i * i }))
-
 	result := slicex.MeanBy([]float32{-1, 0, 1, 2}, func(i float32) float32 { return i * i })
 	assert.Equal(t, float32(1.5), result)
 

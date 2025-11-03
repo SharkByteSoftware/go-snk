@@ -285,6 +285,15 @@ func ExampleMean() {
 	// Output: 5
 }
 
+func ExampleMeanBy() {
+	numbers := []float32{-1, 0, 1, 2}
+
+	meanSquare := slicex.MeanBy(numbers, func(n float32) float32 { return n * n })
+
+	fmt.Println(meanSquare)
+	// Output: 1.5
+}
+
 func ExampleMax() {
 	numbers := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
 

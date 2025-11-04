@@ -249,6 +249,15 @@ func ExampleSum() {
 	// Output: 48
 }
 
+func ExampleSumBy() {
+	numbers := []int{1, 2, 3}
+
+	sum := slicex.SumBy(numbers, func(n int) int { return n * n })
+
+	fmt.Println(sum)
+	// Output: 14
+}
+
 func ExampleProduct() {
 	numbers := []int{1, 2, 3, 4, 5, 6, 8, 9, 10}
 
@@ -256,6 +265,15 @@ func ExampleProduct() {
 
 	fmt.Println(product)
 	// Output: 518400
+}
+
+func ExampleProductBy() {
+	strings := []string{"a", "aa", "aaa"}
+
+	product := slicex.ProductBy(strings, func(s string) int { return len(s) })
+
+	fmt.Println(product)
+	// Output: 6
 }
 
 func ExampleMean() {
@@ -267,6 +285,15 @@ func ExampleMean() {
 	// Output: 5
 }
 
+func ExampleMeanBy() {
+	numbers := []float32{-1, 0, 1, 2}
+
+	meanSquare := slicex.MeanBy(numbers, func(n float32) float32 { return n * n })
+
+	fmt.Println(meanSquare)
+	// Output: 1.5
+}
+
 func ExampleMax() {
 	numbers := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
 
@@ -276,6 +303,15 @@ func ExampleMax() {
 	// Output: 30
 }
 
+func ExampleMaxBy() {
+	strings := []string{"a", "aa", "aaa"}
+
+	longest := slicex.MaxBy(strings, func(a string, b string) bool { return len(a) < len(b) })
+
+	fmt.Println(longest)
+	// Output: aaa
+}
+
 func ExampleMin() {
 	numbers := []int{1, 30, 3, 4, 5, 6, -1, 9, 10}
 
@@ -283,4 +319,13 @@ func ExampleMin() {
 
 	fmt.Println(minimum)
 	// Output: -1
+}
+
+func ExampleMinBy() {
+	strings := []string{"a", "aa", "aaa"}
+
+	shortest := slicex.MinBy(strings, func(a string, b string) bool { return len(a) > len(b) })
+
+	fmt.Println(shortest)
+	// Output: a
 }

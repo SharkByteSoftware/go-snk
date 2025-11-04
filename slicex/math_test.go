@@ -18,6 +18,14 @@ func TestSum(t *testing.T) {
 	assert.Equal(t, 6.0, float64Result)
 }
 
+func TestSumBy(t *testing.T) {
+	result := slicex.SumBy([]int{1, 2, 3}, func(i int) int { return i * i })
+	assert.Equal(t, 14, result)
+
+	result = slicex.SumBy([]int{}, func(i int) int { return i * i })
+	assert.Equal(t, 0, result)
+}
+
 func TestProduct(t *testing.T) {
 	product := slicex.Product(numberList)
 	assert.Equal(t, 10229760, product)
@@ -30,6 +38,14 @@ func TestProduct(t *testing.T) {
 
 	product = slicex.Product([]int{})
 	assert.Equal(t, 1, product)
+}
+
+func TestProductBy(t *testing.T) {
+	result := slicex.ProductBy([]string{"a", "aa", "aaa"}, func(s string) int { return len(s) })
+	assert.Equal(t, 6, result)
+
+	result = slicex.ProductBy([]string{}, func(s string) int { return len(s) })
+	assert.Equal(t, 1, result)
 }
 
 func TestMean(t *testing.T) {
@@ -49,6 +65,14 @@ func TestMean(t *testing.T) {
 	assert.Equal(t, 0, mean)
 }
 
+func TestMeanBy(t *testing.T) {
+	result := slicex.MeanBy([]float32{-1, 0, 1, 2}, func(i float32) float32 { return i * i })
+	assert.Equal(t, float32(1.5), result)
+
+	result = slicex.MeanBy([]float32{}, func(i float32) float32 { return i * i })
+	assert.Equal(t, float32(0), result)
+}
+
 func TestMax(t *testing.T) {
 	max := slicex.Max(numberList)
 	assert.Equal(t, 333, max)
@@ -58,6 +82,14 @@ func TestMax(t *testing.T) {
 
 	max = slicex.Max([]int{})
 	assert.Equal(t, 0, max)
+}
+
+func TestMaxBy(t *testing.T) {
+	result := slicex.MaxBy([]string{"a", "aa", "aaa"}, func(a string, b string) bool { return len(a) < len(b) })
+	assert.Equal(t, "aaa", result)
+
+	result = slicex.MaxBy([]string{}, func(a string, b string) bool { return len(a) < len(b) })
+	assert.Equal(t, "", result)
 }
 
 func TestMin(t *testing.T) {
@@ -72,4 +104,12 @@ func TestMin(t *testing.T) {
 
 	min = slicex.Min([]int{})
 	assert.Equal(t, 0, min)
+}
+
+func TestMinBy(t *testing.T) {
+	result := slicex.MinBy([]string{"a", "aa", "aaa"}, func(a string, b string) bool { return len(a) > len(b) })
+	assert.Equal(t, "a", result)
+
+	result = slicex.MinBy([]string{}, func(a string, b string) bool { return len(a) > len(b) })
+	assert.Equal(t, "", result)
 }

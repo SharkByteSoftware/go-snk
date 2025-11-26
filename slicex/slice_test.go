@@ -129,6 +129,11 @@ func TestSlice_FindOr(t *testing.T) {
 	assert.Equal(t, 256, result)
 }
 
+func TestSlice_Contains(t *testing.T) {
+	assert.True(t, slicex.Contains(numberList, 256))
+	assert.False(t, slicex.Contains(numberList, 88))
+}
+
 func TestSlice_Any(t *testing.T) {
 	result := slicex.Any(numberList, 0)
 	assert.False(t, result)

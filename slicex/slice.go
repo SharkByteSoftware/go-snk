@@ -138,6 +138,12 @@ func FindOrBy[S ~[]T, T any](slice S, predicate func(item T) bool, fallback T) T
 	return conditional.If(found, item, fallback)
 }
 
+// Contains returns true if the slice contains the given candidate.
+func Contains[S ~[]T, T comparable](slice S, candidate T) bool {
+	_, found := Find(slice, candidate)
+	return found
+}
+
 // Any returns true if any item in the slice satisfies the predicate.
 func Any[S ~[]T, T comparable](slice S, candidate T) bool {
 	return AnyBy(slice, adapt.ItemEqualsAdapter(candidate))

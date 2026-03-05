@@ -5,16 +5,8 @@ linters:
   disable:
     - wsl
     - ireturn
-    - godox
 
   settings:
-    wsl_v5:
-      allow-first-in-block: true
-      allow-whole-block: false
-      branch-max-lines: 4
-    funlen:
-      lines: 83
-      statements: -1
     nlreturn:
       block-size: 2
     depguard:

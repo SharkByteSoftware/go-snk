@@ -1,19 +1,21 @@
-BASE_DIR = .
-COV_PROFILE = dist/covprofile.out
-TEST_OPTS = -vet=all -covermode=atomic -coverprofile=$(COV_PROFILE)
+BASE_DIR := .
+COV_PROFILE := dist/covprofile.out
+TEST_OPTS := -vet=all -covermode=atomic -coverprofile=$(COV_PROFILE)
 
-BENCH_PKGS = \
+BENCH_PKGS := \
 	slicex \
 	mapx \
 	containers/sets \
 	containers/lists
 
-BENCHMARKS = $(BENCH_PKGS:%=bench/%)
-BENCH_COUNT = 1
+BENCHMARKS := $(BENCH_PKGS:%=bench/%)
+BENCH_COUNT := 1
 
-default: test vet
+.PHONY: default all test bench bench/% vet lint tidy clean dist godoc browse update-pkg-go-dev
 
-all: test vet
+default: test lint
+
+all: test lint bench
 
 test: | dist
 	$(printTarget)
@@ -23,9 +25,9 @@ test: | dist
 bench: $(BENCHMARKS)
 bench/%:
 	$(printTarget)
-	cd $(*) && go test -benchmem -count $(BENCH_COUNT) -bench .
+	cd $* && go test -benchmem -count $(BENCH_COUNT) -bench .
 
-vet:
+lint:
 	$(printTarget)
 	@golangci-lint run
 
@@ -53,7 +55,8 @@ browse:
 
 update-pkg-go-dev:
 	$(printTarget)
-	$(eval LATEST_TAG := $(shell git ls-remote --tags origin | grep -E 'v[0-9]+\.[0-9]+\.[0-9]+$$' | tail -n 1 | awk '{print $$2}' | sed 's#refs/tags/##'))
+	$(eval LATEST_TAG := $(shell git ls-remote --tags origin | grep -E 'v[0-9]+\.[0-9]+\.[0-9]+$$' | awk '{print $$2}' | sed 's#refs/tags/##' | sort -V | tail -n 1))
+	@test -n "$(LATEST_TAG)" || (echo "Could not determine latest tag" && exit 1)
 	@echo "Refreshing pkg.go.dev with: $(LATEST_TAG)"
 	@curl -s "https://proxy.golang.org/github.com/!shark!byte!software/go-snk/@v/$(LATEST_TAG).info" | jq
 

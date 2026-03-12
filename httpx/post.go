@@ -10,6 +10,9 @@ import (
 	"time"
 )
 
+var ()
+
+// Post sends an HTTP POST request to the specified URL with context, headers, and timeout and parses the response.
 func Post[T any, R any](ctx context.Context, url string, headers http.Header, payload T,
 	timeout time.Duration) (*R, error) {
 	body, err := json.Marshal(payload)

@@ -138,6 +138,12 @@ func FindOrBy[S ~[]T, T any](slice S, predicate func(item T) bool, fallback T) T
 	return conditional.If(found, item, fallback)
 }
 
+// Contains returns true if the slice contains the given candidate.
+func Contains[S ~[]T, T comparable](slice S, candidate T) bool {
+	_, found := Find(slice, candidate)
+	return found
+}
+
 // Any returns true if any item in the slice satisfies the predicate.
 func Any[S ~[]T, T comparable](slice S, candidate T) bool {
 	return AnyBy(slice, adapt.ItemEqualsAdapter(candidate))
@@ -209,7 +215,7 @@ func ApplyWithIndex[S ~[]T, T any](slice S, apply func(item T, index int)) {
 	}
 }
 
-// Reverse returns a slice with the revers of the slice.
+// Reverse returns a slice with the reverse of the slice.
 func Reverse[S ~[]T, T any](slice S) S {
 	result := slices.Clone(slice)
 	slices.Reverse(result)
@@ -235,12 +241,13 @@ func ToMap[S ~[]T, T any, K comparable](slice S, predicate func(item T) K) map[K
 	return result
 }
 
-// GroupBy returns a map of slices grouped by a key produced by a predicate function.
+// GroupBy returns a map of slices grouped by a key produced by a key selector function.
 func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map[R][]T {
 	result := make(map[R][]T, len(slice))
 
 	Apply(slice, func(item T) {
-		result[predicate(item)] = append(result[predicate(item)], item)
+		key := predicate(item)
+		result[key] = append(result[key], item)
 	})
 
 	return result
@@ -248,8 +255,8 @@ func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map
 
 // Partition splits a slice into two slices based on a predicate.
 func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
-	part1 := make(S, 0)
-	part2 := make(S, 0)
+	part1 := make(S, 0, len(slice))
+	part2 := make(S, 0, len(slice))
 
 	Apply(slice, func(item T) {
 		conditional.IfCall(predicate(item),
@@ -275,7 +282,7 @@ func Union[S ~[]T, T comparable](slice S, other S) S {
 		Values()
 }
 
-// Difference returns a slice with the union of the two slices.
+// Difference returns a slice with the difference of the two slices.
 func Difference[S ~[]T, T comparable](slice S, other S) S {
 	return sets.New[T](slice...).
 		Difference(sets.New[T](other...)).

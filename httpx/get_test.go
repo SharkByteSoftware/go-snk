@@ -9,6 +9,7 @@ import (
 
 	"github.com/SharkByteSoftware/go-snk/httpx"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const getResponse = `
@@ -33,21 +34,21 @@ func TestGet(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	resp, err := httpx.Get[MyStruct](context.Background(), ts.URL, http.Header{}, time.Second*1)
-	assert.NoError(t, err)
-	assert.Equal(t, "200 OK", resp.Status)
+	resp, err := httpx.Get[MyStruct](context.Background(), ts.URL, httpx.WithTimeout(time.Second*1))
+	require.NoError(t, err)
+	require.Equal(t, "200 OK", resp.Status)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.NotEmpty(t, resp.Header)
 	assert.Equal(t, "Test", resp.Result.Name)
 	assert.Equal(t, 18, resp.Result.Age)
 
-	resp, err = httpx.Get[MyStruct](nil, ts.URL, http.Header{}, time.Second*1)
-	assert.Error(t, err)
-	assert.Nil(t, resp)
+	resp, err = httpx.Get[MyStruct](nil, ts.URL, httpx.WithTimeout(time.Second*1))
+	require.Error(t, err)
+	require.Nil(t, resp)
 
-	resp, err = httpx.Get[MyStruct](context.Background(), "ts.URL", http.Header{}, 0)
-	assert.Error(t, err)
-	assert.Nil(t, resp)
+	resp, err = httpx.Get[MyStruct](context.Background(), "ts.URL", httpx.WithTimeout(0))
+	require.Error(t, err)
+	require.Nil(t, resp)
 	assert.Contains(t, err.Error(), "unsupported protocol scheme")
 }
 
@@ -59,9 +60,9 @@ func TestGet_BadPayload(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	response, err := httpx.Get[MyStruct](context.Background(), ts.URL, http.Header{}, time.Second*1)
-	assert.Error(t, err)
-	assert.Nil(t, response)
+	response, err := httpx.Get[MyStruct](context.Background(), ts.URL, httpx.WithTimeout(time.Second*1))
+	require.Error(t, err)
+	require.Nil(t, response)
 	assert.Contains(t, err.Error(), "invalid character")
 }
 
@@ -73,8 +74,8 @@ func TestGet_BadStatusCode(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	response, err := httpx.Get[MyStruct](context.Background(), ts.URL, http.Header{}, time.Second*1)
-	assert.Error(t, err)
-	assert.Nil(t, response)
+	response, err := httpx.Get[MyStruct](context.Background(), ts.URL, httpx.WithTimeout(time.Second*1))
+	require.Error(t, err)
+	require.Nil(t, response)
 	assert.Contains(t, err.Error(), "Name")
 }

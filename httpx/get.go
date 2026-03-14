@@ -7,19 +7,25 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
+
+	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
 // Get sends an HTTP GET request to the specified URL with context, headers, and timeout and parses the response.
-func Get[T any](ctx context.Context, url string, headers http.Header, timeout time.Duration) (*Response[T], error) {
+func Get[T any](ctx context.Context, url string, options ...Option) (*Response[T], error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header = headers
+	config := httpConfig{}
+	slicex.Apply(options, func(option Option) {
+		option(&config)
+	})
 
-	client := &http.Client{Timeout: timeout}
+	req.Header = config.headers
+
+	client := &http.Client{Timeout: config.timeout}
 
 	resp, err := client.Do(req)
 	if err != nil {

@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 	"time"
 )
@@ -34,11 +32,11 @@ func Post[T any, R any](ctx context.Context, url string, headers http.Header, pa
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
-		repBody, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf(" %d: %s", resp.StatusCode, string(repBody))
+		return nil, ErrNon2xxStatusCode
 	}
 
 	var result R

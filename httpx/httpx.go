@@ -1,55 +1,97 @@
 package httpx
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
 	"net/http"
 	"net/url"
-	"time"
 )
 
-const defaultTimeout = time.Second * 15
+var (
+	ErrClientCannotBeNil  = errors.New("http client cannot be nil") //nolint: revive
+	ErrContextCannotBeNil = errors.New("context cannot be nil")
+	ErrNon2xxStatusCode   = errors.New("non-2xx status code")
+	ErrInvalidTimeout     = errors.New("invalid timeout, must be positive")
+)
 
-type httpConfig struct {
-	headers http.Header
-	timeout time.Duration
-	params  url.Values
-}
+func clientWithAppliedConfig(config *httpxOptions) *http.Client {
+	if config.httpClient != nil {
+		return config.httpClient
+	}
 
-func newHttpConfig() *httpConfig {
-	return &httpConfig{
-		headers: make(http.Header),
-		timeout: defaultTimeout,
-		params:  make(url.Values),
+	return &http.Client{
+		Timeout: config.timeout,
 	}
 }
 
-type Option func(options *httpConfig)
-
-func WithHeader(key string, value string) Option {
-	return func(options *httpConfig) {
-		options.headers.Add(key, value)
+func newRequestWithAppliedConfig(
+	ctx context.Context,
+	method string,
+	baseURL string,
+	body io.Reader,
+	config *httpxOptions,
+) (*http.Request, error) {
+	base, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, err
 	}
+
+	base.RawQuery = config.params.Encode()
+
+	req, err := http.NewRequestWithContext(ctx, method, base.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header = config.headers
+
+	return req, nil
 }
 
-func WithHeaders(headers http.Header) Option {
-	return func(options *httpConfig) {
-		options.headers = headers
-	}
+func is2xx(code int) bool {
+	return code >= 200 && code <= 299
 }
 
-func WithTimeout(timeout time.Duration) Option {
-	return func(options *httpConfig) {
-		options.timeout = timeout
+func decodeResponse[T any](resp *http.Response, config *httpxOptions) (*Response[T], error) {
+	response := Response[T]{
+		Status:     resp.Status,
+		StatusCode: resp.StatusCode,
+		Header:     resp.Header,
 	}
-}
 
-func WithParam(key string, value string) Option {
-	return func(options *httpConfig) {
-		options.params[key] = []string{value}
+	if resp.StatusCode == http.StatusNoContent {
+		return &response, nil
 	}
-}
 
-func WithParams(params url.Values) Option {
-	return func(options *httpConfig) {
-		options.params = params
+	if !is2xx(resp.StatusCode) {
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return &response, fmt.Errorf("failed to read response body: %w", err)
+		}
+
+		response.RawBody = body
+
+		return &response, ErrNon2xxStatusCode
 	}
+
+	var rawBody bytes.Buffer
+	if config.rawBodyOnError {
+		resp.Body = io.NopCloser(io.TeeReader(resp.Body, &rawBody))
+	}
+
+	var result T
+
+	err := json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		response.RawBody = rawBody.Bytes()
+		return &response, fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	response.Result = &result
+
+	return &response, nil
 }

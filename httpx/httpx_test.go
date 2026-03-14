@@ -1,39 +1,48 @@
 package httpx
 
 import (
+	"context"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func TestWithHeader(t *testing.T) {
-	config := newHttpConfig()
+func Test_clientWithAppliedConfig(t *testing.T) {
+	config := newHTTPConfig()
 
-	WithHeader("Content-Type", "application/json")(config)
-	assert.Equal(t, http.Header{"Content-Type": []string{"application/json"}}, config.headers)
+	client := clientWithAppliedConfig(config)
+	require.NotNil(t, client)
+	assert.Equal(t, config.timeout, client.Timeout)
 
-	WithHeader("auth", "secret")(config)
-	assert.Equal(t,
-		http.Header{"Auth": []string{"secret"}, "Content-Type": []string{"application/json"}},
-		config.headers)
+	config.timeout = time.Second * 5
+	client = clientWithAppliedConfig(config)
+	require.NotNil(t, client)
+	assert.Equal(t, config.timeout, client.Timeout)
 }
 
-func TestWithHeaders(t *testing.T) {
-	config := newHttpConfig()
+func Test_newRequestWithAppliedConfig(t *testing.T) {
+	config := newHTTPConfig()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	WithHeaders(http.Header{})(config)
-	assert.Equal(t, http.Header{}, config.headers)
+	req, err := newRequestWithAppliedConfig(ctx, http.MethodGet, "https://google.com", nil, config)
+	require.NoError(t, err)
+	require.NotNil(t, req)
 
-	WithHeaders(http.Header{"Content-Type": []string{"application/json"}})(config)
-	assert.Equal(t, http.Header{"Content-Type": []string{"application/json"}}, config.headers)
+	assert.Equal(t, ctx, req.Context())
 }
 
-func TestWithTimeout(t *testing.T) {
+func Test_is2xx(t *testing.T) {
+	assert.True(t, is2xx(http.StatusOK))
+	assert.True(t, is2xx(http.StatusCreated))
+	assert.True(t, is2xx(http.StatusAccepted))
+	assert.False(t, is2xx(http.StatusBadRequest))
+	assert.False(t, is2xx(http.StatusInternalServerError))
+
 }
 
-func TestWithParam(t *testing.T) {
-}
-
-func TestWithParams(t *testing.T) {
+func Test_decodeResponse(t *testing.T) {
 }

@@ -1,12 +1,12 @@
+// Package httpx provides a simple HTTP client for Go.
 package httpx
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
-	"fmt"
-	"io"
 	"net/http"
-	"net/url"
 )
 
 var (
@@ -17,91 +17,92 @@ var (
 	ErrRawBodyIsNil     = errors.New("raw body cannot be nil")
 )
 
-func clientWithAppliedConfig(config *httpxOptions) *http.Client {
-	if config.httpClient != nil {
-		return config.httpClient
-	}
-
-	return &http.Client{
-		Timeout: config.timeout,
-	}
+// Get sends an HTTP GET request to the specified URL with context, headers, and timeout and parses the response.
+func Get[T any](ctx context.Context, url string, options ...Option) (*Response[T], error) {
+	return DoRequest[T](ctx, http.MethodGet, url, nil, options...)
 }
 
-func newRequestWithAppliedConfig(
-	ctx context.Context,
-	method string,
-	baseURL string,
-	body io.Reader,
-	config *httpxOptions,
-) (*http.Request, error) {
-	base, err := url.Parse(baseURL)
+// GetRawResponse sends an HTTP GET request to the specified URL with context, headers, and timeout.
+func GetRawResponse(ctx context.Context, url string, options ...Option) (*http.Response, error) {
+	return DoRawRequest(ctx, http.MethodGet, url, nil, options...)
+}
+
+// Post sends an HTTP POST request to the specified URL with context, headers, and timeout and parses the response.
+func Post[T any, R any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
+	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	base.RawQuery = config.params.Encode()
+	return DoRequest[R](ctx, http.MethodPost, url, bytes.NewReader(body), options...)
+}
 
-	req, err := http.NewRequestWithContext(ctx, method, base.String(), body)
+// PostRawResponse sends an HTTP POST request to the specified URL with context, headers, and timeout.
+func PostRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
+	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header = config.headers
-
-	return req, nil
+	return DoRawRequest(ctx, http.MethodPost, url, bytes.NewReader(body), options...)
 }
 
-func is2xx(code int) bool {
-	return code >= 200 && code <= 299
-}
-
-// DoRawRequest sends an HTTP request with the given method and body, without any shared request logic.
-func DoRawRequest(
-	ctx context.Context,
-	method string,
-	url string,
-	body io.Reader,
-	options ...Option,
-) (*http.Response, error) {
-	if ctx == nil {
-		return nil, ErrContextIsNil
-	}
-
-	config, err := configWithAppliedOptions(options)
-	if err != nil {
-		return nil, fmt.Errorf("failed to apply options: %w", err)
-	}
-
-	req, err := newRequestWithAppliedConfig(ctx, method, url, body, config)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create %s request: %w", method, err)
-	}
-
-	client := clientWithAppliedConfig(config)
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("failed to send %s request: %w", method, err)
-	}
-
-	return resp, nil
-}
-
-// DoRequest sends an HTTP request with the given method and body, applying shared request logic.
-func DoRequest[T any](
-	ctx context.Context,
-	method string,
-	url string,
-	body io.Reader,
-	options ...Option,
-) (*Response[T], error) {
-	resp, err := DoRawRequest(ctx, method, url, body, options...)
+// Put sends an HTTP PUT request to the specified URL with context, headers, and timeout and parses the response.
+func Put[T any, R any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
+	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	//nolint: errcheck
-	defer resp.Body.Close()
+	return DoRequest[R](ctx, http.MethodPut, url, bytes.NewReader(body), options...)
+}
 
-	return decodeResponse[T](resp)
+// PutRawResponse sends an HTTP PUT request to the specified URL with context, headers, and timeout.
+func PutRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	return DoRawRequest(ctx, http.MethodPut, url, bytes.NewReader(body), options...)
+}
+
+// Patch sends an HTTP PATCH request to the specified URL with context, headers, and timeout and parses the response.
+func Patch[T any, R any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	return DoRequest[R](ctx, http.MethodPatch, url, bytes.NewReader(body), options...)
+}
+
+// PatchRawResponse sends an HTTP PATCH request to the specified URL with context, headers, and timeout.
+func PatchRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	return DoRawRequest(ctx, http.MethodPatch, url, bytes.NewReader(body), options...)
+}
+
+// Delete sends an HTTP DELETE request to the specified URL with context, headers, and timeout and parses the response.
+func Delete[T any](ctx context.Context, url string, options ...Option) (*Response[T], error) {
+	return DoRequest[T](ctx, http.MethodDelete, url, nil, options...)
+}
+
+// DeleteRawResponse sends an HTTP DELETE request to the specified URL with context, headers, and timeout.
+func DeleteRawResponse(ctx context.Context, url string, options ...Option) (*http.Response, error) {
+	return DoRawRequest(ctx, http.MethodDelete, url, nil, options...)
+}
+
+// Head sends an HTTP HEAD request to the specified URL with context, headers, and timeout.
+func Head(ctx context.Context, url string, options ...Option) (*http.Response, error) {
+	return DoRawRequest(ctx, http.MethodHead, url, nil, options...)
+}
+
+// Options sends an HTTP OPTIONS request to the specified URL with context, headers, and timeout.
+func Options(ctx context.Context, url string, options ...Option) (*http.Response, error) {
+	return DoRawRequest(ctx, http.MethodOptions, url, nil, options...)
 }

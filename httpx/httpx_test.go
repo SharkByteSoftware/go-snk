@@ -292,6 +292,61 @@ func TestPut(t *testing.T) {
 		assertNilContext(t, err, resp)
 	})
 }
+func TestPutRawResponse(t *testing.T) {
+	ctx := context.Background()
+	payload := testPayload{Name: "Test", Age: 18}
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.PutRawResponse(ctx, ts.URL, payload)
+		require.NoError(t, err)
+		assertRawStatusOk(t, err, resp)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.PutRawResponse(ctx, ts.URL, payload)
+		assertRawStatusOkNoContent(t, err, resp)
+	})
+
+	t.Run("invalid payload", func(t *testing.T) {
+		resp, err := httpx.PutRawResponse(ctx, "http://example.com", complex(1, 2))
+		assertRawInvalidPayload(t, err, resp)
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.PutRawResponse(ctx, ts.URL, payload)
+		assertRawStatusOkInvalidResponse(t, err, resp)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.PutRawResponse(ctx, ts.URL, payload)
+		assertRawNon2xxStatusCode(t, err, resp)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.PutRawResponse(ctx, badURL, payload)
+		assertRawTransportError(t, http.MethodPut, err, resp)
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.PutRawResponse(nil, ts.URL, payload)
+		assertRawNilContext(t, err, resp)
+	})
+}
 
 func TestPatch(t *testing.T) {
 	ctx := context.Background()
@@ -692,140 +747,6 @@ func assertRawNilContext(t *testing.T, err error, resp *http.Response) {
 	require.Nil(t, resp)
 	require.ErrorIs(t, err, httpx.ErrContextIsNil)
 }
-
-//func TestGet_EmptyContext(t *testing.T) {
-//	resp, err := httpx.Get[testResponse](nil, "http://localhost")
-//
-//	require.Error(t, err)
-//	require.Nil(t, resp)
-//
-//	assert.ErrorIs(t, err, httpx.ErrContextIsNil)
-//}
-//
-//func TestGet_FailConfigWithAppliedOptions(t *testing.T) {
-//	ctx := context.Background()
-//
-//	resp, err := httpx.Get[testResponse](ctx, "http://localhost", httpx.WithHTTPClient(nil))
-//
-//	require.Error(t, err)
-//	require.Nil(t, resp)
-//
-//	assert.ErrorIs(t, err, httpx.ErrHTTPClientIsNil)
-//}
-//
-//func TestGetEmptyResponse(t *testing.T) {
-//	ctx := context.Background()
-//
-//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		w.Header().Set("Content-Type", "application/json")
-//		w.WriteHeader(http.StatusOK)
-//		w.Write([]byte("{}"))
-//	}))
-//	defer ts.Close()
-//
-//	resp, err := httpx.Get[testResponse](ctx, ts.URL)
-//	require.NoError(t, err)
-//	require.NotNil(t, resp)
-//	require.Equal(t, http.StatusOK, resp.StatusCode)
-//
-//	assert.Equal(t, "", resp.Result.Name)
-//	assert.Equal(t, 0, resp.Result.Age)
-//	assert.Empty(t, resp.RawBody)
-//}
-//
-//func TestGet_InvalidURL(t *testing.T) {
-//	ctx := context.Background()
-//
-//	resp, err := httpx.Get[testResponse](ctx, "http://invalid url")
-//	require.Error(t, err)
-//	require.Nil(t, resp)
-//	assert.ErrorContains(t, err, "invalid url")
-//
-//	resp, err = httpx.Get[testResponse](ctx, "file://localhost")
-//	require.Error(t, err)
-//	require.Nil(t, resp)
-//	assert.ErrorContains(t, err, "localhost")
-//
-//	resp, err = httpx.Get[testResponse](ctx, "")
-//	require.Error(t, err)
-//	require.Nil(t, resp)
-//	assert.ErrorContains(t, err, "unsupported protocol scheme")
-//}
-//
-//func TestGet_NoContent(t *testing.T) {
-//	ctx := context.Background()
-//
-//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		w.WriteHeader(http.StatusNoContent)
-//	}))
-//	defer ts.Close()
-//
-//	resp, err := httpx.Get[testResponse](ctx, ts.URL)
-//	require.NoError(t, err)
-//	require.NotNil(t, resp)
-//
-//	require.Equal(t, http.StatusNoContent, resp.StatusCode)
-//	assert.Nil(t, resp.Result)
-//	assert.Empty(t, resp.RawBody)
-//}
-//func TestGet_BadResponseBody(t *testing.T) {
-//	ctx := context.Background()
-//
-//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		w.WriteHeader(http.StatusOK)
-//		w.Write([]byte(badResponse))
-//	}))
-//	defer ts.Close()
-//
-//	response, err := httpx.Get[testResponse](ctx, ts.URL)
-//	require.Error(t, err)
-//	require.NotNil(t, response)
-//	assert.Contains(t, err.Error(), "failed to decode response body")
-//
-//	assert.Equal(t, "200 OK", response.Status)
-//	assert.Equal(t, http.StatusOK, response.StatusCode)
-//	assert.Nil(t, response.Result)
-//	assert.Equal(t, []byte(badResponse), response.RawBody)
-//}
-//
-//func TestGet_BadRequest(t *testing.T) {
-//	ctx := context.Background()
-//
-//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		w.WriteHeader(http.StatusBadRequest)
-//	}))
-//	defer ts.Close()
-//
-//	response, err := httpx.Get[testResponse](ctx, ts.URL)
-//	require.Error(t, err)
-//	require.NotNil(t, response)
-//
-//	assert.Equal(t, "400 Bad Request", response.Status)
-//	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
-//	assert.NotEmpty(t, response.Header)
-//	assert.Nil(t, response.Result)
-//	assert.Empty(t, response.RawBody)
-//}
-//
-//func TestGet_BadRequestRawBodyOnError(t *testing.T) {
-//	ctx := context.Background()
-//
-//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		w.WriteHeader(http.StatusBadRequest)
-//		w.Write([]byte(badResponse))
-//	}))
-//	defer ts.Close()
-//
-//	response, err := httpx.Get[testResponse](ctx, ts.URL)
-//	require.Error(t, err)
-//	require.NotNil(t, response)
-//
-//	assert.Equal(t, "400 Bad Request", response.Status)
-//	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
-//	assert.NotEmpty(t, response.Header)
-//	assert.Nil(t, response.Result)
-//	assert.Equal(t, []byte(badResponse), response.RawBody)
-//}
 
 func setupTestServer(statusCode int, body string) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

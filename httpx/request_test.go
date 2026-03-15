@@ -1,54 +1,51 @@
-package httpx
+package httpx_test
 
 import (
 	"context"
 	"net/http"
-	"net/url"
 	"testing"
-	"time"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/SharkByteSoftware/go-snk/httpx"
 	"github.com/stretchr/testify/require"
 )
 
-func Test_clientWithAppliedConfig(t *testing.T) {
-	config := newHTTPConfig()
+func TestDoRawRequest(t *testing.T) {
+	t.Run("happy path", func(t *testing.T) {
+		ctx := context.Background()
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
 
-	client := clientWithAppliedConfig(config)
-	require.NotNil(t, client)
-	assert.Equal(t, config.timeout, client.Timeout)
+		resp, err := httpx.DoRawRequest(ctx, http.MethodGet, ts.URL, nil)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Equal(t, http.StatusOK, resp.StatusCode)
+	})
 
-	config.timeout = time.Second * 5
-	client = clientWithAppliedConfig(config)
-	require.NotNil(t, client)
-	assert.Equal(t, config.timeout, client.Timeout)
-	assert.NotEqual(t, http.DefaultClient, client)
+	t.Run("happy path with client", func(t *testing.T) {
+		ctx := context.Background()
+		ts := setupTestServer(http.StatusOK, "")
+		defer ts.Close()
 
-	config.httpClient = http.DefaultClient
-	client = clientWithAppliedConfig(config)
-	require.NotNil(t, client)
-	assert.Equal(t, http.DefaultClient, client)
-}
+		resp, err := httpx.DoRawRequest(ctx, http.MethodGet, ts.URL, nil,
+			httpx.WithHTTPClient(http.DefaultClient))
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Equal(t, http.StatusOK, resp.StatusCode)
+	})
 
-func Test_newRequestWithAppliedConfig(t *testing.T) {
-	config := newHTTPConfig()
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	t.Run("bad option", func(t *testing.T) {
+		ctx := context.Background()
+		ts := setupTestServer(http.StatusOK, "")
+		defer ts.Close()
 
-	req, err := newRequestWithAppliedConfig(ctx, http.MethodGet, "https://google.com", nil, config)
-	require.NoError(t, err)
-	require.NotNil(t, req)
+		resp, err := httpx.DoRawRequest(ctx, http.MethodGet, ts.URL, nil, httpx.WithHTTPClient(nil))
+		require.Error(t, err)
+		require.Nil(t, resp)
+	})
 
-	assert.Equal(t, ctx, req.Context())
-
-	config.params = url.Values{"q": []string{"test"}}
-	req, err = newRequestWithAppliedConfig(ctx, http.MethodGet, "https://google.com", nil, config)
-	require.NoError(t, err)
-	require.NotNil(t, req)
-	assert.Equal(t, "q=test", req.URL.RawQuery)
-	assert.Equal(t, "https://google.com?q=test", req.URL.String())
-
-	req, err = newRequestWithAppliedConfig(nil, http.MethodGet, "https://google.com", nil, config)
-	require.Error(t, err)
-	require.Nil(t, req)
+	t.Run("bad url", func(t *testing.T) {
+		resp, err := httpx.DoRawRequest(context.Background(), http.MethodGet, "snk://google.com <something>", nil)
+		require.Error(t, err)
+		require.Nil(t, resp)
+	})
 }

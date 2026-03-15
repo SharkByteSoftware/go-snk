@@ -84,3 +84,43 @@ func Test_decodeResponse5500StatusCode(t *testing.T) {
 	assert.Nil(t, resp.Result)
 	assert.Empty(t, resp.RawBody)
 }
+
+func TestDecodeRawBody(t *testing.T) {
+	t.Run("happy path", func(t *testing.T) {
+		resp := &httpx.Response[testResponse]{
+			StatusCode: http.StatusOK,
+			RawBody:    []byte(goodResponse),
+		}
+
+		result, err := httpx.DecodeRawBody[testResponse](resp)
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		assert.Equal(t, "Test", result.Name)
+		assert.Equal(t, 18, result.Age)
+	})
+
+	t.Run("nil raw body", func(t *testing.T) {
+		resp := &httpx.Response[testResponse]{
+			StatusCode: http.StatusOK,
+			RawBody:    nil,
+		}
+
+		result, err := httpx.DecodeRawBody[testResponse](resp)
+		require.Error(t, err)
+		require.Nil(t, result)
+		assert.ErrorIs(t, err, httpx.ErrRawBodyIsNil)
+	})
+
+	t.Run("decode failure", func(t *testing.T) {
+		resp := &httpx.Response[testResponse]{
+			StatusCode: http.StatusOK,
+			RawBody:    []byte(badResponse),
+		}
+
+		result, err := httpx.DecodeRawBody[testResponse](resp)
+		require.Error(t, err)
+		require.Nil(t, result)
+		assert.ErrorContains(t, err, "failed to decode raw body:")
+	})
+
+}

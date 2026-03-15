@@ -36,8 +36,6 @@ func (e errReader) Close() error {
 }
 
 func Test_decodeResponse(t *testing.T) {
-	config := newHTTPConfig()
-
 	response := &http.Response{
 		StatusCode: http.StatusOK,
 		Status:     http.StatusText(http.StatusOK),
@@ -45,18 +43,7 @@ func Test_decodeResponse(t *testing.T) {
 		Body:       io.NopCloser(strings.NewReader(goodResponse)),
 	}
 
-	resp, err := decodeResponse[testResponse](response, config)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-
-	assert.Equal(t, "Test", resp.Result.Name)
-	assert.Equal(t, 18, resp.Result.Age)
-	assert.Empty(t, resp.RawBody)
-
-	config.rawBodyOnError = true
-	response.Body = io.NopCloser(strings.NewReader(goodResponse))
-
-	resp, err = decodeResponse[testResponse](response, config)
+	resp, err := decodeResponse[testResponse](response)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 
@@ -66,8 +53,6 @@ func Test_decodeResponse(t *testing.T) {
 }
 
 func Test_decodeResponseDecodeFailure(t *testing.T) {
-	config := newHTTPConfig()
-
 	response := &http.Response{
 		StatusCode: http.StatusOK,
 		Status:     http.StatusText(http.StatusOK),
@@ -75,19 +60,7 @@ func Test_decodeResponseDecodeFailure(t *testing.T) {
 		Body:       io.NopCloser(strings.NewReader(badResponse)),
 	}
 
-	resp, err := decodeResponse[testResponse](response, config)
-	require.Error(t, err)
-	require.NotNil(t, resp)
-
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, http.StatusText(http.StatusOK), resp.Status)
-	assert.Nil(t, resp.Result)
-	assert.Empty(t, resp.RawBody)
-
-	config.rawBodyOnError = true
-	response.Body = io.NopCloser(strings.NewReader(badResponse))
-
-	resp, err = decodeResponse[testResponse](response, config)
+	resp, err := decodeResponse[testResponse](response)
 	require.Error(t, err)
 	require.NotNil(t, resp)
 
@@ -98,8 +71,6 @@ func Test_decodeResponseDecodeFailure(t *testing.T) {
 }
 
 func Test_decodeResponse5500StatusCode(t *testing.T) {
-	config := newHTTPConfig()
-
 	response := &http.Response{
 		StatusCode: http.StatusInternalServerError,
 		Status:     http.StatusText(http.StatusInternalServerError),
@@ -107,7 +78,7 @@ func Test_decodeResponse5500StatusCode(t *testing.T) {
 		Body:       io.NopCloser(strings.NewReader(goodResponse)),
 	}
 
-	resp, err := decodeResponse[testResponse](response, config)
+	resp, err := decodeResponse[testResponse](response)
 	require.Error(t, err)
 	require.NotNil(t, resp)
 
@@ -117,7 +88,7 @@ func Test_decodeResponse5500StatusCode(t *testing.T) {
 	assert.Equal(t, []byte(goodResponse), resp.RawBody)
 
 	response.Body = errReader{}
-	resp, err = decodeResponse[testResponse](response, config)
+	resp, err = decodeResponse[testResponse](response)
 	require.Error(t, err)
 	require.NotNil(t, resp)
 

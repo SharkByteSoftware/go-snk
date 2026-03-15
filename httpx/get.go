@@ -20,17 +20,18 @@ func Get[T any](ctx context.Context, url string, options ...Option) (*Response[T
 
 	req, err := newRequestWithAppliedConfig(ctx, http.MethodGet, url, nil, config)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create %s request: %w", http.MethodGet, err)
 	}
 
 	client := clientWithAppliedConfig(config)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to send %s request: %w", http.MethodGet, err)
 	}
 
-	defer func() { _ = resp.Body.Close() }()
+	//nolint: errcheck
+	defer resp.Body.Close()
 
-	return decodeResponse[T](resp, config)
+	return decodeResponse[T](resp)
 }

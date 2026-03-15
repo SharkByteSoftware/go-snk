@@ -36,7 +36,7 @@ func TestGet(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	resp, err := httpx.Get[testResponse](ctx, ts.URL, httpx.RawBodyOnError())
+	resp, err := httpx.Get[testResponse](ctx, ts.URL)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
@@ -135,7 +135,7 @@ func TestGet_BadResponseBody(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	response, err := httpx.Get[testResponse](ctx, ts.URL, httpx.RawBodyOnError())
+	response, err := httpx.Get[testResponse](ctx, ts.URL)
 	require.Error(t, err)
 	require.NotNil(t, response)
 	assert.Contains(t, err.Error(), "failed to decode response body")
@@ -174,7 +174,7 @@ func TestGet_BadRequestRawBodyOnError(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	response, err := httpx.Get[testResponse](ctx, ts.URL, httpx.RawBodyOnError())
+	response, err := httpx.Get[testResponse](ctx, ts.URL)
 	require.Error(t, err)
 	require.NotNil(t, response)
 

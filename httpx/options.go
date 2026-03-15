@@ -13,19 +13,17 @@ import (
 const defaultTimeout = time.Second * 15
 
 type httpxOptions struct {
-	httpClient     *http.Client
-	headers        http.Header
-	timeout        time.Duration
-	params         url.Values
-	rawBodyOnError bool
+	httpClient *http.Client
+	headers    http.Header
+	timeout    time.Duration
+	params     url.Values
 }
 
 func newHTTPConfig() *httpxOptions {
 	return &httpxOptions{
-		headers:        make(http.Header),
-		timeout:        defaultTimeout,
-		params:         make(url.Values),
-		rawBodyOnError: false,
+		headers: make(http.Header),
+		timeout: defaultTimeout,
+		params:  make(url.Values),
 	}
 }
 
@@ -86,14 +84,6 @@ func WithParam(key string, value string) Option {
 func WithParams(params url.Values) Option {
 	return func(options *httpxOptions) error {
 		options.params = mapx.Combine(options.params, params)
-		return nil
-	}
-}
-
-// RawBodyOnError enables the raw body to be returned on error.
-func RawBodyOnError() Option {
-	return func(options *httpxOptions) error {
-		options.rawBodyOnError = true
 		return nil
 	}
 }

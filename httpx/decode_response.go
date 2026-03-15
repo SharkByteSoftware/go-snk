@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func decodeResponse[T any](resp *http.Response, config *httpxOptions) (*Response[T], error) {
+func decodeResponse[T any](resp *http.Response) (*Response[T], error) {
 	response := Response[T]{
 		Status:     resp.Status,
 		StatusCode: resp.StatusCode,
@@ -31,9 +31,8 @@ func decodeResponse[T any](resp *http.Response, config *httpxOptions) (*Response
 	}
 
 	var rawBody bytes.Buffer
-	if config.rawBodyOnError {
-		resp.Body = io.NopCloser(io.TeeReader(resp.Body, &rawBody))
-	}
+
+	resp.Body = io.NopCloser(io.TeeReader(resp.Body, &rawBody))
 
 	var result T
 

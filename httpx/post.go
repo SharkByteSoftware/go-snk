@@ -38,5 +38,5 @@ func Post[T any, R any](ctx context.Context, url string, payload T, options ...O
 
 	defer func() { _ = resp.Body.Close() }()
 
-	return decodeResponse[R](resp, config)
+	return decodeResponse[R](resp)
 }

@@ -28,7 +28,7 @@ func GetRawResponse(ctx context.Context, url string, options ...Option) (*http.R
 }
 
 // Post sends an HTTP POST request to the specified URL with context, headers, and timeout and parses the response.
-func Post[T any, R any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
+func Post[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func PostRawResponse[T any](ctx context.Context, url string, payload T, options 
 }
 
 // Put sends an HTTP PUT request to the specified URL with context, headers, and timeout and parses the response.
-func Put[T any, R any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
+func Put[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func PutRawResponse[T any](ctx context.Context, url string, payload T, options .
 }
 
 // Patch sends an HTTP PATCH request to the specified URL with context, headers, and timeout and parses the response.
-func Patch[T any, R any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
+func Patch[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err

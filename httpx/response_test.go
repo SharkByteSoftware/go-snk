@@ -1,4 +1,4 @@
-package httpx
+package httpx_test
 
 import (
 	"errors"
@@ -7,23 +7,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/SharkByteSoftware/go-snk/httpx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
-
-const goodResponse = `
-{
-	"Name": "Test",
-	"Age": 18
-}
-`
-
-const badResponse = "bad response"
-
-type testResponse struct {
-	Name string
-	Age  int
-}
 
 type errReader struct{}
 
@@ -43,7 +30,7 @@ func Test_decodeResponse(t *testing.T) {
 		Body:       io.NopCloser(strings.NewReader(goodResponse)),
 	}
 
-	resp, err := decodeResponse[testResponse](response)
+	resp, err := httpx.DecodeResponse[testResponse](response)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 
@@ -60,7 +47,7 @@ func Test_decodeResponseDecodeFailure(t *testing.T) {
 		Body:       io.NopCloser(strings.NewReader(badResponse)),
 	}
 
-	resp, err := decodeResponse[testResponse](response)
+	resp, err := httpx.DecodeResponse[testResponse](response)
 	require.Error(t, err)
 	require.NotNil(t, resp)
 
@@ -78,7 +65,7 @@ func Test_decodeResponse5500StatusCode(t *testing.T) {
 		Body:       io.NopCloser(strings.NewReader(goodResponse)),
 	}
 
-	resp, err := decodeResponse[testResponse](response)
+	resp, err := httpx.DecodeResponse[testResponse](response)
 	require.Error(t, err)
 	require.NotNil(t, resp)
 
@@ -88,7 +75,7 @@ func Test_decodeResponse5500StatusCode(t *testing.T) {
 	assert.Equal(t, []byte(goodResponse), resp.RawBody)
 
 	response.Body = errReader{}
-	resp, err = decodeResponse[testResponse](response)
+	resp, err = httpx.DecodeResponse[testResponse](response)
 	require.Error(t, err)
 	require.NotNil(t, resp)
 

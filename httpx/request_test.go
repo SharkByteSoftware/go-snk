@@ -52,12 +52,3 @@ func Test_newRequestWithAppliedConfig(t *testing.T) {
 	require.Error(t, err)
 	require.Nil(t, req)
 }
-
-func Test_is2xx(t *testing.T) {
-	assert.True(t, is2xx(http.StatusOK))
-	assert.True(t, is2xx(http.StatusCreated))
-	assert.True(t, is2xx(http.StatusAccepted))
-	assert.False(t, is2xx(http.StatusBadRequest))
-	assert.False(t, is2xx(http.StatusInternalServerError))
-
-}

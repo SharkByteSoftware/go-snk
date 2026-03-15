@@ -50,7 +50,7 @@ func DoRequest[T any](ctx context.Context, method string, url string, body io.Re
 	//nolint: errcheck
 	defer resp.Body.Close()
 
-	return decodeResponse[T](resp)
+	return DecodeResponse[T](resp)
 }
 
 func clientWithAppliedConfig(config *httpxOptions) *http.Client {
@@ -85,8 +85,4 @@ func newRequestWithAppliedConfig(
 	req.Header = config.headers
 
 	return req, nil
-}
-
-func is2xx(code int) bool {
-	return code >= 200 && code <= 299
 }

@@ -2,6 +2,7 @@ package httpx_test
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -31,9 +32,643 @@ type testPayload struct {
 func TestGet(t *testing.T) {
 	ctx := context.Background()
 
-	// happy path
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	resp, err := httpx.Get[testResponse](ctx, ts.URL)
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Get[testResponse](ctx, ts.URL)
+		assertStatusOkGoodResponse(t, err, resp)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.Get[testResponse](ctx, ts.URL)
+		assertStatusOkNoContent(t, err, resp)
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Get[testResponse](ctx, ts.URL)
+		assertStatusOkInvalidResponse(t, err, resp)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.Get[testResponse](ctx, ts.URL)
+		assertNon2xxStatus(t, err, resp)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.Get[testResponse](ctx, badURL)
+		assertTransportError(t, http.MethodGet, err, resp)
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Get[testResponse](nil, ts.URL)
+		assertNilContext(t, err, resp)
+	})
+}
+
+func TestGetRawResponse(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.GetRawResponse(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.GetRawResponse(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+	})
+
+	t.Run("does not decode invalid json body", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.GetRawResponse(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.GetRawResponse(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.GetRawResponse(ctx, badURL)
+		require.Error(t, err)
+		require.Nil(t, resp)
+		assert.ErrorContains(t, err, "failed to send GET request:")
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.GetRawResponse(nil, ts.URL)
+		require.Error(t, err)
+		require.Nil(t, resp)
+		require.ErrorIs(t, err, httpx.ErrContextIsNil)
+	})
+}
+
+func TestPost(t *testing.T) {
+	ctx := context.Background()
+	payload := testPayload{Name: "Test", Age: 18}
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Post[testResponse](ctx, ts.URL, payload)
+		assertStatusOkGoodResponse(t, err, resp)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.Post[testResponse](ctx, ts.URL, payload)
+		assertStatusOkNoContent(t, err, resp)
+	})
+
+	t.Run("invalid payload", func(t *testing.T) {
+		resp, err := httpx.Post[testResponse](ctx, "http://example.com", complex(1, 2))
+		assertInvalidPayload(t, err, resp)
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Post[testResponse](ctx, ts.URL, payload)
+		assertStatusOkInvalidResponse(t, err, resp)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.Post[testResponse](ctx, ts.URL, payload)
+		assertNon2xxStatus(t, err, resp)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.Post[testResponse](ctx, badURL, payload)
+		assertTransportError(t, http.MethodPost, err, resp)
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Post[testResponse](nil, ts.URL, payload)
+		assertNilContext(t, err, resp)
+	})
+}
+
+func TestPostRawResponse(t *testing.T) {
+	ctx := context.Background()
+	payload := testPayload{Name: "Test", Age: 18}
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.PostRawResponse(ctx, ts.URL, payload)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.PostRawResponse(ctx, ts.URL, payload)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Equal(t, http.StatusNoContent, resp.StatusCode)
+	})
+
+	t.Run("invalid payload", func(t *testing.T) {
+		resp, err := httpx.PostRawResponse(ctx, "http://example.com", complex(1, 2))
+		require.Error(t, err)
+		require.Nil(t, resp)
+		assert.ErrorContains(t, err, "json: unsupported type")
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.PostRawResponse(ctx, ts.URL, payload)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.PostRawResponse(ctx, ts.URL, payload)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.PostRawResponse(ctx, badURL, payload)
+		require.Error(t, err)
+		require.Nil(t, resp)
+		assert.ErrorContains(t, err, "failed to send POST request:")
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.PostRawResponse(nil, ts.URL, payload)
+		require.Error(t, err)
+		require.Nil(t, resp)
+		require.ErrorIs(t, err, httpx.ErrContextIsNil)
+	})
+}
+
+func TestPut(t *testing.T) {
+	ctx := context.Background()
+	payload := testPayload{Name: "Test", Age: 18}
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Put[testResponse](ctx, ts.URL, payload)
+		assertStatusOkGoodResponse(t, err, resp)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.Put[testResponse](ctx, ts.URL, payload)
+		assertStatusOkNoContent(t, err, resp)
+	})
+
+	t.Run("invalid payload", func(t *testing.T) {
+		resp, err := httpx.Put[testResponse](ctx, "http://example.com", complex(1, 2))
+		assertInvalidPayload(t, err, resp)
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Put[testResponse](ctx, ts.URL, payload)
+		assertStatusOkInvalidResponse(t, err, resp)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.Put[testResponse](ctx, ts.URL, payload)
+		assertNon2xxStatus(t, err, resp)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.Put[testResponse](ctx, badURL, payload)
+		assertTransportError(t, http.MethodPut, err, resp)
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Put[testResponse](nil, ts.URL, payload)
+		assertNilContext(t, err, resp)
+	})
+}
+
+func TestPatch(t *testing.T) {
+	ctx := context.Background()
+	payload := testPayload{Name: "Test", Age: 18}
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Patch[testResponse](ctx, ts.URL, payload)
+		assertStatusOkGoodResponse(t, err, resp)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.Patch[testResponse](ctx, ts.URL, payload)
+		assertStatusOkNoContent(t, err, resp)
+	})
+
+	t.Run("invalid payload", func(t *testing.T) {
+		resp, err := httpx.Patch[testResponse](ctx, "http://example.com", complex(1, 2))
+		assertInvalidPayload(t, err, resp)
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Patch[testResponse](ctx, ts.URL, payload)
+		assertStatusOkInvalidResponse(t, err, resp)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.Patch[testResponse](ctx, ts.URL, payload)
+		assertNon2xxStatus(t, err, resp)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.Patch[testResponse](ctx, badURL, payload)
+		assertTransportError(t, http.MethodPatch, err, resp)
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Patch[testResponse](nil, ts.URL, payload)
+		assertNilContext(t, err, resp)
+	})
+}
+
+func TestPatchRawResponse(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.PatchRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.PatchRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Equal(t, http.StatusNoContent, resp.StatusCode)
+	})
+
+	t.Run("invalid payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.PatchRawResponse(ctx, ts.URL, complex(1, 2))
+		require.Error(t, err)
+		require.Nil(t, resp)
+		assert.ErrorContains(t, err, "json: unsupported type")
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.PatchRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.PatchRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.PatchRawResponse(ctx, badURL, testPayload{Name: "Test", Age: 18})
+		require.Error(t, err)
+		require.Nil(t, resp)
+		assert.ErrorContains(t, err, "failed to send PATCH request:")
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.PatchRawResponse(nil, ts.URL, testPayload{Name: "Test", Age: 18})
+		require.Error(t, err)
+		require.Nil(t, resp)
+		require.ErrorIs(t, err, httpx.ErrContextIsNil)
+	})
+}
+
+func TestDelete(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Delete[testResponse](ctx, ts.URL)
+		assertStatusOkGoodResponse(t, err, resp)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.Delete[testResponse](ctx, ts.URL)
+		assertStatusOkNoContent(t, err, resp)
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Delete[testResponse](ctx, ts.URL)
+		assertStatusOkInvalidResponse(t, err, resp)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.Delete[testResponse](ctx, ts.URL)
+		assertNon2xxStatus(t, err, resp)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.Delete[testResponse](ctx, badURL)
+		assertTransportError(t, http.MethodDelete, err, resp)
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Delete[testResponse](nil, ts.URL)
+		assertNilContext(t, err, resp)
+	})
+}
+
+func TestDeleteRawResponse(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.DeleteRawResponse(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.DeleteRawResponse(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Equal(t, http.StatusNoContent, resp.StatusCode)
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.DeleteRawResponse(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.DeleteRawResponse(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.DeleteRawResponse(ctx, badURL)
+		require.Error(t, err)
+		require.Nil(t, resp)
+		assert.ErrorContains(t, err, "failed to send DELETE request:")
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.DeleteRawResponse(nil, ts.URL)
+		require.Error(t, err)
+		require.Nil(t, resp)
+		require.ErrorIs(t, err, httpx.ErrContextIsNil)
+	})
+}
+
+func TestHead(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Head(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("status code no content", func(t *testing.T) {
+		ts := setupTestServer(http.StatusNoContent, "")
+		defer ts.Close()
+
+		resp, err := httpx.Head(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Equal(t, http.StatusNoContent, resp.StatusCode)
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Head(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.Head(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.Head(ctx, badURL)
+		require.Error(t, err)
+		require.Nil(t, resp)
+		assert.ErrorContains(t, err, "failed to send HEAD request:")
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Head(nil, ts.URL)
+		require.Error(t, err)
+		require.Nil(t, resp)
+		require.ErrorIs(t, err, httpx.ErrContextIsNil)
+	})
+}
+
+func TestOptions(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("happy path", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Options(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("invalid response payload", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, badResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Options(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("non 2xx status code", func(t *testing.T) {
+		ts := setupTestServer(http.StatusInternalServerError, internalServerError)
+		defer ts.Close()
+
+		resp, err := httpx.Options(ctx, ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		resp, err := httpx.Options(ctx, badURL)
+		require.Error(t, err)
+		require.Nil(t, resp)
+		assert.ErrorContains(t, err, "failed to send OPTIONS request:")
+	})
+
+	t.Run("nil context", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Options(nil, ts.URL)
+		require.Error(t, err)
+		require.Nil(t, resp)
+		require.ErrorIs(t, err, httpx.ErrContextIsNil)
+	})
+}
+
+func assertStatusOkGoodResponse(t *testing.T, err error, resp *httpx.Response[testResponse]) {
+	t.Helper()
+
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
@@ -41,439 +676,52 @@ func TestGet(t *testing.T) {
 	assert.Equal(t, "Test", resp.Result.Name)
 	assert.Equal(t, 18, resp.Result.Age)
 	assert.Empty(t, resp.RawBody)
+}
 
-	// bad response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.Get[testResponse](ctx, ts.URL)
+func assertStatusOkNoContent(t *testing.T, err error, resp *httpx.Response[testResponse]) {
+	t.Helper()
+
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	require.Equal(t, http.StatusNoContent, resp.StatusCode)
+	assert.Empty(t, resp.Result)
+	assert.Empty(t, resp.RawBody)
+}
+
+func assertStatusOkInvalidResponse(t *testing.T, err error, resp *httpx.Response[testResponse]) {
 	require.Error(t, err)
 	require.NotNil(t, resp)
 	assert.ErrorContains(t, err, "failed to decode response body")
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Nil(t, resp.Result)
 	assert.Equal(t, []byte(badResponse), resp.RawBody)
+}
 
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.Get[testResponse](ctx, ts.URL)
+func assertNon2xxStatus(t *testing.T, err error, resp *httpx.Response[testResponse]) {
 	require.Error(t, err)
 	require.NotNil(t, resp)
 	assert.ErrorContains(t, err, "non-2xx status code")
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 	assert.Nil(t, resp.Result)
 	assert.Equal(t, []byte(internalServerError), resp.RawBody)
-
-	// transport error
-	resp, err = httpx.Get[testResponse](ctx, badURL)
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send GET request:")
 }
 
-func TestGetRawResponse(t *testing.T) {
-	ctx := context.Background()
-
-	// happy path
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	resp, err := httpx.GetRawResponse(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// bad response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.GetRawResponse(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.GetRawResponse(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-
-	// transport error
-	resp, err = httpx.GetRawResponse(ctx, badURL)
+func assertTransportError(t *testing.T, method string, err error, resp *httpx.Response[testResponse]) {
 	require.Error(t, err)
 	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send GET request:")
+	assert.ErrorContains(t, err, fmt.Sprintf("failed to send %s request:", method))
 }
 
-func TestPost(t *testing.T) {
-	ctx := context.Background()
+func assertNilContext(t *testing.T, err error, resp *httpx.Response[testResponse]) {
+	require.Error(t, err)
+	require.Nil(t, resp)
+	assert.ErrorIs(t, err, httpx.ErrContextIsNil)
+}
 
-	// happy path
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	resp, err := httpx.Post[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	require.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// invalid payload
-	resp, err = httpx.Post[testResponse](ctx, ts.URL, complex(1, 2))
+func assertInvalidPayload(t *testing.T, err error, resp *httpx.Response[testResponse]) {
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorContains(t, err, "json: unsupported type")
-
-	// invalid response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.Post[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.NotNil(t, resp)
-	assert.ErrorContains(t, err, "failed to decode response body")
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Nil(t, resp.Result)
-	assert.Equal(t, []byte(badResponse), resp.RawBody)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.Post[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.NotNil(t, resp)
-	assert.ErrorContains(t, err, "non-2xx status code")
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-	assert.Nil(t, resp.Result)
-	assert.Equal(t, []byte(internalServerError), resp.RawBody)
-
-	// transport error
-	resp, err = httpx.Post[testResponse](ctx, badURL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send POST request:")
-}
-
-func TestPostRawResponse(t *testing.T) {
-	ctx := context.Background()
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	defer ts.Close()
-
-	// happy path
-	resp, err := httpx.PostRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// invalid payload
-	resp, err = httpx.PostRawResponse(ctx, ts.URL, complex(1, 2))
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "json: unsupported type")
-
-	// invalid response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.PostRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.PostRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-
-	// transport error
-	resp, err = httpx.PostRawResponse(ctx, badURL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send POST request:")
-}
-
-func TestPut(t *testing.T) {
-	ctx := context.Background()
-
-	// happy path
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	resp, err := httpx.Put[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	require.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// invalid payload
-	resp, err = httpx.Put[testResponse](ctx, ts.URL, complex(1, 2))
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "json: unsupported type")
-
-	// invalid response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.Put[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.NotNil(t, resp)
-	assert.ErrorContains(t, err, "failed to decode response body")
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Nil(t, resp.Result)
-	assert.Equal(t, []byte(badResponse), resp.RawBody)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.Put[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.NotNil(t, resp)
-	assert.ErrorContains(t, err, "non-2xx status code")
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-	assert.Nil(t, resp.Result)
-	assert.Equal(t, []byte(internalServerError), resp.RawBody)
-
-	// transport error
-	resp, err = httpx.Put[testResponse](ctx, badURL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send PUT request:")
-}
-
-func TestPutRawResponse(t *testing.T) {
-	ctx := context.Background()
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	defer ts.Close()
-
-	// happy path
-	resp, err := httpx.PutRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// invalid payload
-	resp, err = httpx.PutRawResponse(ctx, ts.URL, complex(1, 2))
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "json: unsupported type")
-
-	// invalid response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.PutRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.PutRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-
-	// transport error
-	resp, err = httpx.PutRawResponse(ctx, badURL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send PUT request:")
-}
-
-func TestPatch(t *testing.T) {
-	ctx := context.Background()
-
-	// happy path
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	resp, err := httpx.Patch[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	require.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// invalid payload
-	resp, err = httpx.Patch[testResponse](ctx, ts.URL, complex(1, 2))
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "json: unsupported type")
-
-	// invalid response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.Patch[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.NotNil(t, resp)
-	assert.ErrorContains(t, err, "failed to decode response body")
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Nil(t, resp.Result)
-	assert.Equal(t, []byte(badResponse), resp.RawBody)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.Patch[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.NotNil(t, resp)
-	assert.ErrorContains(t, err, "non-2xx status code")
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-	assert.Nil(t, resp.Result)
-	assert.Equal(t, []byte(internalServerError), resp.RawBody)
-
-	// transport error
-	resp, err = httpx.Patch[testResponse](ctx, badURL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send PATCH request:")
-}
-
-func TestPatchRawResponse(t *testing.T) {
-	ctx := context.Background()
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	defer ts.Close()
-
-	// happy path
-	resp, err := httpx.PatchRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// invalid payload
-	resp, err = httpx.PatchRawResponse(ctx, ts.URL, complex(1, 2))
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "json: unsupported type")
-
-	// invalid response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.PatchRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.PatchRawResponse(ctx, ts.URL, testPayload{Name: "Test", Age: 18})
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-
-	// transport error
-	resp, err = httpx.PatchRawResponse(ctx, badURL, testPayload{Name: "Test", Age: 18})
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send PATCH request:")
-}
-
-func TestDelete(t *testing.T) {
-	ctx := context.Background()
-
-	// happy path
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	resp, err := httpx.Delete[testResponse](ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	require.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// invalid response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.Delete[testResponse](ctx, ts.URL)
-	require.Error(t, err)
-	require.NotNil(t, resp)
-	assert.ErrorContains(t, err, "failed to decode response body")
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Nil(t, resp.Result)
-	assert.Equal(t, []byte(badResponse), resp.RawBody)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.Delete[testResponse](ctx, ts.URL)
-	require.Error(t, err)
-	require.NotNil(t, resp)
-	assert.ErrorContains(t, err, "non-2xx status code")
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-	assert.Nil(t, resp.Result)
-	assert.Equal(t, []byte(internalServerError), resp.RawBody)
-
-	// transport error
-	resp, err = httpx.Delete[testResponse](ctx, badURL)
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send DELETE request:")
-}
-
-func TestDeleteRawResponse(t *testing.T) {
-	ctx := context.Background()
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	defer ts.Close()
-
-	// happy path
-	resp, err := httpx.DeleteRawResponse(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// invalid response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.DeleteRawResponse(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.DeleteRawResponse(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-
-	// transport error
-	resp, err = httpx.DeleteRawResponse(ctx, badURL)
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send DELETE request:")
-}
-
-func TestHead(t *testing.T) {
-	ctx := context.Background()
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	defer ts.Close()
-
-	// happy path
-	resp, err := httpx.Head(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// invalid response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.Head(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.Head(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-
-	// transport error
-	resp, err = httpx.Head(ctx, badURL)
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send HEAD request:")
-}
-
-func TestOptions(t *testing.T) {
-	ctx := context.Background()
-	ts := setupTestServer(http.StatusOK, goodResponse)
-	defer ts.Close()
-
-	// happy path
-	resp, err := httpx.Options(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// invalid response payload
-	ts = setupTestServer(http.StatusOK, badResponse)
-	resp, err = httpx.Options(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
-	// non 2xx status code
-	ts = setupTestServer(http.StatusInternalServerError, internalServerError)
-	resp, err = httpx.Options(ctx, ts.URL)
-	require.NoError(t, err)
-	require.NotNil(t, resp)
-	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-
-	// transport error
-	resp, err = httpx.Options(ctx, badURL)
-	require.Error(t, err)
-	require.Nil(t, resp)
-	assert.ErrorContains(t, err, "failed to send OPTIONS request:")
 }
 
 //func TestGet_EmptyContext(t *testing.T) {

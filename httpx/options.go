@@ -27,10 +27,11 @@ func newHTTPConfig() *httpxOptions {
 	}
 }
 
-// Option is a function that configures the httpxOptions.
+// Option is a function that configures httpxOptions.
 type Option func(options *httpxOptions) error
 
 // WithHTTPClient sets the http client for the request.
+// If the client is nil, an error is returned.
 func WithHTTPClient(client *http.Client) Option {
 	return func(options *httpxOptions) error {
 		if client == nil {
@@ -60,6 +61,7 @@ func WithHeaders(headers http.Header) Option {
 }
 
 // WithTimeout sets the timeout for the request.
+// If the timeout is <= 0, an error is returned.
 func WithTimeout(timeout time.Duration) Option {
 	return func(options *httpxOptions) error {
 		if timeout <= 0 {
@@ -91,9 +93,14 @@ func WithParams(params url.Values) Option {
 func configWithAppliedOptions(options []Option) (*httpxOptions, error) {
 	config := newHTTPConfig()
 
-	errs := slicex.Map(options, func(option Option) error {
-		return option(config)
+	errs := slicex.FilterMap(options, func(option Option) (error, bool) {
+		err := option(config)
+		return err, err != nil
 	})
 
-	return config, errors.Join(errs...)
+	if len(errs) > 0 {
+		return nil, errors.Join(errs...)
+	}
+
+	return config, nil
 }

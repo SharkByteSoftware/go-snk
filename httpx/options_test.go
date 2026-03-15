@@ -90,4 +90,33 @@ func TestWithTimeout(t *testing.T) {
 }
 
 func Test_configWithAppliedOptions(t *testing.T) {
+	options := []Option{
+		WithTimeout(100),
+		WithHeader("Content-Type", "application/json"),
+		WithHeaders(http.Header{"Auth": []string{"secret"}}),
+		WithParam("key", "value"),
+		WithParams(url.Values{"key": []string{"value"}}),
+		WithHTTPClient(http.DefaultClient),
+	}
+
+	config, err := configWithAppliedOptions(options)
+	require.NoError(t, err)
+	require.NotNil(t, config)
+
+	assert.Equal(t, time.Duration(100), config.timeout)
+	assert.Equal(t, http.Header{"Auth": []string{"secret"}, "Content-Type": []string{"application/json"}}, config.headers)
+	assert.Equal(t, url.Values{"key": []string{"value"}}, config.params)
+
+	options = []Option{
+		WithTimeout(-1),
+		WithHeader("Content-Type", "application/json"),
+		WithHeaders(http.Header{"Auth": []string{"secret"}}),
+		WithParam("key", "value"),
+		WithParams(url.Values{"key": []string{"value"}}),
+		WithHTTPClient(nil),
+	}
+
+	config, err = configWithAppliedOptions(options)
+	require.Error(t, err)
+	assert.Nil(t, config)
 }

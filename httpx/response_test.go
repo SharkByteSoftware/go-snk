@@ -22,7 +22,7 @@ func (e errReader) Close() error {
 	return nil
 }
 
-func Test_decodeResponse(t *testing.T) {
+func TestDecodeResponse(t *testing.T) {
 	response := &http.Response{
 		StatusCode: http.StatusOK,
 		Status:     http.StatusText(http.StatusOK),
@@ -39,7 +39,7 @@ func Test_decodeResponse(t *testing.T) {
 	assert.Empty(t, resp.RawBody)
 }
 
-func Test_decodeResponseDecodeFailure(t *testing.T) {
+func TestDecodeResponse_DecodeFailure(t *testing.T) {
 	response := &http.Response{
 		StatusCode: http.StatusOK,
 		Status:     http.StatusText(http.StatusOK),
@@ -57,7 +57,7 @@ func Test_decodeResponseDecodeFailure(t *testing.T) {
 	assert.Equal(t, []byte(badResponse), resp.RawBody)
 }
 
-func Test_decodeResponse5500StatusCode(t *testing.T) {
+func TestDecodeResponse_500StatusCode(t *testing.T) {
 	response := &http.Response{
 		StatusCode: http.StatusInternalServerError,
 		Status:     http.StatusText(http.StatusInternalServerError),

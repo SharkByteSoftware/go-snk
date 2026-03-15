@@ -2,6 +2,7 @@ package httpx
 
 import (
 	"net/http"
+	"net/url"
 	"testing"
 	"time"
 
@@ -22,7 +23,7 @@ func TestWithHttpClient(t *testing.T) {
 
 	err = WithHTTPClient(nil)(config)
 	require.Error(t, err)
-	assert.ErrorIs(t, err, ErrClientCannotBeNil)
+	assert.ErrorIs(t, err, ErrHTTPClientCanNotBeNil)
 }
 
 func TestWithHeader(t *testing.T) {
@@ -52,9 +53,24 @@ func TestWithHeaders(t *testing.T) {
 }
 
 func TestWithParam(t *testing.T) {
+	config := newHTTPConfig()
+
+	err := WithParam("key", "value")(config)
+
+	require.NoError(t, err)
+	assert.Equal(t, url.Values{"key": []string{"value"}}, config.params)
 }
 
 func TestWithParams(t *testing.T) {
+	config := newHTTPConfig()
+
+	err := WithParams(url.Values{
+		"key":  []string{"value"},
+		"key2": []string{"value2"},
+	})(config)
+
+	require.NoError(t, err)
+	assert.Equal(t, url.Values{"key": []string{"value"}, "key2": []string{"value2"}}, config.params)
 }
 
 func TestWithTimeout(t *testing.T) {

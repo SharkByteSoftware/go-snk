@@ -4,29 +4,32 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
-	"time"
 )
 
-var ()
-
 // Post sends an HTTP POST request to the specified URL with context, headers, and timeout and parses the response.
-func Post[T any, R any](ctx context.Context, url string, headers http.Header, payload T,
-	timeout time.Duration) (*R, error) {
+func Post[T any, R any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
+	if ctx == nil {
+		return nil, ErrContextCannotBeNil
+	}
+
+	config, err := configWithAppliedOptions(options)
+	if err != nil {
+		return nil, fmt.Errorf("failed to apply options: %w", err)
+	}
+
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(body))
+	req, err := newRequestWithAppliedConfig(ctx, http.MethodPost, url, bytes.NewBuffer(body), config)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header = headers
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{Timeout: timeout}
+	client := clientWithAppliedConfig(config)
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -35,16 +38,5 @@ func Post[T any, R any](ctx context.Context, url string, headers http.Header, pa
 
 	defer func() { _ = resp.Body.Close() }()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, ErrNon2xxStatusCode
-	}
-
-	var result R
-
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		return nil, err
-	}
-
-	return &result, nil
+	return decodeResponse[R](resp, config)
 }

@@ -36,7 +36,7 @@ type Option func(options *httpxOptions) error
 func WithHTTPClient(client *http.Client) Option {
 	return func(options *httpxOptions) error {
 		if client == nil {
-			return ErrClientCannotBeNil
+			return ErrHTTPClientCanNotBeNil
 		}
 
 		options.httpClient = client

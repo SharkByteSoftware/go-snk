@@ -20,7 +20,7 @@ const getResponse = `
 
 const badResponse = "bad response"
 
-type GetResponse struct {
+type testResponse struct {
 	Name string
 	Age  int
 }
@@ -36,7 +36,7 @@ func TestGet(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	resp, err := httpx.Get[GetResponse](ctx, ts.URL, httpx.RawBodyOnError())
+	resp, err := httpx.Get[testResponse](ctx, ts.URL, httpx.RawBodyOnError())
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
@@ -51,6 +51,26 @@ func TestGet(t *testing.T) {
 	assert.Empty(t, resp.RawBody)
 }
 
+func TestGet_EmptyContext(t *testing.T) {
+	resp, err := httpx.Get[testResponse](nil, "http://localhost")
+
+	require.Error(t, err)
+	require.Nil(t, resp)
+
+	assert.ErrorIs(t, err, httpx.ErrContextCannotBeNil)
+}
+
+func TestGet_FailConfigWithAppliedOptions(t *testing.T) {
+	ctx := context.Background()
+
+	resp, err := httpx.Get[testResponse](ctx, "http://localhost", httpx.WithHTTPClient(nil))
+
+	require.Error(t, err)
+	require.Nil(t, resp)
+
+	assert.ErrorIs(t, err, httpx.ErrHTTPClientCanNotBeNil)
+}
+
 func TestGetEmptyResponse(t *testing.T) {
 	ctx := context.Background()
 
@@ -61,7 +81,7 @@ func TestGetEmptyResponse(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	resp, err := httpx.Get[GetResponse](ctx, ts.URL)
+	resp, err := httpx.Get[testResponse](ctx, ts.URL)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
@@ -74,17 +94,17 @@ func TestGetEmptyResponse(t *testing.T) {
 func TestGet_InvalidURL(t *testing.T) {
 	ctx := context.Background()
 
-	resp, err := httpx.Get[GetResponse](ctx, "http://invalid url")
+	resp, err := httpx.Get[testResponse](ctx, "http://invalid url")
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorContains(t, err, "invalid url")
 
-	resp, err = httpx.Get[GetResponse](ctx, "file://localhost")
+	resp, err = httpx.Get[testResponse](ctx, "file://localhost")
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorContains(t, err, "localhost")
 
-	resp, err = httpx.Get[GetResponse](ctx, "")
+	resp, err = httpx.Get[testResponse](ctx, "")
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorContains(t, err, "unsupported protocol scheme")
@@ -98,7 +118,7 @@ func TestGet_NoContent(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	resp, err := httpx.Get[GetResponse](ctx, ts.URL)
+	resp, err := httpx.Get[testResponse](ctx, ts.URL)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 
@@ -115,7 +135,7 @@ func TestGet_BadResponseBody(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	response, err := httpx.Get[GetResponse](ctx, ts.URL, httpx.RawBodyOnError())
+	response, err := httpx.Get[testResponse](ctx, ts.URL, httpx.RawBodyOnError())
 	require.Error(t, err)
 	require.NotNil(t, response)
 	assert.Contains(t, err.Error(), "failed to decode response body")
@@ -134,7 +154,7 @@ func TestGet_BadRequest(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	response, err := httpx.Get[GetResponse](ctx, ts.URL)
+	response, err := httpx.Get[testResponse](ctx, ts.URL)
 	require.Error(t, err)
 	require.NotNil(t, response)
 
@@ -154,7 +174,7 @@ func TestGet_BadRequestRawBodyOnError(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	response, err := httpx.Get[GetResponse](ctx, ts.URL, httpx.RawBodyOnError())
+	response, err := httpx.Get[testResponse](ctx, ts.URL, httpx.RawBodyOnError())
 	require.Error(t, err)
 	require.NotNil(t, response)
 

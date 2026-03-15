@@ -23,7 +23,7 @@ func TestWithHttpClient(t *testing.T) {
 
 	err = WithHTTPClient(nil)(config)
 	require.Error(t, err)
-	assert.ErrorIs(t, err, ErrHTTPClientCanNotBeNil)
+	assert.ErrorIs(t, err, ErrHTTPClientIsNil)
 }
 
 func TestWithHeader(t *testing.T) {

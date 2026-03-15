@@ -3,16 +3,18 @@ package httpx
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 )
 
 var (
-	ErrHTTPClientCanNotBeNil = errors.New("http client cannot be nil") //nolint: revive
-	ErrContextCannotBeNil    = errors.New("context cannot be nil")
-	ErrNon2xxStatusCode      = errors.New("non-2xx status code")
-	ErrInvalidTimeout        = errors.New("invalid timeout, must be positive")
+	ErrHTTPClientIsNil  = errors.New("http client cannot be nil") //nolint: revive
+	ErrContextIsNil     = errors.New("context cannot be nil")
+	ErrNon2xxStatusCode = errors.New("non-2xx status code")
+	ErrInvalidTimeout   = errors.New("invalid timeout, must be positive")
+	ErrRawBodyIsNil     = errors.New("raw body cannot be nil")
 )
 
 func clientWithAppliedConfig(config *httpxOptions) *http.Client {
@@ -51,4 +53,55 @@ func newRequestWithAppliedConfig(
 
 func is2xx(code int) bool {
 	return code >= 200 && code <= 299
+}
+
+// DoRawRequest sends an HTTP request with the given method and body, without any shared request logic.
+func DoRawRequest(
+	ctx context.Context,
+	method string,
+	url string,
+	body io.Reader,
+	options ...Option,
+) (*http.Response, error) {
+	if ctx == nil {
+		return nil, ErrContextIsNil
+	}
+
+	config, err := configWithAppliedOptions(options)
+	if err != nil {
+		return nil, fmt.Errorf("failed to apply options: %w", err)
+	}
+
+	req, err := newRequestWithAppliedConfig(ctx, method, url, body, config)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create %s request: %w", method, err)
+	}
+
+	client := clientWithAppliedConfig(config)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to send %s request: %w", method, err)
+	}
+
+	return resp, nil
+}
+
+// DoRequest sends an HTTP request with the given method and body, applying shared request logic.
+func DoRequest[T any](
+	ctx context.Context,
+	method string,
+	url string,
+	body io.Reader,
+	options ...Option,
+) (*Response[T], error) {
+	resp, err := DoRawRequest(ctx, method, url, body, options...)
+	if err != nil {
+		return nil, err
+	}
+
+	//nolint: errcheck
+	defer resp.Body.Close()
+
+	return decodeResponse[T](resp)
 }

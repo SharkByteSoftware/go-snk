@@ -57,7 +57,7 @@ func TestGet_EmptyContext(t *testing.T) {
 	require.Error(t, err)
 	require.Nil(t, resp)
 
-	assert.ErrorIs(t, err, httpx.ErrContextCannotBeNil)
+	assert.ErrorIs(t, err, httpx.ErrContextIsNil)
 }
 
 func TestGet_FailConfigWithAppliedOptions(t *testing.T) {
@@ -68,7 +68,7 @@ func TestGet_FailConfigWithAppliedOptions(t *testing.T) {
 	require.Error(t, err)
 	require.Nil(t, resp)
 
-	assert.ErrorIs(t, err, httpx.ErrHTTPClientCanNotBeNil)
+	assert.ErrorIs(t, err, httpx.ErrHTTPClientIsNil)
 }
 
 func TestGetEmptyResponse(t *testing.T) {

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/SharkByteSoftware/go-snk/httpx"
 	"github.com/stretchr/testify/assert"
@@ -651,6 +652,22 @@ func TestOptions(t *testing.T) {
 
 		resp, err := httpx.Options(nil, ts.URL)
 		assertRawNilContext(t, err, resp)
+	})
+}
+
+func TestWithOptions(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("fail with timeout", func(t *testing.T) {
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			time.Sleep(10 * time.Millisecond)
+		}))
+		defer ts.Close()
+
+		resp, err := httpx.Get[testResponse](ctx, ts.URL, httpx.WithTimeout(1*time.Millisecond))
+		require.Error(t, err)
+		require.Nil(t, resp)
+		assert.ErrorContains(t, err, "context deadline exceeded")
 	})
 }
 

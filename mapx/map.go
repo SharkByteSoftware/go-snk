@@ -64,7 +64,7 @@ func Invert[M map[K]V, K comparable, V comparable](collection M) map[V]K {
 
 // Combine returns a single combined map of all the provided maps.  When there are duplicate
 // keys there is no guarantee about which value will be used.
-func Combine[M map[K]V, K comparable, V any](maps ...M) M {
+func Combine[M ~map[K]V, K comparable, V any](maps ...M) M {
 	size := slicex.SumBy(maps, func(item M) int { return len(item) })
 	result := make(M, size)
 

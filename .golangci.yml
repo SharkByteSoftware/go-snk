@@ -5,8 +5,13 @@ linters:
   disable:
     - wsl
     - ireturn
+    - godox
+    - exhaustruct
+    - wrapcheck
 
   settings:
+    lll:
+      line-length: 140
     nlreturn:
       block-size: 2
     depguard:

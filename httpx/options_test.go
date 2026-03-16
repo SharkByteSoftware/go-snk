@@ -11,12 +11,12 @@ import (
 )
 
 func Test_newHttpConfig(t *testing.T) {
-	config := newHTTPConfig()
+	config := NewHTTPXOptions()
 	require.NotNil(t, config)
 }
 
 func TestWithHttpClient(t *testing.T) {
-	config := newHTTPConfig()
+	config := NewHTTPXOptions()
 
 	err := WithHTTPClient(http.DefaultClient)(config)
 	require.NoError(t, err)
@@ -27,7 +27,7 @@ func TestWithHttpClient(t *testing.T) {
 }
 
 func TestWithHeader(t *testing.T) {
-	config := newHTTPConfig()
+	config := NewHTTPXOptions()
 
 	err := WithHeader("Content-Type", "application/json")(config)
 	require.NoError(t, err)
@@ -41,7 +41,7 @@ func TestWithHeader(t *testing.T) {
 }
 
 func TestWithHeaders(t *testing.T) {
-	config := newHTTPConfig()
+	config := NewHTTPXOptions()
 
 	err := WithHeaders(http.Header{})(config)
 	require.NoError(t, err)
@@ -53,7 +53,7 @@ func TestWithHeaders(t *testing.T) {
 }
 
 func TestWithParam(t *testing.T) {
-	config := newHTTPConfig()
+	config := NewHTTPXOptions()
 
 	err := WithParam("key", "value")(config)
 
@@ -62,7 +62,7 @@ func TestWithParam(t *testing.T) {
 }
 
 func TestWithParams(t *testing.T) {
-	config := newHTTPConfig()
+	config := NewHTTPXOptions()
 
 	err := WithParams(url.Values{
 		"key":  []string{"value"},
@@ -74,7 +74,7 @@ func TestWithParams(t *testing.T) {
 }
 
 func TestWithTimeout(t *testing.T) {
-	config := newHTTPConfig()
+	config := NewHTTPXOptions()
 
 	err := WithTimeout(100)(config)
 	require.NoError(t, err)

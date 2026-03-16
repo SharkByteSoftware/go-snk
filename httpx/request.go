@@ -9,20 +9,36 @@ import (
 )
 
 // DoRawRequest sends an HTTP request with the given method and body, without any shared request logic.
-func DoRawRequest(
-	ctx context.Context,
-	method string,
-	url string,
-	body io.Reader,
-	options ...Option,
-) (*http.Response, error) {
-	if ctx == nil {
-		return nil, ErrContextIsNil
-	}
-
+func DoRawRequest(ctx context.Context, method string, url string, body io.Reader, options ...Option) (*http.Response, error) {
 	config, err := configWithAppliedOptions(options)
 	if err != nil {
 		return nil, fmt.Errorf("failed to apply options: %w", err)
+	}
+
+	return doRawRequest(ctx, method, url, body, config)
+}
+
+// DoRequest sends an HTTP request with the given method and body, applying shared request logic.
+func DoRequest[T any](ctx context.Context, method string, url string, body io.Reader, options ...Option) (*Response[T], error) {
+	config, err := configWithAppliedOptions(options)
+	if err != nil {
+		return nil, fmt.Errorf("failed to apply options: %w", err)
+	}
+
+	resp, err := doRawRequest(ctx, method, url, body, config)
+	if err != nil {
+		return nil, err
+	}
+
+	//nolint: errcheck
+	defer resp.Body.Close()
+
+	return DecodeResponse[T](resp, config)
+}
+
+func doRawRequest(ctx context.Context, method string, url string, body io.Reader, config *ConfigOptions) (*http.Response, error) {
+	if ctx == nil {
+		return nil, ErrContextIsNil
 	}
 
 	req, err := newRequestWithAppliedConfig(ctx, method, url, body, config)
@@ -40,20 +56,7 @@ func DoRawRequest(
 	return resp, nil
 }
 
-// DoRequest sends an HTTP request with the given method and body, applying shared request logic.
-func DoRequest[T any](ctx context.Context, method string, url string, body io.Reader, options ...Option) (*Response[T], error) {
-	resp, err := DoRawRequest(ctx, method, url, body, options...)
-	if err != nil {
-		return nil, err
-	}
-
-	//nolint: errcheck
-	defer resp.Body.Close()
-
-	return DecodeResponse[T](resp)
-}
-
-func clientWithAppliedConfig(config *httpxOptions) *http.Client {
+func clientWithAppliedConfig(config *ConfigOptions) *http.Client {
 	if config.httpClient != nil {
 		return config.httpClient
 	}
@@ -68,7 +71,7 @@ func newRequestWithAppliedConfig(
 	method string,
 	baseURL string,
 	body io.Reader,
-	config *httpxOptions,
+	config *ConfigOptions,
 ) (*http.Request, error) {
 	base, err := url.Parse(baseURL)
 	if err != nil {

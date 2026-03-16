@@ -30,7 +30,7 @@ func TestDecodeResponse(t *testing.T) {
 		Body:       io.NopCloser(strings.NewReader(goodResponse)),
 	}
 
-	resp, err := httpx.DecodeResponse[testResponse](response)
+	resp, err := httpx.DecodeResponse[testResponse](response, httpx.NewHTTPXOptions())
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 
@@ -47,7 +47,7 @@ func TestDecodeResponse_DecodeFailure(t *testing.T) {
 		Body:       io.NopCloser(strings.NewReader(badResponse)),
 	}
 
-	resp, err := httpx.DecodeResponse[testResponse](response)
+	resp, err := httpx.DecodeResponse[testResponse](response, httpx.NewHTTPXOptions())
 	require.Error(t, err)
 	require.NotNil(t, resp)
 
@@ -65,7 +65,7 @@ func TestDecodeResponse_500StatusCode(t *testing.T) {
 		Body:       io.NopCloser(strings.NewReader(goodResponse)),
 	}
 
-	resp, err := httpx.DecodeResponse[testResponse](response)
+	resp, err := httpx.DecodeResponse[testResponse](response, httpx.NewHTTPXOptions())
 	require.Error(t, err)
 	require.NotNil(t, resp)
 
@@ -75,7 +75,7 @@ func TestDecodeResponse_500StatusCode(t *testing.T) {
 	assert.Equal(t, []byte(goodResponse), resp.RawBody)
 
 	response.Body = errReader{}
-	resp, err = httpx.DecodeResponse[testResponse](response)
+	resp, err = httpx.DecodeResponse[testResponse](response, httpx.NewHTTPXOptions())
 	require.Error(t, err)
 	require.NotNil(t, resp)
 

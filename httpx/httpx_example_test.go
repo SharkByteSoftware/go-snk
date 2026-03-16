@@ -67,10 +67,12 @@ func ExamplePost() {
 
 	fmt.Println(result.Result, result.StatusCode, err)
 
-	ts = setupTestServer(http.StatusUnprocessableEntity, errResponse)
+	ts = setupTestServer(http.StatusOK, errResponse)
 	defer ts.Close()
 
-	result, err = httpx.Post[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
+	result, err = httpx.Post[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18},
+		httpx.StrictDecoding(),
+	)
 	errResult, err := httpx.DecodeRawBody[errorResponse](result)
 
 	fmt.Println(errResult, err)

@@ -67,9 +67,18 @@ func ExamplePost() {
 
 	fmt.Println(result.Result, result.StatusCode, err)
 
+	ts = setupTestServer(http.StatusUnprocessableEntity, errResponse)
+	defer ts.Close()
+
+	result, err = httpx.Post[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18})
+	errResult, err := httpx.DecodeRawBody[errorResponse](result)
+
+	fmt.Println(errResult, err)
+
 	// Output:
 	// &{Test 18} 200 <nil>
 	// &{Test 18} 200 <nil>
+	// &{custom error message 400} <nil>
 }
 
 func ExamplePut() {

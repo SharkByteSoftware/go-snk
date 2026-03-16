@@ -15,6 +15,7 @@ import (
 const (
 	goodResponse        = `{"Name": "Test","Age": 18}`
 	badResponse         = "bad response"
+	errResponse         = `{ "Message": "custom error message", "Code": 400}`
 	internalServerError = "internal server error: something went wrong"
 	badURL              = "snk://localhost:1234"
 )
@@ -22,6 +23,11 @@ const (
 type testResponse struct {
 	Name string
 	Age  int
+}
+
+type errorResponse struct {
+	Message string
+	Code    int
 }
 
 type testPayload struct {

@@ -15,6 +15,7 @@ type Response[T any] struct {
 	Header     http.Header
 	Result     *T
 	RawBody    []byte
+	Request    *http.Request
 }
 
 // DecodeResponse decodes an HTTP response into a Response struct, handling various status codes and decoding the response body.
@@ -23,6 +24,7 @@ func DecodeResponse[T any](resp *http.Response) (*Response[T], error) {
 		Status:     resp.Status,
 		StatusCode: resp.StatusCode,
 		Header:     resp.Header,
+		Request:    resp.Request,
 	}
 
 	if resp.StatusCode == http.StatusNoContent {

@@ -19,6 +19,24 @@ Everything and the kitchen sink for Go.
 
 A utility library that provides a variety of functions for working with slices, maps, channels, and more.
 
+## Table of Contents
+
+- [About](#about)
+- [Why go-snk?](#why-go-snk)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Packages](#packages)
+	- [slicex](#slicex)
+	- [slicex/parallel](#slicexparallel)
+	- [mapx](#mapx)
+	- [httpx](#httpx)
+	- [conditional](#conditional)
+	- [containers](#containers)
+	- [helpers](#helpers)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## About
 
 **go-snk** is a Go utility library that brings together practical, type-safe helpers for slices, maps, sets, containers, conditionals, 
@@ -37,7 +55,7 @@ functions.
 With [Go's module support](https://go.dev/wiki/Modules#how-to-use-modules), you can simply import `go-snk`, and Go will automatically fetch it during the build:
 
 ```go
-import "github.com/SharkByteSoftware/go-snk"
+import "github.com/SharkByteSoftware/go-snk/slicex"
 ```
 
 Or
@@ -47,10 +65,22 @@ you can use `go get` command to get the latest version of `go-snk`:
 ```sh
 go get github.com/SharkByteSoftware/go-snk@latest
 ```
+Then:
+```go
+import "github.com/SharkByteSoftware/go-snk/slicex"
+import "github.com/SharkByteSoftware/go-snk/mapx"
+```
 
-## Features
+## Packages
 
-### slicex - Helpers for slices
+### slicex
+
+`slicex` provides generic utilities for working with slices in a more expressive and reusable way. It includes helpers 
+for filtering, transforming, searching, grouping, deduplicating, partitioning, and aggregating values, along with 
+common math-oriented operations for numeric slices.
+
+Use `slicex` when you want to replace repetitive slice loops with clear, type-safe helper functions.
+
 
 | Helpers      | Description                                                                |
 |--------------|----------------------------------------------------------------------------|
@@ -95,6 +125,11 @@ go get github.com/SharkByteSoftware/go-snk@latest
 
 ### slicex/parallel
 
+`slicex/parallel` brings parallelized slice operations to the `slicex` toolkit. It is useful for CPU-bound or independent 
+per-item work where concurrency can improve throughput, while still offering helpers that preserve ordering when needed.
+
+Use this package when the work for each slice item is independent and benefits from controlled concurrency.
+
 | Function           | Description                                                                                      |
 |--------------------|--------------------------------------------------------------------------------------------------|
 | Map                | Transforms a slice to a slice of another type using a mapper function in parallel, preserving order |
@@ -106,7 +141,12 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | Partition          | Splits a slice into two slices based on a predicate function in parallel, preserving order       |
 | PartitionWithLimit | Same as Partition but limits the concurrency                                                     |
 
-### mapx - Helpers for maps
+### mapx
+
+`mapx` provides generic helpers for common map operations such as retrieving keys and values, checking for key presence, 
+transforming maps into slices, filtering entries, inverting mappings, and combining multiple maps.
+
+Use `mapx` when you want small, reusable utilities around Go maps without rewriting the same helper code across projects.
 
 | Helpers           | Description                                                         |
 |-------------------|---------------------------------------------------------------------|
@@ -121,7 +161,13 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | Filter            | Filters a map based on a predicate function                         |
 | Apply             | Applies a function to each key-value pair in the map                |
 
-### httpx - Helpers for HTTP requests and responses
+### httpx
+
+`httpx` provides lightweight helpers for making HTTP requests with less boilerplate. It offers convenience wrappers for 
+common HTTP methods, request configuration, and decoding responses into typed values, making it easier to write concise 
+and consistent HTTP client code.
+
+Use `httpx` when you want a simpler, typed layer over standard HTTP request and response handling.
 
 | Helper               | Description                                                                  |
 |----------------------|------------------------------------------------------------------------------|
@@ -137,7 +183,12 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | AlwaysIncludeRawBody | Configures responses to always retain the raw response body                  |
 | DecodeRawBody        | Decodes a raw response body into a target value                              |
 
-### Conditionals
+### conditional
+
+`conditional` provides small utility helpers for conditional expressions and branching logic. It is useful when you want 
+concise, readable alternatives for simple value selection or conditional function execution.
+
+Use `conditional` to reduce repetitive `if` patterns in places where a helper makes intent clearer.
 
 | Conditional  | Description                                                            |
 |--------------|------------------------------------------------------------------------|
@@ -146,7 +197,13 @@ go get github.com/SharkByteSoftware/go-snk@latest
 | IfCall       | Calls one of two functions based on a condition                        |
 | IfCallReturn | Calls one of two functions based on a condition and returns the result |
 
-### Containers
+### containers
+
+`containers` provides reusable generic data structures for everyday Go programs, including collections such as lists, 
+sets, stacks, and queues. It is intended for cases where the standard library does not provide the exact structure or 
+ergonomics you want.
+
+Use `containers` when you need well-defined, reusable collection types instead of rebuilding them in each project.
 
 #### Lists
 

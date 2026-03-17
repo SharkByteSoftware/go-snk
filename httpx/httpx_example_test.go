@@ -67,20 +67,26 @@ func ExamplePost() {
 
 	fmt.Println(result.Result, result.StatusCode, err)
 
+	// setup test server to return 200 but a different payload than expected
 	ts = setupTestServer(http.StatusOK, errResponse)
 	defer ts.Close()
 
 	result, err = httpx.Post[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18},
 		httpx.StrictDecoding(),
 	)
-	errResult, err := httpx.DecodeRawBody[errorResponse](result)
 
-	fmt.Println(errResult, err)
+	// if the server returns a 200 status code, but the payload is not the expected type,
+	// the error will be returned.
+	if err != nil && result != nil && result.StatusCode == http.StatusOK {
+		// decode the error response from the server
+		errResult, _ := httpx.DecodeRawBody[errorResponse](result)
+		fmt.Println(errResult, err)
+	}
 
 	// Output:
 	// &{Test 18} 200 <nil>
 	// &{Test 18} 200 <nil>
-	// &{custom error message 400} <nil>
+	// &{custom error message 400} failed to decode response body: json: unknown field "Message"
 }
 
 func ExamplePut() {

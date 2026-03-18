@@ -15,305 +15,43 @@
 [![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/graphs/contributors)
 
-Everything and the kitchen sink for Go.
-
-A utility library that provides a variety of functions for working with slices, maps, channels, and more.
-
-## Table of Contents
-
-- [About](#about)
-- [Why go-snk?](#why-go-snk)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Packages](#packages)
-	- [slicex](#slicex)
-	- [slicex/parallel](#slicexparallel)
-	- [mapx](#mapx)
-	- [httpx](#httpx)
-	- [conditional](#conditional)
-	- [containers](#containers)
-	- [helpers](#helpers)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
-
-## About
-
-**go-snk** is a Go utility library that brings together practical, type-safe helpers for slices, maps, sets, containers, conditionals, 
-and HTTP requests and responses. Built with Go generics, it helps you write cleaner, more expressive code with fewer repetitive utility 
-functions.
+`go-snk` is a collection of small, type-safe Go utilities for slices, maps, HTTP requests, conditional logic, and reusable containers.
 
 ## Getting Started
 
-### Prerequisites
-
-- **Go version**: go-snk uses [Go](https://go.dev/) version [1.24](https://go.dev/doc/devel/release#go1.24.0) or above
-- **Basic Go knowledge**: Familiarity with Go syntax and package management is helpful
-
 ### Installation
-
-With [Go's module support](https://go.dev/wiki/Modules#how-to-use-modules), you can simply import `go-snk`, and Go will automatically fetch it during the build:
-
-```go
-import "github.com/SharkByteSoftware/go-snk/slicex"
-```
-
-Or
-
-you can use `go get` command to get the latest version of `go-snk`:
 
 ```sh
 go get github.com/SharkByteSoftware/go-snk@latest
 ```
-Then:
+Import the packages you need:
+
 ```go
 import "github.com/SharkByteSoftware/go-snk/slicex"
 import "github.com/SharkByteSoftware/go-snk/mapx"
 ```
 
-## Packages
 
-### slicex
+### Documentation
 
-`slicex` provides generic utilities for working with slices in a more expressive and reusable way. It includes helpers 
-for filtering, transforming, searching, grouping, deduplicating, partitioning, and aggregating values, along with 
-common math-oriented operations for numeric slices.
+- [Overview](docs/overview.md)
+- [Examples](docs/examples.md)
+- [slicex](docs/slicex.md)
+- [mapx](docs/mapx.md)
+- [httpx](docs/httpx.md)
+- [conditional](docs/conditional.md)
+- [containers](docs/containers/README.md)
+- [Roadmap](docs/roadmap.md)
 
-Use `slicex` when you want to replace repetitive slice loops with clear, type-safe helper functions.
+## Package Summary
 
-
-| Helpers      | Description                                                                |
-|--------------|----------------------------------------------------------------------------|
-| FirstOr      | Returns the first item of a slice or a fallback value of slice is empty    |
-| FirstOrEmpty | Returns the first item of a slice or the empty value if the slice is empty |
-| Filter       | Filters a slice using a predicate                                          |
-| Map          | Transforms a slice to a slice of another type using a mapper               |
-| FilterMap    | Filters and transforms a slice to a slice of another type using a mapper   |
-| UniqueMap    | Similar to Map but removes duplicates from the result                      |
-| Reduce       | Transforms and flattens a slice to another type                            |
-| Find         | Returns the first element matching a condition                             |
-| FindBy       | Returns the first element matching a predicate function                    |
-| FindOr       | Returns the first matching element or a default value                      |
-| Any          | Checks if any element satisfies a condition                                |
-| AnyBy        | Checks if any element satisfies a predicate function                       |
-| All          | Checks if all elements are equal to a given candidate                      |
-| AllBy        | Checks if all elements satisfy a predicate                                 |
-| Unique       | Removes duplicates from a slice                                            |
-| UniqueBy     | Removes duplicates from a slice as determined by a predicate function      |
-| Apply        | Applies a function to each element in a slice                              |
-| Reverse      | Reverses the order of elements in a slice                                  |
-| Compact      | Compact returns a slice with all the non-zero items.                       |
-| ToMap        | Converts a slice to a map using a key selector function                    |
-| GroupBy      | Groups elements of a slice by a key selector function                      |
-| Partition    | Splits a slice into two based on a predicate function                      |
-| Intersect    | Returns a slice with the intersection of two slices                        |
-| Union        | Returns a slice with the union of two slices                               |
-| Difference   | Returns a slice with the difference of two slices                          |                             
-
-| Math Helpers | Description                                                           |
-|--------------|-----------------------------------------------------------------------|
-| Sum          | Calculates the sum of a slice of numeric values                       |
-| SumBy        | Calculates the sum of a slice using a custom value function           |
-| Product      | Calculates the product of a slice of numeric values                   |
-| ProductBy    | Calculates the product of a slice using a custom value function       |
-| Mean         | Calculates the arithmetic mean of a slice of numeric values           |
-| MeanBy       | Calculates the mean of a slice using a custom value function          |
-| Max          | Finds the maximum value in a slice of comparable values               |
-| MaxBy        | Finds the maximum value in a slice using a custom comparison function |
-| Min          | Finds the minimum value in a slice of comparable values               |
-| MinBy        | Finds the minimum value in a slice using a custom comparison function |
-
-### slicex/parallel
-
-`slicex/parallel` brings parallelized slice operations to the `slicex` toolkit. It is useful for CPU-bound or independent 
-per-item work where concurrency can improve throughput, while still offering helpers that preserve ordering when needed.
-
-Use this package when the work for each slice item is independent and benefits from controlled concurrency.
-
-| Function           | Description                                                                                      |
-|--------------------|--------------------------------------------------------------------------------------------------|
-| Map                | Transforms a slice to a slice of another type using a mapper function in parallel, preserving order |
-| MapWithLimit       | Same as Map but limits the concurrency                                                           |
-| Apply              | Applies a function to each item in a slice in parallel                                           |
-| ApplyWithLimit     | Same as Apply but limits the concurrency                                                         |
-| GroupBy            | Groups a slice into a map of slices based on a predicate function in parallel                    |
-| GroupByWithLimit   | Same as GroupBy but limits the concurrencyl                                                      |
-| Partition          | Splits a slice into two slices based on a predicate function in parallel, preserving order       |
-| PartitionWithLimit | Same as Partition but limits the concurrency                                                     |
-
-### mapx
-
-`mapx` provides generic helpers for common map operations such as retrieving keys and values, checking for key presence, 
-transforming maps into slices, filtering entries, inverting mappings, and combining multiple maps.
-
-Use `mapx` when you want small, reusable utilities around Go maps without rewriting the same helper code across projects.
-
-| Helpers           | Description                                                         |
-|-------------------|---------------------------------------------------------------------|
-| Keys              | Returns a slice of the map's keys                                   |
-| Values            | Returns a slice of the map's values                                 |
-| UniqueValues      | Returns a slice of unique values from the map                       |
-| Contains          | Checks if the map contains all specified keys                       |
-| ValueOr           | Returns the value for a key or a fallback value if not found        |
-| Invert            | Inverts the map, swapping keys and values                           |
-| Combine           | Combines multiple maps into a single map                            |
-| ToSlice           | Converts a map to a slice using a mapper function                   |
-| Filter            | Filters a map based on a predicate function                         |
-| Apply             | Applies a function to each key-value pair in the map                |
-
-### httpx
-
-`httpx` provides lightweight helpers for making HTTP requests with less boilerplate. It offers convenience wrappers for 
-common HTTP methods, request configuration, and decoding responses into typed values, making it easier to write concise 
-and consistent HTTP client code.
-
-Use `httpx` when you want a simpler, typed layer over standard HTTP request and response handling.
-
-| Helper               | Description                                                                  |
-|----------------------|------------------------------------------------------------------------------|
-| Get                  | Sends a GET request and returns a processed response                         |
-| GetRawResponse       | Sends a GET request and returns the raw HTTP response                        |
-| Post                 | Sends a POST request and returns a processed response                        |
-| PostRawResponse      | Sends a POST request and returns the raw HTTP response                       |
-| Put                  | Sends a PUT request and returns a processed response                         |
-| PutRawResponse       | Sends a PUT request and returns the raw HTTP response                        |
-| Delete               | Sends a DELETE request and returns a processed response                      |
-| DeleteRawResponse    | Sends a DELETE request and returns the raw HTTP response                     |
-| ConfigOptions        | Configures request behavior and response handling options                    |
-| AlwaysIncludeRawBody | Configures responses to always retain the raw response body                  |
-| DecodeRawBody        | Decodes a raw response body into a target value                              |
-
-### conditional
-
-`conditional` provides small utility helpers for conditional expressions and branching logic. It is useful when you want 
-concise, readable alternatives for simple value selection or conditional function execution.
-
-Use `conditional` to reduce repetitive `if` patterns in places where a helper makes intent clearer.
-
-| Conditional  | Description                                                            |
-|--------------|------------------------------------------------------------------------|
-| If           | Returns one of two values based on a condition                         |
-| IfNotNil     | Calls a function if the input pointer is not nil                       |
-| IfCall       | Calls one of two functions based on a condition                        |
-| IfCallReturn | Calls one of two functions based on a condition and returns the result |
-
-### containers
-
-`containers` provides reusable generic data structures for everyday Go programs, including collections such as lists, 
-sets, stacks, and queues. It is intended for cases where the standard library does not provide the exact structure or 
-ergonomics you want.
-
-Use `containers` when you need well-defined, reusable collection types instead of rebuilding them in each project.
-
-#### Lists
-
-| List          | Description                                             |
-|---------------|---------------------------------------------------------|
-| New           | Creates a new doubly linked list from the given values |
-| Init          | Initializes or resets the linked list to an empty state |
-| Len           | Returns the number of elements in the list              |
-| Front         | Returns the first element in the list or nil if empty   |
-| Back          | Returns the last element in the list or nil if empty    |
-| IsEmpty       | Checks if the list is empty                             |
-| Remove        | Removes an element from the list and returns its value  |
-| PushFront     | Inserts a value at the front of the list                |
-| Prepend       | Adds multiple values to the front of the list           |
-| PushBack      | Adds a value to the end of the list                     |
-| Append        | Adds multiple values to the end of the list             |
-| InsertBefore  | Inserts a value before a specified element              |
-| InsertAfter   | Inserts a value after a specified element               |
-| MoveToFront   | Moves an element to the front of the list               |
-| MoveToBack    | Moves an element to the back of the list                |
-| MoveBefore    | Moves an element before a specified mark                |
-| MoveAfter     | Moves an element after a specified mark                 |
-| PushBackList  | Appends all values from another list to the end         |
-| PushFrontList | Prepends all values from another list to the front      |
-| Values        | Returns a slice of all values in the list               |
-
-
-| Element    | Description                                                     |
-|------------|-----------------------------------------------------------------|
-| NewElement | Creates a new element with the given value and parent list      |
-| Next       | Returns the next element in the list or nil if at the end       |
-| Prev       | Returns the previous element in the list or nil if at the start |
-| Init          | Initializes or resets the linked list to an empty state |
-| Len           | Returns the number of elements in the list              |
-| Front         | Returns the first element in the list or nil if empty   |
-| Back          | Returns the last element in the list or nil if empty    |
-| IsEmpty       | Checks if the list is empty                             |
-| Remove        | Removes an element from the list and returns its value  |
-| PushFront     | Inserts a value at the front of the list                |
-| Prepend       | Adds multiple values to the front of the list           |
-| PushBack      | Adds a value to the end of the list                     |
-| Append        | Adds multiple values to the end of the list             |
-| InsertBefore  | Inserts a value before a specified element              |
-| InsertAfter   | Inserts a value after a specified element               |
-| MoveToFront   | Moves an element to the front of the list               |
-| MoveToBack    | Moves an element to the back of the list                |
-| MoveBefore    | Moves an element before a specified mark                |
-| MoveAfter     | Moves an element after a specified mark                 |
-| PushBackList  | Appends all values from another list to the end         |
-| PushFrontList | Prepends all values from another list to the front      |
-| Values        | Returns a slice of all values in the list               |
-
-
-| Element    | Description                                                     |
-|------------|-----------------------------------------------------------------|
-| NewElement | Creates a new element with the given value and parent list      |
-| Next       | Returns the next element in the list or nil if at the end       |
-| Prev       | Returns the previous element in the list or nil if at the start |
-
-#### Sets
-
-| Set                 | Description                                                          |
-|---------------------|----------------------------------------------------------------------|
-| New                 | Creates a new set with the given items                               |
-| Add                 | Adds one or more items to the set                                    |
-| IsEmpty             | Returns true if the set contains zero items                          |
-| Equals              | Returns true if two sets contain the same items                      |
-| Contains            | Returns true if the set contains the specified item                  |
-| Remove              | Removes the specified item from the set                              |
-| Size                | Returns the number of items in the set                               |
-| Clear               | Removes all items from the set                                       |
-| Values              | Returns a slice of all values in the set                             |
-| Intersect           | Returns a new set with items common to both sets                     |
-| Union               | Returns a new set with all items from both sets                      |
-| Difference          | Returns a new set with items in the current set but not in the other |
-| SymmetricDifference | Returns a new set with items in either set but not both              |
-| Subset              | Returns true if the set is a subset of the given set                 |
-| Apply               | Applies a function to each item in the set                           |
-
-### Stacks
-
-| Stack  | Description                                                                     |
-|--------|---------------------------------------------------------------------------------|
-| New    | Creates a new stack using a linked list                                         |
-| Push   | Adds a value to the top of the stack                                            |
-| Pop    | Removes and returns the top element; returns default and false if empty         |
-| Peek   | Returns the top element without removing it; returns default and false if empty |
-| Size   | Returns the number of elements in the stack                                     |
-| Values | Returns a slice of all elements in the stack                                    |
-
-### Queues
-
-| DQueue       | Description                                                                     |
-|--------------|---------------------------------------------------------------------------------|
-| NewQueue     | Creates a new double-ended queue with optional initial values                   |
-| Enqueue      | Adds a value to the back of the queue                                           |
-| EnqueueFront | Adds a value to the front of the queue                                          |
-| Dequeue      | Removes and returns the front value; returns default and false if empty         |
-| DequeueBack  | Removes and returns the back value; returns default and false if empty          |
-| Peek         | Returns the front value without removing it; returns default and false if empty |
-| PeekBack     | Returns the back value without removing it; returns default and false if empty  |
-| IsEmpty      | Checks if the queue is empty                                                    |
-| Size         | Returns the number of elements in the queue                                     |
-| Clear        | Removes all elements from the queue                                             |
-| Values       | Returns a slice of all values in the queue                                      |
-
-## Roadmap
-
-- [ ] Pipeline
-- [ ] Graphs
+- `slicex` — helpers for filtering, mapping, searching, grouping, and numeric operations on slices
+- `slicex/parallel` — parallel slice helpers for independent per-item work
+- `mapx` — generic helpers for common map operations
+- `httpx` — lightweight helpers for making HTTP requests with less boilerplate
+- `conditional` — concise helpers for branching and value selection
+- `containers` — reusable data structures including lists, sets, stacks, and queues
 
 ## License
-MIT License, see [LICENSE](https://github.com/SharkByteSoftware/go-snk/blob/master/LICENSE) for details
+
+MIT License, see [LICENSE](LICENSE) for details

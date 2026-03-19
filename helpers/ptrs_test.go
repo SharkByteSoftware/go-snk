@@ -7,38 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type testType struct {
+type ptrTestType struct {
 	name string
 	num  int
-}
-
-func TestEmpty(t *testing.T) {
-	assert.Equal(t, 0, helpers.Empty[int]())
-	assert.Equal(t, "", helpers.Empty[string]())
-	assert.Equal(t, testType{}, helpers.Empty[testType]())
-}
-
-func TestIsEmpty(t *testing.T) {
-	intValue := 1
-	assert.False(t, helpers.IsEmpty(intValue))
-
-	var emptyInt int
-	assert.True(t, helpers.IsEmpty(emptyInt))
-
-	strValue := "test"
-	assert.False(t, helpers.IsEmpty(strValue))
-
-	var emptyStr string
-	assert.True(t, helpers.IsEmpty(emptyStr))
-
-	testValue := testType{name: "test", num: 1}
-	assert.False(t, helpers.IsEmpty(testValue))
-
-	testValue = testType{name: "test"}
-	assert.False(t, helpers.IsEmpty(testValue))
-
-	testValue = testType{}
-	assert.True(t, helpers.IsEmpty(testValue))
 }
 
 func TestNil(t *testing.T) {
@@ -50,9 +21,9 @@ func TestNil(t *testing.T) {
 	assert.Nil(t, strPtr)
 	assert.IsType(t, (*string)(nil), helpers.Nil[string]())
 
-	testTypePtr := helpers.Nil[testType]()
+	testTypePtr := helpers.Nil[ptrTestType]()
 	assert.Nil(t, testTypePtr)
-	assert.IsType(t, (*testType)(nil), helpers.Nil[testType]())
+	assert.IsType(t, (*ptrTestType)(nil), helpers.Nil[ptrTestType]())
 }
 
 func TestAsPtr(t *testing.T) {
@@ -64,29 +35,29 @@ func TestAsPtr(t *testing.T) {
 	assert.IsType(t, (*string)(nil), strPtr)
 	assert.Equal(t, "hello", *strPtr)
 
-	testTypePtr := helpers.AsPtr(testType{name: "test", num: 5})
-	assert.IsType(t, (*testType)(nil), testTypePtr)
+	testTypePtr := helpers.AsPtr(ptrTestType{name: "test", num: 5})
+	assert.IsType(t, (*ptrTestType)(nil), testTypePtr)
 	assert.Equal(t, "test", testTypePtr.name)
 	assert.Equal(t, testTypePtr.num, 5)
 }
 
 func TestAsValue(t *testing.T) {
-	ptr := &testType{"test", 10}
+	ptr := &ptrTestType{"test", 10}
 
 	result := helpers.AsValue(ptr)
 	assert.Equal(t, *ptr, result)
 
 	ptr = nil
 	result = helpers.AsValue(ptr)
-	assert.Equal(t, helpers.Empty[testType](), result)
+	assert.Equal(t, helpers.Empty[ptrTestType](), result)
 
 	assert.Equal(t, 0, helpers.AsValue[int](nil))
 	assert.Equal(t, "", helpers.AsValue[string](nil))
 }
 
 func TestAsValueOr(t *testing.T) {
-	value := &testType{"test", 10}
-	fallback := testType{"fallback", 20}
+	value := &ptrTestType{"test", 10}
+	fallback := ptrTestType{"fallback", 20}
 
 	result := helpers.AsValueOr(value, fallback)
 	assert.Equal(t, *value, result)

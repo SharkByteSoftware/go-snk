@@ -1,4 +1,4 @@
-# Examples
+go # Examples
 
 This page collects short, practical examples that show the style of the library.
 

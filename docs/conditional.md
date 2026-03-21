@@ -1,3 +1,9 @@
+<div style="text-align: center;">
+    <a href="https://github.com/SharkByteSoftware/go-snk">
+        <img width="" height="202" alt="sink-logo" src="../img/logo.png" />
+    </a>
+</div>
+
 # conditional
 
 `conditional` provides small helpers for simple branching logic and value selection.
@@ -40,5 +46,3 @@ Use `conditional` when:
 This package is intentionally small. It works best for concise, readable selection logic rather than complex branching.
 
 ## Examples
-
-See [`docs/examples.md`](examples.md) for short usage-oriented examples.

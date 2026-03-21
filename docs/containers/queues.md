@@ -1,3 +1,9 @@
+<div style="text-align: center;">
+    <a href="https://github.com/SharkByteSoftware/go-snk">
+        <img width="" height="202" alt="sink-logo" src="../../img/logo.png" />
+    </a>
+</div>
+
 # Queues
 
 This document covers the queue / deque implementation in `containers`.

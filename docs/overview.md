@@ -27,22 +27,22 @@ Use it when you want:
 
 ## Package areas
 
-### `slicex`
+### [`slicex`](slicex.md)
 Helpers for slice operations such as filtering, mapping, reducing, grouping, deduplicating, partitioning, and basic numeric aggregation.
 
-### `slicex/parallel`
+### [`slicex/parallel`](parallel/slicex.md)
 Parallel versions of selected slice operations for independent work where concurrency can improve throughput.
 
-### `mapx`
+### [`mapx`](mapx.md)
 Helpers for common map operations such as extracting keys or values, filtering entries, transforming maps, and combining maps.
 
-### `httpx`
+### [`httpx`](httpx.md)
 Lightweight HTTP helpers that reduce client-side boilerplate and support typed response handling.
 
-### `conditional`
+### [`conditional`](conditional.md)
 Small helpers for concise conditional expressions and callback-style branching.
 
-### `containers`
+### [`containers`](containers/README.md)
 Reusable collection types including lists, sets, stacks, and queues.
 
 ## Design principles

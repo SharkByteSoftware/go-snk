@@ -52,5 +52,3 @@ Use the stack when:
 - you want a simple abstraction over a linked collection
 
 ## Examples
-
-See [`docs/examples.md`](../examples.md) for general examples.

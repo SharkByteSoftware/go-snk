@@ -64,4 +64,3 @@ Use the queue when:
 
 ## Examples
 
-See [`docs/examples.md`](../examples.md) for general examples.

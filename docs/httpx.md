@@ -69,5 +69,3 @@ Use `httpx` when:
 - Keep request options focused so the call site stays readable.
 
 ## Examples
-
-See [`docs/examples.md`](examples.md) for short usage examples and guidance.

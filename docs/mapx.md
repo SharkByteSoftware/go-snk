@@ -61,5 +61,3 @@ Use `mapx` when:
 - Keep an eye on whether ordering matters in your calling code, since map iteration order is not guaranteed.
 
 ## Examples
-
-See [`docs/examples.md`](examples.md) for usage-oriented examples.

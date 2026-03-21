@@ -70,5 +70,3 @@ Use the set when:
 - you need common set algebra operations
 
 ## Examples
-
-See [`docs/examples.md`](../examples.md) for general examples.

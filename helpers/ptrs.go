@@ -6,6 +6,11 @@ func Nil[T any]() *T {
 	return nil
 }
 
+// IsNil returns true if the value is nil.
+func IsNil[T any](value *T) bool {
+	return value == nil
+}
+
 // AsPtr returns a pointer copy of a value.
 func AsPtr[T any](value T) *T {
 	return &value

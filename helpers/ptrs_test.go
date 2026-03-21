@@ -26,6 +26,14 @@ func TestNil(t *testing.T) {
 	assert.IsType(t, (*ptrTestType)(nil), helpers.Nil[ptrTestType]())
 }
 
+func TestIsNil(t *testing.T) {
+	nilPtr := helpers.Nil[int]()
+	value := 5
+
+	assert.True(t, helpers.IsNil(nilPtr))
+	assert.False(t, helpers.IsNil(&value))
+}
+
 func TestAsPtr(t *testing.T) {
 	intPtr := helpers.AsPtr(5)
 	assert.IsType(t, (*int)(nil), intPtr)

@@ -12,6 +12,8 @@ This page tracks areas that are planned, evolving, or under consideration.
 
 - `pipeline`
 - `graphs`
+- `function caching and memoization`
+- `testing helpers`
 
 ## Possible future improvements
 

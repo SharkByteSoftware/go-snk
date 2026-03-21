@@ -84,5 +84,3 @@ Use the list when:
 
 
 ## Examples
-
-See [`docs/examples.md`](../examples.md) for general examples. Add list-specific examples here if needed later.

@@ -10,8 +10,8 @@
 *kitchen sink* — not because it does everything, but because it collects the small, type-safe helpers you 
 keep reaching for across projects.
 
-In practice that means replacing repeated loops with named helpers, eliminating one-off utilities scattered across y
-our codebase, and keeping everyday code easy to read through consistent patterns. Each package is intentionally 
+In practice that means replacing repeated loops with named helpers, eliminating one-off utilities scattered across 
+your codebase, and keeping everyday code easy to read through consistent patterns. Each package is intentionally 
 narrow so you can adopt only what you need.
 
 ## Packages

@@ -105,12 +105,12 @@ Prefer a simpler local loop when:
 
 ### Group, split, or combine collections
 
-| Function    | Purpose                                                        |
-|-------------|----------------------------------------------------------------|
-| `GroupBy`   | Groups items into a map by a computed key                      |
-| `Partition` | Splits items into two slices based on a predicate              |
+| Function    | Purpose                                                         |
+|-------------|-----------------------------------------------------------------|
+| `GroupBy`   | Groups items into a map by a computed key                       |
+| `Partition` | Splits items into two slices based on a predicate               |
 | `Combine`   | Merges multiple maps into one; last writer wins on key conflict |
-| `Invert`    | Swaps map keys and values                                      |
+| `Invert`    | Swaps map keys and values                                       |
 
 ### Perform set-like operations
 
@@ -119,17 +119,6 @@ Prefer a simpler local loop when:
 | `Intersect`  | Returns values common to both slices                  |
 | `Union`      | Returns all unique values from both slices            |
 | `Difference` | Returns values present in one slice but not the other |
-
-### Work with map contents
-
-| Function   | Purpose                                                              |
-|------------|----------------------------------------------------------------------|
-| `Keys`     | Returns the keys of a map                                            |
-| `Values`   | Returns the values of a map                                          |
-| `Contains` | Returns true if a map contains one or more given keys                |
-| `ValueOr`  | Returns the value for a key, or a fallback if the key is absent      |
-| `Filter`   | Returns a map containing only entries that satisfy a predicate       |
-| `Apply`    | Runs a function on each map entry for side effects                   |
 
 ### Aggregate numeric values
 

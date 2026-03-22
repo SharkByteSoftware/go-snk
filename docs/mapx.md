@@ -6,58 +6,79 @@
 
 # mapx
 
-`mapx` provides generic helpers for working with maps in a simple and reusable way.
+`mapx` provides generic helpers for working with Go maps in a clear and reusable way.
 
-It is useful when you want to:
-- inspect map keys or values
-- check for key presence
-- transform map data into other shapes
-- filter entries
-- combine multiple maps
-- invert mappings where that makes sense
+It is designed to help you replace repetitive map loops with small functions for:
+
+- extracting keys and values
+- checking for key presence
+- transforming maps into other shapes
+- filtering entries
+- combining or inverting maps
 
 ## Overview
 
-`mapx` focuses on common map operations that often require short custom loops. The goal is to make those operations concise while keeping the code easy to understand.
+Use `mapx` when you want map logic to be easier to read, reuse, and test.
 
-## Common capabilities
+It is especially useful when:
 
-- extract keys
-- extract values
-- collect unique values
-- check whether keys are present
-- return a value or fallback
-- invert maps
-- combine maps
-- convert a map into a slice
-- filter entries
-- apply a function to each entry
+- the same map loop appears in multiple places
+- a helper makes the intent of the code clearer
+- you want type-safe generic utilities instead of custom one-off helpers
 
 ## When to use it
 
 Use `mapx` when:
-- your code repeatedly extracts or transforms map data
-- you want a compact helper for map-specific operations
-- readability improves when a common map pattern becomes a named function
+
+- you need a common map operation expressed clearly
+- you want to avoid repeating small loops throughout the codebase
+- you prefer reusable generic helpers over ad hoc implementations
+
+Prefer a simpler local loop when:
+
+- the operation is tiny and only used once
+- a helper would make the code less obvious
+- performance or allocation behavior needs a specialized implementation
 
 ## API reference
 
-| Function       | Purpose                                             |
-|----------------|-----------------------------------------------------|
-| `Keys`         | Returns all keys from a map                         |
-| `Values`       | Returns all values from a map                       |
-| `UniqueValues` | Returns unique values from a map                    |
-| `Contains`     | Reports whether the map contains the specified keys |
-| `ValueOr`      | Returns a value for a key or a fallback value       |
-| `Invert`       | Swaps keys and values in a map                      |
-| `Combine`      | Merges multiple maps into one                       |
-| `ToSlice`      | Converts a map into a slice using a mapper          |
-| `Filter`       | Returns a map containing only matching entries      |
-| `Apply`        | Applies a function to each key-value pair           |
+### Extract keys or values
+
+| Function       | Purpose                                  |
+|----------------|------------------------------------------|
+| `Keys`         | Returns all keys from a map              |
+| `Values`       | Returns all values from a map            |
+| `UniqueValues` | Returns only unique values from a map    |
+
+### Look up or check entries
+
+| Function   | Purpose                                                         |
+|------------|-----------------------------------------------------------------|
+| `Contains` | Returns true if the map contains all of the specified keys      |
+| `ValueOr`  | Returns the value for a key, or a fallback if the key is absent |
+
+### Transform or reshape data
+
+| Function  | Purpose                                                         |
+|-----------|-----------------------------------------------------------------|
+| `ToSlice` | Converts a map into a slice using a mapper function             |
+| `Invert`  | Swaps map keys and values                                       |
+| `Combine` | Merges multiple maps into one; last writer wins on key conflict |
+
+### Filter or visit entries
+
+| Function | Purpose                                                         |
+|----------|-----------------------------------------------------------------|
+| `Filter` | Returns a map containing only entries that satisfy a predicate  |
+| `Apply`  | Runs a function on each map entry for side effects              |
 
 ## Notes
 
-- Some helpers assume the map shape is suitable for the requested transformation.
-- Keep an eye on whether ordering matters in your calling code, since map iteration order is not guaranteed.
+- Prefer the function that most clearly expresses your intent.
+- Prefer the simplest helper that matches the operation.
+- Map iteration order is not guaranteed; keep this in mind when ordering matters in your calling code.
+- Check each function's documentation for details such as key-conflict behavior and zero-value handling.
 
 ## Examples
+
+Examples can be found in the [mapx examples](../mapx/map_example_test.go) and in the [test suite](../mapx/map_test.go).

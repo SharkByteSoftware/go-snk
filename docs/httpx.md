@@ -8,35 +8,40 @@
 
 `httpx` provides lightweight helpers for making HTTP requests with less boilerplate.
 
-It is useful when you want:
-- concise request helpers
-- typed response handling
-- simple request configuration
-- a consistent pattern for common HTTP methods
+It is designed to help you replace repetitive HTTP client code with small functions for:
+
+- sending requests for common HTTP methods
+- accessing raw responses when needed
+- configuring request behavior
+- decoding response bodies into typed values
 
 ## Overview
 
-The package is intended as a small convenience layer over standard HTTP client workflows.
+Use `httpx` when you want HTTP client code to be easier to read, reuse, and test.
 
-## What it helps with
+It is especially useful when:
 
-- GET, POST, PUT, and DELETE requests
-- raw response access when needed
-- request configuration
-- response decoding
-- retaining or exposing raw response bodies
-- keeping client code shorter and more focused
+- the same request pattern appears in multiple places
+- a helper makes the intent of the code clearer
+- you want a consistent pattern for common HTTP methods instead of custom one-off clients
 
 ## When to use it
 
 Use `httpx` when:
+
 - you are writing client code that makes repeated HTTP requests
 - you want to reduce request boilerplate
-- you want clearer request/response handling around typed values
+- you want clearer request and response handling around typed values
+
+Prefer a simpler local implementation when:
+
+- the request is one-off and unlikely to be reused
+- you need fine-grained control over the HTTP client behavior
+- a helper would obscure important details at the call site
 
 ## API reference
 
-### Request helpers
+### Send requests
 
 | Function | Purpose                                                 |
 |----------|---------------------------------------------------------|
@@ -45,7 +50,7 @@ Use `httpx` when:
 | `Put`    | Sends a PUT request and returns a processed response    |
 | `Delete` | Sends a DELETE request and returns a processed response |
 
-### Raw response helpers
+### Access raw responses
 
 | Function            | Purpose                                             |
 |---------------------|-----------------------------------------------------|
@@ -54,7 +59,7 @@ Use `httpx` when:
 | `PutRawResponse`    | Sends a PUT request and returns the raw response    |
 | `DeleteRawResponse` | Sends a DELETE request and returns the raw response |
 
-### Configuration and response handling
+### Configure and decode
 
 | Function / Type        | Purpose                                           |
 |------------------------|---------------------------------------------------|
@@ -64,8 +69,11 @@ Use `httpx` when:
 
 ## Notes
 
+- Prefer the function that most clearly expresses your intent.
 - Use raw response helpers when you need direct access to the underlying response.
 - Use decoding helpers when you want to map response bodies into Go values.
 - Keep request options focused so the call site stays readable.
 
 ## Examples
+
+Examples can be found in the [httpx examples](../httpx/httpx_example_test.go) and in the [test suite](../httpx/httpx_test.go).

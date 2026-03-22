@@ -172,7 +172,7 @@ func (l *List[T]) IsEmpty() bool {
 
 // Size returns the size of the list.
 func (l *List[T]) Size() int {
-	return l.len
+	return l.Len()
 }
 
 // Clear empties the list.

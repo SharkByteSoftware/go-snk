@@ -4,69 +4,74 @@
     </a>
 </div>
 
-# Sets
+# stacks
 
-This document covers the set implementation in `containers`.
+`stacks` provides a last-in, first-out collection backed by a linked structure.
+
+It is designed to help you manage ordered temporary state with small functions for:
+
+- pushing and popping values
+- peeking at the top value without removing it
+- inspecting the stack's contents and size
 
 ## Overview
 
-The set type provides a generic collection for unique items.
+Use `stacks` when you want LIFO collection behavior that is easy to read, reuse, and test.
 
-It is useful when you need:
-- uniqueness
-- set comparisons
-- standard set operations
-- simple membership checks
+It is especially useful when:
 
-## Common operations
-
-- create a new set
-- add items
-- remove items
-- check membership
-- check whether the set is empty
-- compare two sets
-- clear the set
-- return all values
-- intersect sets
-- union sets
-- compute differences
-- compute symmetric differences
-- check subset relationships
-- apply a function to each item
-
-## API reference
-
-### `Set`
-
-| Method                | Purpose                                         |
-|-----------------------|-------------------------------------------------|
-| `New`                 | Creates a new set from initial values           |
-| `Add`                 | Adds one or more items                          |
-| `IsEmpty`             | Reports whether the set contains no items       |
-| `Equals`              | Reports whether two sets contain the same items |
-| `Contains`            | Reports whether the set contains an item        |
-| `Remove`              | Removes an item from the set                    |
-| `Size`                | Returns the number of items                     |
-| `Clear`               | Removes all items                               |
-| `Values`              | Returns all values as a slice                   |
-| `Intersect`           | Returns items common to both sets               |
-| `Union`               | Returns items from both sets                    |
-| `Difference`          | Returns items in one set but not the other      |
-| `SymmetricDifference` | Returns items in either set but not both        |
-| `Subset`              | Reports whether one set is a subset of another  |
-| `Apply`               | Applies a function to each item                 |
-
-## Notes
-
-- Sets are a good fit when uniqueness matters more than ordering.
-- If ordering is important, consider whether a different collection is a better fit.
+- the most recently added item should be processed first
+- the code naturally follows a LIFO pattern
+- you want a simple abstraction over a linked collection
 
 ## When to use it
 
-Use the set when:
-- you need to avoid duplicates
-- you want to compare membership across collections
-- you need common set algebra operations
+Use `stacks` when:
+
+- the most recently added item should be processed first
+- the code naturally follows a LIFO pattern
+- you want a simple abstraction over a linked collection
+
+Prefer a slice when:
+
+- you need access at both ends
+- random access by index is required
+- the collection is small and structure does not matter
+
+## API reference
+
+### Create a stack
+
+| Method | Purpose             |
+|--------|---------------------|
+| `New`  | Creates a new stack |
+
+### Add or remove values
+
+| Method | Purpose                           |
+|--------|-----------------------------------|
+| `Push` | Pushes a value onto the stack     |
+| `Pop`  | Removes and returns the top value |
+
+### Inspect without removing
+
+| Method | Purpose                                   |
+|--------|-------------------------------------------|
+| `Peek` | Returns the top value without removing it |
+
+### Inspect the stack
+
+| Method   | Purpose                        |
+|----------|--------------------------------|
+| `Size`   | Returns the number of elements |
+| `Values` | Returns all values as a slice  |
+
+## Notes
+
+- Prefer the method that most clearly expresses your intent.
+- A stack is a natural fit for LIFO workflows.
+- `Pop` and `Peek` return a default value and false when the stack is empty; handle these cases carefully in calling code.
 
 ## Examples
+
+Examples can be found in the  [test suite](../../containers/stacks/stack_test.go).

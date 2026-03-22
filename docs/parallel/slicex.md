@@ -8,55 +8,70 @@
 
 `parallel` provides parallel versions of selected `slicex` helpers for workloads where each item can be processed independently.
 
-It is useful when you want to:
-- map slice values using concurrent work
-- apply a function to each item in parallel
-- group values using parallel predicate evaluation
-- partition values using parallel predicate evaluation
-- limit concurrency for better control over resource usage
+It is designed to help you replace sequential slice loops with concurrent functions for:
+
+- mapping slice values using parallel work
+- applying a function to each item concurrently
+- grouping and partitioning values using parallel predicate evaluation
+- limiting concurrency for better control over resource usage
 
 ## Overview
 
-This package is intended for situations where the work done for each slice item is independent and concurrency can improve throughput.
+Use `slicex/parallel` when you want concurrent slice processing that follows the same patterns as `slicex`.
 
-It follows the same general patterns as `slicex`, but evaluates the per-item work in parallel instead of sequentially.
+It is especially useful when:
 
-## Common capabilities
-
-- parallel mapping
-- parallel application of functions
-- concurrency-limited mapping
-- concurrency-limited application
-- grouping by predicate in parallel
-- concurrency-limited grouping
-- partitioning by predicate in parallel
-- concurrency-limited partitioning
+- the work done per item is independent and expensive enough to benefit from concurrency
+- you want results returned in the same order as the input
+- you want to cap the number of goroutines to avoid excessive resource usage
 
 ## When to use it
 
 Use `slicex/parallel` when:
+
 - each item can be processed independently
 - the work per item is expensive enough to benefit from concurrency
 - you want to keep results ordered
 - you want to cap concurrency to avoid excessive goroutine usage
 
+Prefer sequential `slicex` helpers when:
+
+- the work per item is cheap and concurrency overhead would outweigh the benefit
+- items cannot be processed independently
+- shared mutable state makes concurrent access difficult to reason about
+
 ## API reference
 
-| Function             | Purpose                                                             |
-|----------------------|---------------------------------------------------------------------|
-| `Map`                | Transforms a slice using a mapper function in parallel              |
-| `MapWithLimit`       | Transforms a slice using a mapper function with limited concurrency |
-| `Apply`              | Applies a function to each item in parallel                         |
-| `ApplyWithLimit`     | Applies a function to each item with limited concurrency            |
-| `GroupBy`            | Groups items by a computed key in parallel                          |
-| `GroupByWithLimit`   | Groups items by a computed key with limited concurrency             |
-| `Partition`          | Splits a slice into two slices based on a predicate in parallel     |
-| `PartitionWithLimit` | Splits a slice into two slices based on a predicate with a limit    |
+### Transform items in parallel
+
+| Function       | Purpose                                                             |
+|----------------|---------------------------------------------------------------------|
+| `Map`          | Transforms a slice using a mapper function in parallel              |
+| `MapWithLimit` | Transforms a slice using a mapper function with limited concurrency |
+
+### Apply a function to each item in parallel
+
+| Function         | Purpose                                                  |
+|------------------|----------------------------------------------------------|
+| `Apply`          | Applies a function to each item in parallel              |
+| `ApplyWithLimit` | Applies a function to each item with limited concurrency |
+
+### Group or split items in parallel
+
+| Function             | Purpose                                                          |
+|----------------------|------------------------------------------------------------------|
+| `GroupBy`            | Groups items by a computed key in parallel                       |
+| `GroupByWithLimit`   | Groups items by a computed key with limited concurrency          |
+| `Partition`          | Splits a slice into two slices based on a predicate in parallel  |
+| `PartitionWithLimit` | Splits a slice into two slices based on a predicate with a limit |
 
 ## Notes
 
+- Prefer the function that most clearly expresses your intent.
+- Use the `WithLimit` variants when you want to control how many goroutines run at once.
 - Results are returned in the same order as the input slice where ordering applies.
-- Use the `WithLimit` variants when you want to control how many goroutines work at once.
-- Parallel helpers are best suited to independent tasks; avoid a shared mutable state unless it is properly synchronized.
+- Avoid shared mutable state across parallel calls unless it is properly synchronized.
 
 ## Examples
+
+Examples can be found in the [test suite](../../slicex/parallel/slice_test.go).

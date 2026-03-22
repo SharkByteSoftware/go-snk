@@ -1,118 +1,137 @@
-<div style="text-align: center;">
-    <a href="https://github.com/SharkByteSoftware/go-snk">
-        <img width="" height="202" alt="sink-logo" src="../img/logo.png" />
-    </a>
+<div align="center">
+  <a href="https://github.com/SharkByteSoftware/go-snk">
+    <img src="../img/logo.png" alt="slicex logo" height="202" />
+  </a>
 </div>
 
 # slicex
 
-`slicex` provides generic helpers for working with slices in a clear and reusable way.
+`slicex` provides generic helpers for working with Go slices in a clear and reusable way.
 
-It is useful when you want to:
-- filter values
-- map slices to new types
-- search for items
-- group and partition data
-- remove duplicates
-- perform simple numeric aggregation
+It is designed to help you replace repetitive slice loops with small functions for:
+
+- filtering values
+- mapping slices to new types
+- searching for items
+- grouping and partitioning data
+- removing duplicates
+- performing set-like operations
+- simple numeric aggregation
 
 ## Overview
 
-`slicex` is designed to replace repetitive slice loops with small helper functions that are easy to read and reuse.
+Use `slicex` when you want slice logic to be easier to read, reuse, and test.
 
-## Common capabilities
+It is especially useful when:
 
-### Selection and transformation
-- first-item helpers
-- filtering
-- mapping
-- filter-then-map workflows
-- flattening and reduction-style operations
-
-### Search and predicates
-- find values
-- check whether any item matches
-- check whether all items match
-
-### Deduplication and ordering
-- unique values
-- unique-by-key behavior
-- reversing slices
-- compacting slices
-
-### Grouping and map conversion
-- grouping by key
-- converting a slice to a map
-- partitioning into two groups
-
-### Set-like operations
-- intersection
-- union
-- difference
-
-### Numeric helpers
-- sum
-- product
-- mean
-- min
-- max
-- value-based variants
+- the same slice loop appears in multiple places
+- a helper makes the intent of the code clearer
+- you want type-safe generic utilities instead of custom one-off helpers
 
 ## When to use it
 
 Use `slicex` when:
-- the same slice loop appears in multiple places
-- a helper makes the code easier to scan
-- you want type-safe generic utilities instead of custom ad hoc helpers
+
+- you need a common slice operation expressed clearly
+- you want to avoid repeating small loops throughout the codebase
+- you prefer reusable generic helpers over ad hoc implementations
+
+Prefer a simpler local loop when:
+
+- the operation is tiny and only used once
+- a helper would make the code less obvious
+- performance or allocation behavior needs a specialized implementation
 
 ## API reference
 
-### Slice selection and transformation
+### Get the first matching or default value
 
-| Function       | Purpose                                                       |
-|----------------|---------------------------------------------------------------|
-| `FirstOr`      | Returns the first element of a slice or a fallback value      |
-| `FirstOrEmpty` | Returns the first element of a slice or the zero value        |
-| `Filter`       | Returns a slice containing only values that match a predicate |
-| `Map`          | Transforms each element into a new slice                      |
-| `FilterMap`    | Filters and transforms a slice in one pass                    |
-| `UniqueMap`    | Maps a slice and removes duplicates from the result           |
-| `Reduce`       | Accumulates or flattens slice values into another result      |
-| `Apply`        | Applies a function to each element in a slice                 |
-| `Reverse`      | Returns a slice with elements in reverse order                |
-| `Compact`      | Returns a slice with zero values removed                      |
+| Function       | Purpose                                                              |
+|----------------|----------------------------------------------------------------------|
+| `FirstOr`      | Returns the first element of a slice or a fallback value             |
+| `FirstOrEmpty` | Returns the first element of a slice or the zero value               |
+| `Find`         | Returns the first item in a slice equal to a given value             |
+| `FindBy`       | Returns the first item in a slice that matches a predicate           |
+| `FindOr`       | Returns the first item equal to a given value, or a fallback         |
+| `FindOrBy`     | Returns the first item matching a predicate, or a fallback value     |
 
-### Search and predicates
+### Test for presence or match
 
-| Function | Purpose                                               |
-|----------|-------------------------------------------------------|
-| `Find`   | Returns the first element that matches a condition    |
-| `FindBy` | Returns the first element that matches a predicate    |
-| `FindOr` | Returns the first matching element or a default value |
-| `Any`    | Reports whether any element matches a condition       |
-| `AnyBy`  | Reports whether any element matches a predicate       |
-| `All`    | Reports whether all elements equal a given value      |
-| `AllBy`  | Reports whether all elements satisfy a predicate      |
+| Function   | Purpose                                            |
+|------------|----------------------------------------------------|
+| `Contains` | Returns true if the slice contains a given value   |
+| `Any`      | Returns true if any item matches a given value     |
+| `AnyBy`    | Returns true if any item matches a predicate       |
+| `All`      | Returns true if all items match a given value      |
+| `AllBy`    | Returns true if all items satisfy a predicate      |
 
-### Uniqueness and grouping
+### Filter and select items
 
-| Function    | Purpose                                             |
-|-------------|-----------------------------------------------------|
-| `Unique`    | Removes duplicate values from a slice               |
-| `UniqueBy`  | Removes duplicates using a predicate or key rule    |
-| `ToMap`     | Converts a slice into a map using a key selector    |
-| `GroupBy`   | Groups elements by key                              |
-| `Partition` | Splits a slice into two groups based on a predicate |
+| Function          | Purpose                                                              |
+|-------------------|----------------------------------------------------------------------|
+| `Filter`          | Returns only items that satisfy a predicate                          |
+| `FilterWithIndex` | Returns only items whose predicate receives both the index and value |
+| `Compact`         | Removes zero values from a slice                                     |
 
-### Set-like operations
+### Transform or reshape data
+
+| Function             | Purpose                                                                    |
+|----------------------|----------------------------------------------------------------------------|
+| `Map`                | Transforms each element into a new slice                                   |
+| `MapWithIndex`       | Transforms each element using a function that also receives the index      |
+| `FilterMap`          | Filters and transforms elements in one pass                                |
+| `FilterMapWithIndex` | Filters and transforms elements in one pass, with index access             |
+| `Bind`               | Maps each item to a slice and flattens the results (flatMap)               |
+| `Reduce`             | Folds slice values into a single accumulated result                        |
+| `ToMap`              | Converts a slice into a map using a key selector                           |
+| `ToSlice`            | Converts a map into a slice using a mapper function                        |
+| `Apply`              | Runs a function on each item for side effects; does not return a new slice |
+| `ApplyWithIndex`     | Runs a function on each item for side effects, also receiving the index    |
+
+### Remove duplicates or keep unique values
+
+| Function       | Purpose                                              |
+|----------------|------------------------------------------------------|
+| `Unique`       | Removes duplicate values from a slice                |
+| `UniqueBy`     | Removes duplicates by a derived key                  |
+| `UniqueMap`    | Transforms items and returns only unique results     |
+| `UniqueValues` | Returns unique values from a map                     |
+
+### Reorder slices
+
+| Function  | Purpose                              |
+|-----------|--------------------------------------|
+| `Reverse` | Returns a reversed copy of the slice |
+
+### Group, split, or combine collections
+
+| Function    | Purpose                                                        |
+|-------------|----------------------------------------------------------------|
+| `GroupBy`   | Groups items into a map by a computed key                      |
+| `Partition` | Splits items into two slices based on a predicate              |
+| `Combine`   | Merges multiple maps into one; last writer wins on key conflict |
+| `Invert`    | Swaps map keys and values                                      |
+
+### Perform set-like operations
 
 | Function     | Purpose                                               |
 |--------------|-------------------------------------------------------|
-| `Intersect`  | Returns values common to two slices                   |
-| `Union`      | Returns values from both slices                       |
+| `Intersect`  | Returns values common to both slices                  |
+| `Union`      | Returns all unique values from both slices            |
 | `Difference` | Returns values present in one slice but not the other |
 
-### Numeric helpers
+### Work with map contents
+
+| Function   | Purpose                                                              |
+|------------|----------------------------------------------------------------------|
+| `Keys`     | Returns the keys of a map                                            |
+| `Values`   | Returns the values of a map                                          |
+| `Contains` | Returns true if a map contains one or more given keys                |
+| `ValueOr`  | Returns the value for a key, or a fallback if the key is absent      |
+| `Filter`   | Returns a map containing only entries that satisfy a predicate       |
+| `Apply`    | Runs a function on each map entry for side effects                   |
+
+### Aggregate numeric values
 
 | Function    | Purpose                                               |
 |-------------|-------------------------------------------------------|
@@ -122,15 +141,18 @@ Use `slicex` when:
 | `ProductBy` | Calculates the product using a value selector         |
 | `Mean`      | Calculates the arithmetic mean                        |
 | `MeanBy`    | Calculates the mean using a value selector            |
-| `Max`       | Returns the maximum value                             |
-| `MaxBy`     | Returns the maximum value using a comparison function |
 | `Min`       | Returns the minimum value                             |
 | `MinBy`     | Returns the minimum value using a comparison function |
-
+| `Max`       | Returns the maximum value                             |
+| `MaxBy`     | Returns the maximum value using a comparison function |
 ## Notes
 
-- Choose the function that most clearly expresses your intent.
+- Prefer the function that most clearly expresses your intent.
 - Prefer the simplest helper that matches the operation.
-- For very large workloads, consider whether a specialized approach is more appropriate.
+- Check each function’s documentation for details such as ordering, stability, and zero-value behavior.
+- For very large workloads, consider whether a specialized implementation would be more appropriate.
 
 ## Examples
+
+Examples can be found in the [slicex examples](../slicex/slice_example_test.go) and in the [test suite](../slicex/slice_test.go).
+

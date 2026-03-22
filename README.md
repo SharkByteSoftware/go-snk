@@ -4,7 +4,7 @@
     </a>
 </div>
 
-# go-snk - Slices, Maps, Data Structures, Channels, and more...
+# go-snk
 
 [![GitHub Tag](https://img.shields.io/github/v/tag/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/releases)
 [![Go Reference](https://pkg.go.dev/badge/github.com/SharkByteSoftware/go-snk.svg)](https://pkg.go.dev/github.com/SharkByteSoftware/go-snk)
@@ -24,7 +24,8 @@
 ```sh
 go get github.com/SharkByteSoftware/go-snk@latest
 ```
-Import the packages you need:
+
+Import only the packages you need:
 
 ```go
 package main
@@ -33,25 +34,18 @@ import "github.com/SharkByteSoftware/go-snk/slicex"
 import "github.com/SharkByteSoftware/go-snk/mapx"
 ```
 
+## Documentation
 
-### Documentation
+| Package           | Description                                                                           | Docs                                   |
+|-------------------|---------------------------------------------------------------------------------------|----------------------------------------|
+| `slicex`          | Helpers for filtering, mapping, searching, grouping, and numeric operations on slices | [slicex.md](docs/slicex.md)            |
+| `slicex/parallel` | Parallel slice helpers for independent per-item work                                  | [slicex.md](docs/parallel/slicex.md)   |
+| `mapx`            | Helpers for common map operations                                                     | [mapx.md](docs/mapx.md)                |
+| `httpx`           | Lightweight helpers for HTTP requests with less boilerplate                           | [httpx.md](docs/httpx.md)              |
+| `conditional`     | Concise helpers for branching and value selection                                     | [conditional.md](docs/conditional.md)  |
+| `containers`      | Reusable data structures including lists, sets, stacks, and queues                    | [README.md](docs/containers/README.md) |
 
-- [Overview](docs/overview.md)
-- [slicex](docs/slicex.md)
-- [mapx](docs/mapx.md)
-- [httpx](docs/httpx.md)
-- [conditional](docs/conditional.md)
-- [containers](docs/containers/README.md)
-- [Roadmap](docs/roadmap.md)
-
-## Package Summary
-
-- `slicex` — helpers for filtering, mapping, searching, grouping, and numeric operations on slices
-- `slicex/parallel` — parallel slice helpers for independent per-item work
-- `mapx` — generic helpers for common map operations
-- `httpx` — lightweight helpers for making HTTP requests with less boilerplate
-- `conditional` — concise helpers for branching and value selection
-- `containers` — reusable data structures including lists, sets, stacks, and queues
+For a full overview of the library, see [docs/overview.md](docs/overview.md).
 
 ## License
 

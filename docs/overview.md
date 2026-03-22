@@ -6,61 +6,33 @@
 
 # Overview
 
-`go-snk` is a Go utility library built around small, reusable, type-safe helpers.
+`go-snk` is a Go utility library built around small, reusable, type-safe helpers. The goal is to reduce repetitive 
+boilerplate while keeping everyday code easy to read — small helper functions instead of custom loops, generic utilities that stay type-safe, and consistent patterns across common helper areas.
 
-It brings together a focused set of packages for common tasks such as:
-- working with slices
-- working with maps
-- making HTTP requests
-- expressing simple conditional logic
-- using reusable container data structures
-
-## Why go-snk?
-
-The goal of `go-snk` is to reduce repetitive boilerplate while keeping everyday code easy to read.
-
-Use it when you want:
-- small helper functions instead of custom loops scattered throughout your codebase
-- generic utilities that remain type-safe
-- focused packages rather than a single large framework
-- consistent patterns across common helper areas
-
-## Package areas
+## Packages
 
 ### [`slicex`](slicex.md)
-Helpers for slice operations such as filtering, mapping, reducing, grouping, deduplicating, partitioning, and basic numeric aggregation.
+Helpers for slice operations such as filtering, mapping, reducing, grouping, deduplicating, partitioning, and basic 
+numeric aggregation.
 
 ### [`slicex/parallel`](parallel/slicex.md)
-Parallel versions of selected slice operations for independent work where concurrency can improve throughput.
+Helpers for parallel slice operations where each item can be processed independently and concurrency can improve 
+throughput.
 
 ### [`mapx`](mapx.md)
-Helpers for common map operations such as extracting keys or values, filtering entries, transforming maps, and combining maps.
+Helpers for common map operations such as extracting keys or values, filtering entries, transforming maps, and 
+combining maps.
 
 ### [`httpx`](httpx.md)
-Lightweight HTTP helpers that reduce client-side boilerplate and support typed response handling.
+Helpers for HTTP client code that reduce boilerplate and support typed response handling.
 
 ### [`conditional`](conditional.md)
-Small helpers for concise conditional expressions and callback-style branching.
+Helpers for concise conditional expressions and callback-style branching.
 
 ### [`containers`](containers/README.md)
 Reusable collection types including lists, sets, stacks, and queues.
 
 ## Design principles
 
-The library aims to stay:
-- small and focused
-- easy to read
-- type-safe
-- practical for everyday use
-- consistent across packages
-
-## Recommended starting point
-
-If you're new to the project, start with:
-1. [`docs/examples.md`](examples.md)
-2. the package document for the area you want to use
-3. the package summary in the root README
-
-## Notes
-
-This project is intended as a utility toolkit rather than a full application framework. Most packages are intentionally narrow in scope so they can be adopted independently.
+The library aims to stay small and focused rather than grow into a full application framework. Most packages are 
+intentionally narrow in scope so they can be adopted independently, and practical for everyday use rather than edge cases.

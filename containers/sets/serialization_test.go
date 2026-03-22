@@ -28,6 +28,20 @@ func TestSet_ToJSON(t *testing.T) {
 	}
 }
 
+func TestSet_ToJSONFailure(t *testing.T) {
+	set := sets.New[complex128]()
+
+	result, err := set.ToJSON()
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	set = sets.New(complex(1, 2))
+
+	result, err = set.ToJSON()
+	assert.Error(t, err)
+	assert.Nil(t, result)
+}
+
 func TestSet_FromJSON(t *testing.T) {
 	set := sets.New[int]()
 
@@ -47,6 +61,14 @@ func TestSet_FromJSON(t *testing.T) {
 	assert.True(t, set.Contains(5))
 	assert.True(t, set.Contains(6))
 	assert.True(t, set.Contains(256))
+}
+
+func TestSet_FromJSONFailure(t *testing.T) {
+	set := sets.New[complex128]()
+
+	err := set.FromJSON([]byte(`["one"]`))
+	assert.Error(t, err)
+	assert.Equal(t, 0, len(set.Values()))
 }
 
 func TestSet_MarshalJSON(t *testing.T) {

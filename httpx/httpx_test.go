@@ -798,7 +798,7 @@ func assertRawNilContext(t *testing.T, err error, resp *http.Response) {
 func setupTestServer(statusCode int, body string) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(statusCode)
-		w.Write([]byte(body))
+		_, _ = w.Write([]byte(body))
 	}))
 
 	return ts

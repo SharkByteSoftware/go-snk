@@ -27,6 +27,8 @@ go get github.com/SharkByteSoftware/go-snk@latest
 Import the packages you need:
 
 ```go
+package main
+
 import "github.com/SharkByteSoftware/go-snk/slicex"
 import "github.com/SharkByteSoftware/go-snk/mapx"
 ```

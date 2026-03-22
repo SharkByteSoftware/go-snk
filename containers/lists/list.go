@@ -1,4 +1,4 @@
-// Package lists provides various inked lists implementations
+// Package lists provides various linked lists implementations
 package lists
 
 import (
@@ -6,7 +6,7 @@ import (
 	"github.com/SharkByteSoftware/go-snk/helpers"
 )
 
-// List represents a doubly linked list.  Api ~compatible with the Go
+// List represents a doubly linked list.  Api ~compatible with Go's
 // containers List implementation.
 type List[T any] struct {
 	root Element[T]
@@ -165,14 +165,14 @@ func (l *List[T]) PushBackList(other *List[T]) {
 	l.Append(other.Values()...)
 }
 
-// IsEmpty returns true of the list is empty.
+// IsEmpty returns true if the list is empty.
 func (l *List[T]) IsEmpty() bool {
 	return l.Len() == 0
 }
 
 // Size returns the size of the list.
 func (l *List[T]) Size() int {
-	return l.len
+	return l.Len()
 }
 
 // Clear empties the list.

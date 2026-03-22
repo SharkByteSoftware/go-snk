@@ -89,6 +89,16 @@ func TestWithTimeout(t *testing.T) {
 	assert.ErrorIs(t, err, ErrInvalidTimeout)
 }
 
+func TestAlwaysIncludeRawBody(t *testing.T) {
+	config := NewHTTPXOptions()
+
+	assert.False(t, config.includeRawBody)
+
+	err := AlwaysIncludeRawBody()(config)
+	require.NoError(t, err)
+	assert.True(t, config.includeRawBody)
+}
+
 func Test_configWithAppliedOptions(t *testing.T) {
 	options := []Option{
 		WithTimeout(100),

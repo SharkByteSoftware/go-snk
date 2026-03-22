@@ -625,7 +625,7 @@ func TestOptions(t *testing.T) {
 		assertRawStatusOk(t, err, resp)
 	})
 
-	t.Run("invalid response payload", func(t *testing.T) {
+	t.Run("options invalid response payload", func(t *testing.T) {
 		ts := setupTestServer(http.StatusOK, badResponse)
 		defer ts.Close()
 
@@ -694,12 +694,16 @@ func assertStatusOkNoContent(t *testing.T, err error, resp *httpx.Response[testR
 }
 
 func assertRawInvalidPayload(t *testing.T, err error, resp *http.Response) {
+	t.Helper()
+
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorContains(t, err, "json: unsupported type")
 }
 
 func assertStatusOkInvalidResponse(t *testing.T, err error, resp *httpx.Response[testResponse]) {
+	t.Helper()
+
 	require.Error(t, err)
 	require.NotNil(t, resp)
 	assert.ErrorContains(t, err, "failed to decode response body")
@@ -709,6 +713,8 @@ func assertStatusOkInvalidResponse(t *testing.T, err error, resp *httpx.Response
 }
 
 func assertNon2xxStatus(t *testing.T, err error, resp *httpx.Response[testResponse]) {
+	t.Helper()
+
 	require.Error(t, err)
 	require.NotNil(t, resp)
 	assert.ErrorContains(t, err, "non-2xx status code")
@@ -718,54 +724,72 @@ func assertNon2xxStatus(t *testing.T, err error, resp *httpx.Response[testRespon
 }
 
 func assertTransportError(t *testing.T, method string, err error, resp *httpx.Response[testResponse]) {
+	t.Helper()
+
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorContains(t, err, fmt.Sprintf("failed to send %s request:", method))
 }
 
 func assertNilContext(t *testing.T, err error, resp *httpx.Response[testResponse]) {
+	t.Helper()
+
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorIs(t, err, httpx.ErrContextIsNil)
 }
 
 func assertInvalidPayload(t *testing.T, err error, resp *httpx.Response[testResponse]) {
+	t.Helper()
+
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorContains(t, err, "json: unsupported type")
 }
 
 func assertRawStatusOk(t *testing.T, err error, resp *http.Response) {
+	t.Helper()
+
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func assertRawStatusOkNoContent(t *testing.T, err error, resp *http.Response) {
+	t.Helper()
+
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func assertRawStatusOkInvalidResponse(t *testing.T, err error, resp *http.Response) {
+	t.Helper()
+
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func assertRawNon2xxStatusCode(t *testing.T, err error, resp *http.Response) {
+	t.Helper()
+
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 }
 
 func assertRawTransportError(t *testing.T, method string, err error, resp *http.Response) {
+	t.Helper()
+
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorContains(t, err, fmt.Sprintf("failed to send %s request:", method))
 }
 
 func assertRawNilContext(t *testing.T, err error, resp *http.Response) {
+	t.Helper()
+
 	require.Error(t, err)
 	require.Nil(t, resp)
 	require.ErrorIs(t, err, httpx.ErrContextIsNil)
@@ -774,7 +798,7 @@ func assertRawNilContext(t *testing.T, err error, resp *http.Response) {
 func setupTestServer(statusCode int, body string) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(statusCode)
-		w.Write([]byte(body))
+		_, _ = w.Write([]byte(body))
 	}))
 
 	return ts

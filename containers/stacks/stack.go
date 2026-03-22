@@ -5,7 +5,7 @@ import (
 	"github.com/SharkByteSoftware/go-snk/containers/lists"
 )
 
-// Stack provides a stack implementation based on a link list.
+// Stack provides a stack implementation based on a linked list.
 type Stack[T comparable] struct {
 	members *lists.List[T]
 }

@@ -134,5 +134,3 @@ Use `slicex` when:
 - For very large workloads, consider whether a specialized approach is more appropriate.
 
 ## Examples
-
-See [`docs/examples.md`](examples.md) for small usage-oriented examples.

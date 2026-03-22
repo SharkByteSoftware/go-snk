@@ -4,7 +4,7 @@
     </a>
 </div>
 
-# go-snk
+# go-snk — the kitchen sink for clean Go projects
 
 [![GitHub Tag](https://img.shields.io/github/v/tag/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/releases)
 [![Go Reference](https://pkg.go.dev/badge/github.com/SharkByteSoftware/go-snk.svg)](https://pkg.go.dev/github.com/SharkByteSoftware/go-snk)
@@ -15,7 +15,10 @@
 [![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/graphs/contributors)
 
-`go-snk` is a collection of small, type-safe Go utilities for slices, maps, HTTP requests, conditional logic, and reusable containers.
+`go-snk` is the library you pull into any Go project to clean it up and keep it clean. The name is short for 
+*kitchen sink* — not because it does everything, but because it collects the small, type-safe helpers you keep reaching 
+for across projects. No repeated loops, no one-off helpers scattered through your codebase, just consistent patterns 
+for the things you do all the time.
 
 ## Getting Started
 
@@ -36,14 +39,14 @@ import "github.com/SharkByteSoftware/go-snk/mapx"
 
 ## Documentation
 
-| Package           | Description                                                                           | Docs                                   |
-|-------------------|---------------------------------------------------------------------------------------|----------------------------------------|
-| `slicex`          | Helpers for filtering, mapping, searching, grouping, and numeric operations on slices | [slicex.md](docs/slicex.md)            |
-| `slicex/parallel` | Parallel slice helpers for independent per-item work                                  | [slicex.md](docs/parallel/slicex.md)   |
-| `mapx`            | Helpers for common map operations                                                     | [mapx.md](docs/mapx.md)                |
-| `httpx`           | Lightweight helpers for HTTP requests with less boilerplate                           | [httpx.md](docs/httpx.md)              |
-| `conditional`     | Concise helpers for branching and value selection                                     | [conditional.md](docs/conditional.md)  |
-| `containers`      | Reusable data structures including lists, sets, stacks, and queues                    | [README.md](docs/containers/README.md) |
+| Package | Description | Docs |
+|---|---|---|
+| `slicex` | Helpers for filtering, mapping, searching, grouping, and numeric operations on slices | [slicex.md](docs/slicex.md) |
+| `slicex/parallel` | Parallel slice helpers for independent per-item work | [slicex.md](docs/parallel/slicex.md) |
+| `mapx` | Helpers for common map operations | [mapx.md](docs/mapx.md) |
+| `httpx` | Lightweight helpers for HTTP requests with less boilerplate | [httpx.md](docs/httpx.md) |
+| `conditional` | Concise helpers for branching and value selection | [conditional.md](docs/conditional.md) |
+| `containers` | Reusable data structures including lists, sets, stacks, and queues | [README.md](docs/containers/README.md) |
 
 For a full overview of the library, see [docs/overview.md](docs/overview.md).
 

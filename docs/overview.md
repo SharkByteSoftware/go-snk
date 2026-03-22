@@ -6,14 +6,19 @@
 
 # Overview
 
-`go-snk` is a Go utility library built around small, reusable, type-safe helpers. The goal is to reduce repetitive 
-boilerplate while keeping everyday code easy to read — small helper functions instead of custom loops, generic utilities that stay type-safe, and consistent patterns across common helper areas.
+`go-snk` is the library you pull into any Go project to clean it up and keep it clean. The name is short for 
+*kitchen sink* — not because it does everything, but because it collects the small, type-safe helpers you 
+keep reaching for across projects.
+
+In practice that means replacing repeated loops with named helpers, eliminating one-off utilities scattered across y
+our codebase, and keeping everyday code easy to read through consistent patterns. Each package is intentionally 
+narrow so you can adopt only what you need.
 
 ## Packages
 
 ### [`slicex`](slicex.md)
-Helpers for slice operations such as filtering, mapping, reducing, grouping, deduplicating, partitioning, and basic 
-numeric aggregation.
+Helpers for slice operations such as filtering, mapping, reducing, grouping, deduplicating, partitioning, and 
+basic numeric aggregation.
 
 ### [`slicex/parallel`](parallel/slicex.md)
 Helpers for parallel slice operations where each item can be processed independently and concurrency can improve 
@@ -35,4 +40,5 @@ Reusable collection types including lists, sets, stacks, and queues.
 ## Design principles
 
 The library aims to stay small and focused rather than grow into a full application framework. Most packages are 
-intentionally narrow in scope so they can be adopted independently, and practical for everyday use rather than edge cases.
+intentionally narrow in scope so they can be adopted independently, and practical for everyday use rather 
+than edge cases.

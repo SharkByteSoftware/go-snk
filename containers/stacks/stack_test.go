@@ -36,14 +36,14 @@ func TestStack_Push(t *testing.T) {
 func TestStack_Pop(t *testing.T) {
 	st := stacks.New[int]()
 
-	value, ok := st.Pop()
+	_, ok := st.Pop()
 	assert.False(t, ok)
 	assert.True(t, st.IsEmpty())
 
 	st.Push(10)
 	st.Push(20)
 
-	value, ok = st.Pop()
+	value, ok := st.Pop()
 	assert.True(t, ok)
 	assert.Equal(t, 20, value)
 	assert.Equal(t, 1, st.Size())
@@ -55,7 +55,7 @@ func TestStack_Pop(t *testing.T) {
 	assert.Equal(t, 0, st.Size())
 	assert.True(t, st.IsEmpty())
 
-	value, ok = st.Pop()
+	_, ok = st.Pop()
 	assert.False(t, ok)
 	assert.Equal(t, 0, st.Size())
 	assert.True(t, st.IsEmpty())
@@ -64,13 +64,13 @@ func TestStack_Pop(t *testing.T) {
 func TestStack_Peek(t *testing.T) {
 	st := stacks.New[int]()
 
-	value, ok := st.Peek()
+	_, ok := st.Peek()
 	assert.False(t, ok)
 
 	st.Push(10)
 	st.Push(20)
 
-	value, ok = st.Peek()
+	value, ok := st.Peek()
 	assert.True(t, ok)
 	assert.Equal(t, 20, value)
 	assert.Equal(t, 2, st.Size())

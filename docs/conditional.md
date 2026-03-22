@@ -62,4 +62,4 @@ Prefer a simpler inline expression when:
 
 ## Examples
 
-Examples can be found in the [conditional examples](../conditional/conditional_example_test.go) and in the [test suite](../conditional/conditional_test.go).
+Examples can be found in the [test suite](../conditional/conditionals_test.go).

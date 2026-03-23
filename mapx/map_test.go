@@ -17,24 +17,6 @@ var numberMap = map[int]string{
 	256: "five",
 }
 
-var numberMapSame = map[int]string{
-	0:   "same",
-	8:   "same",
-	2:   "same",
-	3:   "same",
-	12:  "same",
-	256: "same",
-}
-
-var numberMapOther = map[int]string{
-	0:   "other",
-	8:   "other",
-	2:   "other",
-	3:   "other",
-	12:  "other",
-	256: "other",
-}
-
 var contNumberMap = map[int]string{
 	200: "zero",
 	201: "one",
@@ -58,7 +40,7 @@ func TestMap_Keys(t *testing.T) {
 	keys := mapx.Keys(numberMap)
 
 	assert.Len(t, keys, 6)
-	for k, _ := range numberMap {
+	for k := range numberMap {
 		assert.Contains(t, keys, k)
 	}
 }
@@ -150,7 +132,7 @@ func TestMap_ToSlice(t *testing.T) {
 
 	intResult := mapx.ToSlice(numberMap, adapt.KeySelectorAdapter)
 	assert.Len(t, intResult, 6)
-	for key, _ := range numberMap {
+	for key := range numberMap {
 		assert.Contains(t, intResult, key)
 	}
 }

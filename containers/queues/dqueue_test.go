@@ -67,7 +67,7 @@ func TestDQueue_Dequeue(t *testing.T) {
 	assert.Equal(t, 0, q.Size())
 	assert.Equal(t, 4, v)
 
-	v, ok = q.Dequeue()
+	_, ok = q.Dequeue()
 	assert.False(t, ok)
 	assert.Equal(t, 0, q.Size())
 }
@@ -90,7 +90,7 @@ func TestDQueue_DequeueBack(t *testing.T) {
 	assert.Equal(t, 0, q.Size())
 	assert.Equal(t, 1, v)
 
-	v, ok = q.DequeueBack()
+	_, ok = q.DequeueBack()
 	assert.False(t, ok)
 	assert.Equal(t, 0, q.Size())
 }

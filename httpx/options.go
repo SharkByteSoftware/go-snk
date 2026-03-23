@@ -2,6 +2,7 @@ package httpx
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"time"
@@ -41,7 +42,7 @@ type Option func(options *ConfigOptions) error
 func WithHTTPClient(client *http.Client) Option {
 	return func(options *ConfigOptions) error {
 		if client == nil {
-			return ErrHTTPClientIsNil
+			return fmt.Errorf("http client is nil: %w", ErrOptions)
 		}
 
 		options.httpClient = client
@@ -71,7 +72,7 @@ func WithHeaders(headers http.Header) Option {
 func WithTimeout(timeout time.Duration) Option {
 	return func(options *ConfigOptions) error {
 		if timeout <= 0 {
-			return ErrInvalidTimeout
+			return fmt.Errorf("invalid timeout, must be positive: %w", ErrOptions)
 		}
 
 		options.timeout = timeout
@@ -121,7 +122,7 @@ func configWithAppliedOptions(options []Option) (*ConfigOptions, error) {
 	})
 
 	if len(errs) > 0 {
-		return nil, errors.Join(errs...)
+		return nil, fmt.Errorf("failed to apply options: %w", errors.Join(errs...))
 	}
 
 	return config, nil

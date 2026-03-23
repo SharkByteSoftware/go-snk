@@ -38,19 +38,19 @@ func DoRequest[T any](ctx context.Context, method string, url string, body io.Re
 
 func doRawRequest(ctx context.Context, method string, url string, body io.Reader, config *ConfigOptions) (*http.Response, error) {
 	if ctx == nil {
-		return nil, ErrContextIsNil
+		return nil, fmt.Errorf("context cannot be nil: %w", ErrTransport)
 	}
 
 	req, err := newRequestWithAppliedConfig(ctx, method, url, body, config)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create %s request: %w", method, err)
+		return nil, fmt.Errorf("failed to create %s request: %w: %w", method, ErrTransport, err)
 	}
 
 	client := clientWithAppliedConfig(config)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("failed to send %s request: %w", method, err)
+		return nil, fmt.Errorf("failed to send %s request: %w: %w", method, ErrTransport, err)
 	}
 
 	return resp, nil

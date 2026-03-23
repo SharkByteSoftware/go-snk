@@ -49,6 +49,7 @@ func TestDecodeResponse_DecodeFailure(t *testing.T) {
 
 	resp, err := httpx.DecodeResponse[testResponse](response, httpx.NewHTTPXOptions())
 	require.Error(t, err)
+	assert.ErrorIs(t, err, httpx.ErrDecoding)
 	require.NotNil(t, resp)
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -67,6 +68,7 @@ func TestDecodeResponse_500StatusCode(t *testing.T) {
 
 	resp, err := httpx.DecodeResponse[testResponse](response, httpx.NewHTTPXOptions())
 	require.Error(t, err)
+	assert.ErrorIs(t, err, httpx.ErrNon2xxStatusCode)
 	require.NotNil(t, resp)
 
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
@@ -77,6 +79,7 @@ func TestDecodeResponse_500StatusCode(t *testing.T) {
 	response.Body = errReader{}
 	resp, err = httpx.DecodeResponse[testResponse](response, httpx.NewHTTPXOptions())
 	require.Error(t, err)
+	assert.ErrorIs(t, err, httpx.ErrTransport)
 	require.NotNil(t, resp)
 
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
@@ -108,7 +111,8 @@ func TestDecodeRawBody(t *testing.T) {
 		result, err := httpx.DecodeRawBody[testResponse](resp)
 		require.Error(t, err)
 		require.Nil(t, result)
-		assert.ErrorIs(t, err, httpx.ErrRawBodyIsNil)
+		assert.ErrorIs(t, err, httpx.ErrDecoding)
+		assert.ErrorContains(t, err, "unable to decode, raw body is nil")
 	})
 
 	t.Run("decode failure", func(t *testing.T) {
@@ -120,7 +124,7 @@ func TestDecodeRawBody(t *testing.T) {
 		result, err := httpx.DecodeRawBody[testResponse](resp)
 		require.Error(t, err)
 		require.Nil(t, result)
-		assert.ErrorContains(t, err, "failed to decode raw body:")
+		assert.ErrorContains(t, err, "failed to decode raw body")
 	})
 
 }

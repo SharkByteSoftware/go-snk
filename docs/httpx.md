@@ -67,6 +67,20 @@ Prefer a simpler local implementation when:
 | `AlwaysIncludeRawBody` | Configures responses to retain the raw body       |
 | `DecodeRawBody`        | Decodes a raw response body into a target value   |
 
+## Errors
+
+`httpx` returns sentinel errors for common failure cases:
+
+- `ErrNon2xxStatusCode` — the server responded with a non-2xx status code. The response body is stored in `Response.RawBody` for inspection.
+- `ErrDecoding` — the response body could not be decoded into the target type.
+- `ErrTransport` — the response body could not be read due to a transport/read failure.
+- `ErrMarshaling` — request payload serialization failed before the request was sent.
+
+### Inspecting error responses
+
+When a request returns `ErrNon2xxStatusCode`, the typed result is not decoded. Use `Response.RawBody` or 
+`DecodeRawBody` to parse the error payload into a custom type.
+
 ## Notes
 
 - Prefer the function that most clearly expresses your intent.

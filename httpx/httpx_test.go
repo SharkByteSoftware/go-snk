@@ -698,6 +698,7 @@ func assertRawInvalidPayload(t *testing.T, err error, resp *http.Response) {
 
 	require.Error(t, err)
 	require.Nil(t, resp)
+	assert.ErrorIs(t, err, httpx.ErrMarshaling)
 	assert.ErrorContains(t, err, "json: unsupported type")
 }
 
@@ -706,6 +707,7 @@ func assertStatusOkInvalidResponse(t *testing.T, err error, resp *httpx.Response
 
 	require.Error(t, err)
 	require.NotNil(t, resp)
+	assert.ErrorIs(t, err, httpx.ErrDecoding)
 	assert.ErrorContains(t, err, "failed to decode response body")
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Nil(t, resp.Result)
@@ -717,6 +719,7 @@ func assertNon2xxStatus(t *testing.T, err error, resp *httpx.Response[testRespon
 
 	require.Error(t, err)
 	require.NotNil(t, resp)
+	assert.ErrorIs(t, err, httpx.ErrNon2xxStatusCode)
 	assert.ErrorContains(t, err, "non-2xx status code")
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 	assert.Nil(t, resp.Result)
@@ -728,6 +731,7 @@ func assertTransportError(t *testing.T, method string, err error, resp *httpx.Re
 
 	require.Error(t, err)
 	require.Nil(t, resp)
+	assert.ErrorIs(t, err, httpx.ErrTransport)
 	assert.ErrorContains(t, err, fmt.Sprintf("failed to send %s request:", method))
 }
 
@@ -736,7 +740,7 @@ func assertNilContext(t *testing.T, err error, resp *httpx.Response[testResponse
 
 	require.Error(t, err)
 	require.Nil(t, resp)
-	assert.ErrorIs(t, err, httpx.ErrContextIsNil)
+	assert.ErrorIs(t, err, httpx.ErrTransport)
 }
 
 func assertInvalidPayload(t *testing.T, err error, resp *httpx.Response[testResponse]) {
@@ -744,6 +748,7 @@ func assertInvalidPayload(t *testing.T, err error, resp *httpx.Response[testResp
 
 	require.Error(t, err)
 	require.Nil(t, resp)
+	assert.ErrorIs(t, err, httpx.ErrMarshaling)
 	assert.ErrorContains(t, err, "json: unsupported type")
 }
 
@@ -784,6 +789,7 @@ func assertRawTransportError(t *testing.T, method string, err error, resp *http.
 
 	require.Error(t, err)
 	require.Nil(t, resp)
+	assert.ErrorIs(t, err, httpx.ErrTransport)
 	assert.ErrorContains(t, err, fmt.Sprintf("failed to send %s request:", method))
 }
 
@@ -792,7 +798,8 @@ func assertRawNilContext(t *testing.T, err error, resp *http.Response) {
 
 	require.Error(t, err)
 	require.Nil(t, resp)
-	require.ErrorIs(t, err, httpx.ErrContextIsNil)
+	require.ErrorIs(t, err, httpx.ErrTransport)
+	assert.ErrorContains(t, err, "context cannot be nil:")
 }
 
 func setupTestServer(statusCode int, body string) *httptest.Server {

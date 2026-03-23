@@ -71,8 +71,7 @@ Prefer a simpler local implementation when:
 
 `httpx` returns sentinel errors for common failure cases:
 
-- `ErrNon2xxStatusCode` — the server responded with a non-2xx status code. The response body is stored in 
-- `Response.RawBody` for inspection.
+- `ErrNon2xxStatusCode` — the server responded with a non-2xx status code. The response body is stored in `Response.RawBody` for inspection.
 - `ErrDecoding` — the response body could not be decoded into the target type.
 - `ErrTransport` — the response body could not be read due to a transport/read failure.
 - `ErrMarshaling` — request payload serialization failed before the request was sent.

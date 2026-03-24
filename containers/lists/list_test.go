@@ -63,7 +63,6 @@ func TestList_Remove(t *testing.T) {
 	element := lst.Front()
 	_ = lst.Remove(element)
 	_ = lst.Remove(element)
-
 }
 
 func TestList_Prepend(t *testing.T) {

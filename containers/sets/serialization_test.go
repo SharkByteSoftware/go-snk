@@ -23,6 +23,7 @@ func TestSet_ToJSON(t *testing.T) {
 	stringSet := sets.New("one", "two", "three")
 	strResult, err := stringSet.ToJSON()
 	assert.NoError(t, err)
+
 	for _, item := range stringSet.Values() {
 		assert.Contains(t, string(strResult), item)
 	}
@@ -85,6 +86,7 @@ func TestSet_MarshalJSON(t *testing.T) {
 	assert.Len(t, string(jsonBytes), 9)
 
 	var set sets.Set[int]
+
 	err = json.Unmarshal(jsonBytes, &set)
 	assert.NoError(t, err)
 	assert.Len(t, set.Values(), 3)
@@ -107,6 +109,7 @@ func TestSet_UnmarshalJSON(t *testing.T) {
 	assert.Len(t, set.Values(), 3)
 
 	var stringSet sets.Set[string]
+
 	err = json.Unmarshal([]byte(`["one"]`), &stringSet)
 	assert.NoError(t, err)
 	assert.Len(t, stringSet.Values(), 1)

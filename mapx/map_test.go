@@ -40,6 +40,7 @@ func TestMap_Keys(t *testing.T) {
 	keys := mapx.Keys(numberMap)
 
 	assert.Len(t, keys, 6)
+
 	for k := range numberMap {
 		assert.Contains(t, keys, k)
 	}
@@ -49,6 +50,7 @@ func TestMap_Values(t *testing.T) {
 	values := mapx.Values(numberMap)
 
 	assert.Len(t, values, 6)
+
 	for _, v := range numberMap {
 		assert.Contains(t, values, v)
 	}
@@ -57,6 +59,7 @@ func TestMap_Values(t *testing.T) {
 func TestMap_UniqueValues(t *testing.T) {
 	values := mapx.UniqueValues(numberMap)
 	assert.Len(t, values, 6)
+
 	for _, v := range numberMap {
 		assert.Contains(t, values, v)
 	}
@@ -90,6 +93,7 @@ func TestMap_ValueOr(t *testing.T) {
 func TestMap_Invert(t *testing.T) {
 	inverted := mapx.Invert(numberMap)
 	assert.Len(t, inverted, 6)
+
 	for k, v := range inverted {
 		assert.Contains(t, numberMap, v)
 		assert.Equal(t, k, numberMap[v])
@@ -111,6 +115,7 @@ func TestMap_Combine(t *testing.T) {
 
 	result = mapx.Combine(numberMap, contNumberMap)
 	assert.Len(t, result, 12)
+
 	for k, v := range numberMap {
 		assert.Contains(t, result, k)
 		assert.Equal(t, v, result[k])
@@ -126,12 +131,14 @@ func TestMap_ToSlice(t *testing.T) {
 	stringResult := mapx.ToSlice(numberMap, adapt.ValueSelectorAdapter)
 
 	assert.Len(t, stringResult, 6)
+
 	for _, value := range numberMap {
 		assert.Contains(t, stringResult, value)
 	}
 
 	intResult := mapx.ToSlice(numberMap, adapt.KeySelectorAdapter)
 	assert.Len(t, intResult, 6)
+
 	for key := range numberMap {
 		assert.Contains(t, intResult, key)
 	}

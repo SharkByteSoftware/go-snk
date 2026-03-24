@@ -20,6 +20,7 @@ func compareInt(prev int, curr int) int {
 	if prev < curr {
 		return -1
 	}
+
 	if prev > curr {
 		return 1
 	}

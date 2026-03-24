@@ -12,7 +12,6 @@ func TestStack_New(t *testing.T) {
 	assert.NotNil(t, st)
 	assert.True(t, st.IsEmpty())
 	assert.Equal(t, 0, st.Size())
-
 }
 
 func TestStack_Push(t *testing.T) {

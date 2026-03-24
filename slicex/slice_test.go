@@ -206,8 +206,10 @@ func TestSlice_UniqueBy(t *testing.T) {
 }
 
 func TestSlice_Reverse(t *testing.T) {
-	var orderedList = []int{1, 2, 3, 4, 5, 256}
-	var oddNumberedOrderedList = []int{1, 2, 3, 4, 5, 256, 333}
+	var (
+		orderedList            = []int{1, 2, 3, 4, 5, 256}
+		oddNumberedOrderedList = []int{1, 2, 3, 4, 5, 256, 333}
+	)
 
 	result := slicex.Reverse(orderedList)
 	assert.IsDecreasing(t, result)
@@ -241,6 +243,7 @@ func TestSlice_Compact(t *testing.T) {
 
 func TestSlice_Apply(t *testing.T) {
 	var nums string
+
 	slicex.Apply(numberList, func(n int) { nums += strconv.Itoa(n) })
 	assert.Equal(t, "12345333256", nums)
 }

@@ -1,13 +1,11 @@
 package queues
 
 import (
-	"github.com/stretchr/testify/assert"
-	"sort"
 	_ "sort"
 	"testing"
-)
 
-var s sort.Interface
+	"github.com/stretchr/testify/assert"
+)
 
 type Package struct {
 	Weight int
@@ -18,6 +16,7 @@ func TestIntPriorityQueueAscending(t *testing.T) {
 		if prev < curr {
 			return -1
 		}
+
 		if prev > curr {
 			return 1
 		}
@@ -33,6 +32,7 @@ func TestIntPriorityQueueAscending(t *testing.T) {
 
 	peek, ok := intQueue.Peek()
 	assert.Equal(t, 3, peek) // 3
+	assert.True(t, ok)
 
 	top, ok := intQueue.Dequeue()
 	assert.Equal(t, 3, top) // 3
@@ -43,6 +43,7 @@ func TestIntPriorityQueueAscending(t *testing.T) {
 	peekAgain, okAgain := intQueue.Peek()
 	assert.Equal(t, 2, peekAgain) // 2
 	assert.True(t, okAgain)
+
 	topAgain, okAgainAgain := intQueue.Dequeue() // 2
 	assert.Equal(t, 2, topAgain)
 	assert.True(t, okAgainAgain)
@@ -60,6 +61,7 @@ func TestIntPriorityQueueDescending(t *testing.T) {
 		if prev > curr {
 			return -1
 		}
+
 		if prev < curr {
 			return 1
 		}
@@ -75,6 +77,7 @@ func TestIntPriorityQueueDescending(t *testing.T) {
 
 	peek, ok := intQueue.Peek()
 	assert.Equal(t, 7, peek) // 7
+	assert.True(t, ok)
 
 	top, ok := intQueue.Dequeue()
 	assert.Equal(t, 7, top) // 7
@@ -85,6 +88,7 @@ func TestIntPriorityQueueDescending(t *testing.T) {
 	peekAgain, okAgain := intQueue.Peek()
 	assert.Equal(t, 5, peekAgain) // 5
 	assert.True(t, okAgain)
+
 	topAgain, okAgainAgain := intQueue.Dequeue() // 5
 	assert.Equal(t, 5, topAgain)
 	assert.True(t, okAgainAgain)
@@ -102,6 +106,7 @@ func TestPackagePriorityQueue(t *testing.T) {
 		if prev.Weight < curr.Weight {
 			return -1
 		}
+
 		if prev.Weight > curr.Weight {
 			return 1
 		}
@@ -117,6 +122,7 @@ func TestPackagePriorityQueue(t *testing.T) {
 
 	peek, ok := packageQueue.Peek()
 	assert.Equal(t, 3, peek.Weight) // 3
+	assert.True(t, ok)
 
 	top, ok := packageQueue.Dequeue()
 	assert.Equal(t, 3, top.Weight) // 3
@@ -127,6 +133,7 @@ func TestPackagePriorityQueue(t *testing.T) {
 	peekAgain, okAgain := packageQueue.Peek()
 	assert.Equal(t, 2, peekAgain.Weight) // 2
 	assert.True(t, okAgain)
+
 	topAgain, okAgainAgain := packageQueue.Dequeue() // 2
 	assert.Equal(t, 2, topAgain.Weight)
 	assert.True(t, okAgainAgain)

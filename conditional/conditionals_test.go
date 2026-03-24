@@ -48,6 +48,7 @@ func TestIfNotNil(t *testing.T) {
 func TestIfCall(t *testing.T) {
 	m1 := MyMock{}
 	m2 := MyMock{}
+
 	m1.On("MyFunc")
 	m2.On("MyFunc")
 
@@ -65,6 +66,7 @@ func TestIfCall(t *testing.T) {
 func TestIfCallReturn(t *testing.T) {
 	m1 := MyMockR{}
 	m2 := MyMockR{}
+
 	m1.On("MyFunc").Return(true)
 	m2.On("MyFunc").Return(false)
 
@@ -75,6 +77,7 @@ func TestIfCallReturn(t *testing.T) {
 
 	m1.Calls = nil
 	m2.Calls = nil
+
 	m1.On("MyFunc").Return(true)
 	m2.On("MyFunc").Return(false)
 

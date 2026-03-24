@@ -139,6 +139,7 @@ func BenchmarkApply(b *testing.B) {
 	for _, size := range startingSize {
 		b.Run(fmt.Sprintf("size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
+
 			for b.Loop() {
 				var sum int
 				slicex.Apply(ints, func(n int) { sum += n })

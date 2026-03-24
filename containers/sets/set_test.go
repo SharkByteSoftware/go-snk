@@ -38,6 +38,7 @@ func TestSet_Equals(t *testing.T) {
 	assert.True(t, set.Equals(set))
 
 	set.Add(1)
+
 	set2 := sets.New[int](1)
 	assert.True(t, set.Equals(set2))
 
@@ -96,6 +97,7 @@ func TestSet_Values(t *testing.T) {
 
 	values := set.Values()
 	assert.Equal(t, 5, len(values))
+
 	for _, v := range values {
 		assert.True(t, set.Contains(v))
 	}
@@ -174,12 +176,14 @@ func TestSet_SymmetricDifference(t *testing.T) {
 
 	result = set1.SymmetricDifference(set2)
 	assert.Equal(t, 6, result.Size())
+
 	for _, item := range []int{4, 5} {
 		assert.False(t, result.Contains(item))
 	}
 
 	result = set2.SymmetricDifference(set3)
 	assert.Equal(t, 7, result.Size())
+
 	for _, item := range []int{512, 1024, 2048, 8192} {
 		assert.True(t, result.Contains(item))
 	}

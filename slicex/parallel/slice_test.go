@@ -12,7 +12,6 @@ import (
 
 var numberList = []int{1, 2, 3, 4, 5, 333, 256}
 var duplicateList = []int{1, 2, 3, 4, 5, 333, 256, 1, 2, 3, 4, 5, 333, 256}
-var allSame = []int{1, 1, 1, 1, 1, 1}
 
 func TestParallelSlice_Map(t *testing.T) {
 	result := parallel.Map(numberList, func(n int) string { return strconv.Itoa(n) })
@@ -40,12 +39,14 @@ func TestParallelSlice_MapWithLimit(t *testing.T) {
 
 func TestParallelSlice_Apply(t *testing.T) {
 	var counter int32
+
 	parallel.Apply(numberList, func(n int) { atomic.AddInt32(&counter, 1) })
 	assert.Equal(t, int32(7), counter)
 }
 
 func TestParallelSlice_ApplyWithLimit(t *testing.T) {
 	var counter int32
+
 	parallel.ApplyWithLimit(numberList, func(n int) { atomic.AddInt32(&counter, 1) }, 2)
 	assert.Equal(t, int32(7), counter)
 }

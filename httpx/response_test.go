@@ -126,5 +126,4 @@ func TestDecodeRawBody(t *testing.T) {
 		require.Nil(t, result)
 		assert.ErrorContains(t, err, "failed to decode raw body")
 	})
-
 }

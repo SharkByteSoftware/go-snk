@@ -114,8 +114,10 @@ func ExampleInvert() {
 }
 
 func ExampleCombine() {
-	var numMap1 = map[int]string{0: "zero", 8: "one", 2: "two"}
-	var numMap2 = map[int]string{3: "three", 12: "four", 256: "five"}
+	var (
+		numMap1 = map[int]string{0: "zero", 8: "one", 2: "two"}
+		numMap2 = map[int]string{3: "three", 12: "four", 256: "five"}
+	)
 
 	result := mapx.Combine(numMap1, numMap2)
 

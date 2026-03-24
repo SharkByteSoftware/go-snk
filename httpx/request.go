@@ -75,14 +75,14 @@ func newRequestWithAppliedConfig(
 ) (*http.Request, error) {
 	base, err := url.Parse(baseURL)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse base URL: %w", err)
 	}
 
 	base.RawQuery = config.params.Encode()
 
 	req, err := http.NewRequestWithContext(ctx, method, base.String(), body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create %s request: %w", method, err)
 	}
 
 	req.Header = config.headers

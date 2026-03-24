@@ -5,9 +5,7 @@ linters:
   disable:
     - wsl
     - ireturn
-    - godox
     - exhaustruct
-    - wrapcheck
 
   settings:
     lll:
@@ -19,7 +17,7 @@ linters:
         main:
           files:
             - "$all"
-            - "!$test"
+            - "$test"
           allow:
             - "$gostd"
             - "github.com/SharkByteSoftware/go-snk"

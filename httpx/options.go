@@ -26,6 +26,7 @@ type ConfigOptions struct {
 // NewHTTPXOptions creates a new ConfigOptions instance.
 func NewHTTPXOptions() *ConfigOptions {
 	return &ConfigOptions{
+		httpClient:     nil,
 		headers:        make(http.Header),
 		timeout:        defaultTimeout,
 		params:         make(url.Values),

@@ -4,10 +4,11 @@ linters:
   default: all
   disable:
     - wsl
-    - ireturn
-    - exhaustruct
-
   settings:
+    ireturn:
+      allow:
+        - generic
+        - error
     lll:
       line-length: 140
     nlreturn:

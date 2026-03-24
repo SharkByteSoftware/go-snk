@@ -61,6 +61,7 @@ func clientWithAppliedConfig(config *ConfigOptions) *http.Client {
 		return config.httpClient
 	}
 
+	//nolint:exhaustruct
 	return &http.Client{
 		Timeout: config.timeout,
 	}

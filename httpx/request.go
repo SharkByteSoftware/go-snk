@@ -2,17 +2,17 @@ package httpx
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 )
 
 // DoRawRequest sends an HTTP request with the given method and body, without any shared request logic.
 func DoRawRequest(ctx context.Context, method string, url string, body io.Reader, options ...Option) (*http.Response, error) {
 	config, err := configWithAppliedOptions(options)
 	if err != nil {
-		return nil, fmt.Errorf("failed to apply options: %w", err)
+		return nil, fmt.Errorf("DoRawRequest: %w", err)
 	}
 
 	return doRawRequest(ctx, method, url, body, config)
@@ -22,7 +22,7 @@ func DoRawRequest(ctx context.Context, method string, url string, body io.Reader
 func DoRequest[T any](ctx context.Context, method string, url string, body io.Reader, options ...Option) (*Response[T], error) {
 	config, err := configWithAppliedOptions(options)
 	if err != nil {
-		return nil, fmt.Errorf("failed to apply options: %w", err)
+		return nil, fmt.Errorf("DoRequest: %w", err)
 	}
 
 	resp, err := doRawRequest(ctx, method, url, body, config)
@@ -37,19 +37,23 @@ func DoRequest[T any](ctx context.Context, method string, url string, body io.Re
 
 func doRawRequest(ctx context.Context, method string, url string, body io.Reader, config *ConfigOptions) (*http.Response, error) {
 	if ctx == nil {
-		return nil, fmt.Errorf("context cannot be nil: %w", ErrTransport)
+		return nil, fmt.Errorf("%w: context cannot be nil", ErrConfig)
 	}
 
 	req, err := newRequestWithAppliedConfig(ctx, method, url, body, config)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create %s request: %w: %w", method, ErrTransport, err)
+		return nil, fmt.Errorf("%w: %w", ErrTransport, err)
 	}
 
 	client := clientWithAppliedConfig(config)
 
 	resp, err := client.Do(req)
+	if errors.Is(err, context.DeadlineExceeded) {
+		return nil, fmt.Errorf("%w: %w", ErrTimeout, err)
+	}
+
 	if err != nil {
-		return nil, fmt.Errorf("failed to send %s request: %w: %w", method, ErrTransport, err)
+		return nil, fmt.Errorf("%w: %w", ErrTransport, err)
 	}
 
 	return resp, nil
@@ -72,7 +76,7 @@ func newRequestWithAppliedConfig(
 	body io.Reader,
 	config *ConfigOptions,
 ) (*http.Request, error) {
-	base, err := url.Parse(baseURL)
+	base, err := config.parseURLFunc(baseURL)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +85,7 @@ func newRequestWithAppliedConfig(
 
 	req, err := http.NewRequestWithContext(ctx, method, base.String(), body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("new request: %w", err)
 	}
 
 	req.Header = config.headers

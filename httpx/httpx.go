@@ -14,8 +14,11 @@ var (
 	// ErrNon2xxStatusCode is returned when the server responds with a non-2xx HTTP status code.
 	ErrNon2xxStatusCode = errors.New("non-2xx status code")
 
-	// ErrOptions is returned when the options are invalid.
-	ErrOptions = errors.New("invalid options")
+	// ErrConfig is returned when the options are invalid.
+	ErrConfig = errors.New("configuration error")
+
+	// ErrTimeout is returned when the request times out.
+	ErrTimeout = errors.New("timeout")
 
 	// ErrTransport is returned when the transport fails.
 	ErrTransport = errors.New("transport failure")

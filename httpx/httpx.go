@@ -11,11 +11,20 @@ import (
 )
 
 var (
-	ErrNon2xxStatusCode = errors.New("non-2xx status code") //nolint:revive
-	ErrOptions          = errors.New("options error")
-	ErrTransport        = errors.New("transport error")
-	ErrDecoding         = errors.New("decoding error")
-	ErrMarshaling       = errors.New("marshaling error")
+	// ErrNon2xxStatusCode is returned when the server responds with a non-2xx HTTP status code.
+	ErrNon2xxStatusCode = errors.New("non-2xx status code")
+
+	// ErrOptions is returned when the options are invalid.
+	ErrOptions = errors.New("invalid options")
+
+	// ErrTransport is returned when the transport fails.
+	ErrTransport = errors.New("transport failure")
+
+	// ErrDecoding is returned when the decoding fails.
+	ErrDecoding = errors.New("decoding failed")
+
+	// ErrMarshaling is returned when the marshaling fails.
+	ErrMarshaling = errors.New("marshaling failed")
 )
 
 // Get sends an HTTP GET request to the specified URL with context, headers, and timeout and parses the response.

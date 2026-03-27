@@ -30,8 +30,7 @@ func DoRequest[T any](ctx context.Context, method string, url string, body io.Re
 		return nil, err
 	}
 
-	//nolint: errcheck
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return DecodeResponse[T](resp, config)
 }

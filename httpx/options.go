@@ -42,7 +42,7 @@ type Option func(options *ConfigOptions) error
 func WithHTTPClient(client *http.Client) Option {
 	return func(options *ConfigOptions) error {
 		if client == nil {
-			return fmt.Errorf("http client is nil: %w", ErrOptions)
+			return fmt.Errorf("%w: http client is nil", ErrOptions)
 		}
 
 		options.httpClient = client
@@ -72,7 +72,7 @@ func WithHeaders(headers http.Header) Option {
 func WithTimeout(timeout time.Duration) Option {
 	return func(options *ConfigOptions) error {
 		if timeout <= 0 {
-			return fmt.Errorf("invalid timeout, must be positive: %w", ErrOptions)
+			return fmt.Errorf("%w: invalid timeout, must be positive", ErrOptions)
 		}
 
 		options.timeout = timeout
@@ -116,13 +116,9 @@ func StrictDecoding() Option {
 func configWithAppliedOptions(options []Option) (*ConfigOptions, error) {
 	config := NewHTTPXOptions()
 
-	errs := slicex.FilterMap(options, func(option Option) (error, bool) {
-		err := option(config)
-		return err, err != nil
-	})
-
-	if len(errs) > 0 {
-		return nil, fmt.Errorf("failed to apply options: %w", errors.Join(errs...))
+	err := errors.Join(slicex.Map(options, func(option Option) error { return option(config) })...)
+	if err != nil {
+		return nil, fmt.Errorf("failed applying option: %w", err)
 	}
 
 	return config, nil

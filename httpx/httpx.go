@@ -41,7 +41,7 @@ func GetRawResponse(ctx context.Context, url string, options ...Option) (*http.R
 func Post[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("failed posting request: %w: %w", ErrMarshaling, err)
+		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
 	}
 
 	return DoRequest[R](ctx, http.MethodPost, url, bytes.NewReader(body), options...)
@@ -51,7 +51,7 @@ func Post[R any, T any](ctx context.Context, url string, payload T, options ...O
 func PostRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("failed posting raw request: %w: %w", ErrMarshaling, err)
+		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
 	}
 
 	return DoRawRequest(ctx, http.MethodPost, url, bytes.NewReader(body), options...)
@@ -61,7 +61,7 @@ func PostRawResponse[T any](ctx context.Context, url string, payload T, options 
 func Put[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("failed putting request: %w: %w", ErrMarshaling, err)
+		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
 	}
 
 	return DoRequest[R](ctx, http.MethodPut, url, bytes.NewReader(body), options...)
@@ -71,7 +71,7 @@ func Put[R any, T any](ctx context.Context, url string, payload T, options ...Op
 func PutRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("failed putting raw request: %w: %w", ErrMarshaling, err)
+		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
 	}
 
 	return DoRawRequest(ctx, http.MethodPut, url, bytes.NewReader(body), options...)
@@ -81,7 +81,7 @@ func PutRawResponse[T any](ctx context.Context, url string, payload T, options .
 func Patch[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("failed patching request: %w: %w", ErrMarshaling, err)
+		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
 	}
 
 	return DoRequest[R](ctx, http.MethodPatch, url, bytes.NewReader(body), options...)
@@ -91,7 +91,7 @@ func Patch[R any, T any](ctx context.Context, url string, payload T, options ...
 func PatchRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("failed patching raw request: %w: %w", ErrMarshaling, err)
+		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
 	}
 
 	return DoRawRequest(ctx, http.MethodPatch, url, bytes.NewReader(body), options...)

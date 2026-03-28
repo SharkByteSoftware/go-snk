@@ -48,38 +48,36 @@ Prefer a simpler local implementation when:
 | `Get`    | Sends a GET request and returns a processed response    |
 | `Post`   | Sends a POST request and returns a processed response   |
 | `Put`    | Sends a PUT request and returns a processed response    |
+| `Patch`  | Sends a PATCH request and returns a processed response  |
 | `Delete` | Sends a DELETE request and returns a processed response |
 
 ### Access raw responses
 
-| Function            | Purpose                                             |
-|---------------------|-----------------------------------------------------|
-| `GetRawResponse`    | Sends a GET request and returns the raw response    |
-| `PostRawResponse`   | Sends a POST request and returns the raw response   |
-| `PutRawResponse`    | Sends a PUT request and returns the raw response    |
-| `DeleteRawResponse` | Sends a DELETE request and returns the raw response |
+| Function            | Purpose                                              |
+|---------------------|------------------------------------------------------|
+| `GetRawResponse`    | Sends a GET request and returns the raw response     |
+| `PostRawResponse`   | Sends a POST request and returns the raw response    |
+| `PutRawResponse`    | Sends a PUT request and returns the raw response     |
+| `PatchRawResponse`  | Sends a PATCH request and returns the raw response   |
+| `DeleteRawResponse` | Sends a DELETE request and returns the raw response  |
+| `Head`              | Sends a HEAD request and returns the raw response    |
+| `Options`           | Sends an OPTIONS request and returns the raw response |
 
-### Configure and decode
+### Configure
 
-| Function / Type        | Purpose                                           |
-|------------------------|---------------------------------------------------|
-| `ConfigOptions`        | Configures request behavior and response handling |
-| `AlwaysIncludeRawBody` | Configures responses to retain the raw body       |
-| `DecodeRawBody`        | Decodes a raw response body into a target value   |
+| Type            | Purpose                                           |
+|-----------------|---------------------------------------------------|
+| `ConfigOptions` | Configures request behavior and response handling |
 
 ## Errors
 
 `httpx` returns sentinel errors for common failure cases:
 
-- `ErrNon2xxStatusCode` — the server responded with a non-2xx status code. The response body is stored in `Response.RawBody` for inspection.
+- `ErrResponse` — the server responded with a non-2xx status code.
 - `ErrDecoding` — the response body could not be decoded into the target type.
-- `ErrTransport` — the response body could not be read due to a transport/read failure.
-- `ErrMarshaling` — request payload serialization failed before the request was sent.
-
-### Inspecting error responses
-
-When a request returns `ErrNon2xxStatusCode`, the typed result is not decoded. Use `Response.RawBody` or 
-`DecodeRawBody` to parse the error payload into a custom type.
+- `ErrTransport` — the request failed to send or the response failed to read.
+- `ErrEncoding` — request payload serialization failed before the request was sent.
+- `ErrOptions` — one or more request options were invalid.
 
 ## Notes
 

@@ -40,22 +40,22 @@ func TestSlice_Filter(t *testing.T) {
 	result := slicex.Filter(numberList, func(n int) bool { return n%2 == 0 })
 	assert.Equal(t, []int{2, 4, 256}, result)
 
-	result = slicex.Filter(numberList, func(n int) bool { return false })
+	result = slicex.Filter(numberList, func(_ int) bool { return false })
 	assert.Equal(t, []int{}, result)
 
-	result = slicex.Filter(numberList, func(n int) bool { return true })
+	result = slicex.Filter(numberList, func(_ int) bool { return true })
 	assert.Equal(t, numberList, result)
 
-	result = slicex.Filter([]int{}, func(n int) bool { return true })
+	result = slicex.Filter([]int{}, func(_ int) bool { return true })
 	assert.Equal(t, []int{}, result)
 }
 
 func TestSlice_Map(t *testing.T) {
-	result := slicex.Map(numberList, func(n int) string { return strconv.Itoa(n) })
+	result := slicex.Map(numberList, strconv.Itoa)
 	assert.Equal(t, []string{"1", "2", "3", "4", "5", "333", "256"}, result)
 	assert.Equal(t, len(numberList), cap(result))
 
-	result = slicex.Map([]int{}, func(n int) string { return strconv.Itoa(n) })
+	result = slicex.Map([]int{}, strconv.Itoa)
 	assert.Equal(t, []string{}, result)
 	assert.Equal(t, 0, cap(result))
 }
@@ -73,7 +73,7 @@ func TestSlice_FilterMap(t *testing.T) {
 }
 
 func TestSlice_UniqueMap(t *testing.T) {
-	result := slicex.UniqueMap(duplicateList, func(n int) string { return strconv.Itoa(n) })
+	result := slicex.UniqueMap(duplicateList, strconv.Itoa)
 	assert.Equal(t, []string{"1", "2", "3", "4", "5", "333", "256"}, result)
 	assert.Len(t, result, 7)
 }
@@ -206,8 +206,10 @@ func TestSlice_UniqueBy(t *testing.T) {
 }
 
 func TestSlice_Reverse(t *testing.T) {
-	var orderedList = []int{1, 2, 3, 4, 5, 256}
-	var oddNumberedOrderedList = []int{1, 2, 3, 4, 5, 256, 333}
+	var (
+		orderedList            = []int{1, 2, 3, 4, 5, 256}
+		oddNumberedOrderedList = []int{1, 2, 3, 4, 5, 256, 333}
+	)
 
 	result := slicex.Reverse(orderedList)
 	assert.IsDecreasing(t, result)
@@ -241,18 +243,17 @@ func TestSlice_Compact(t *testing.T) {
 
 func TestSlice_Apply(t *testing.T) {
 	var nums string
+
 	slicex.Apply(numberList, func(n int) { nums += strconv.Itoa(n) })
 	assert.Equal(t, "12345333256", nums)
 }
 
 func TestSlice_ToMap(t *testing.T) {
-	mapperFunc := func(item int) string { return strconv.Itoa(item) }
-
-	result := slicex.ToMap([]int{}, mapperFunc)
-	assert.Len(t, result, 0)
+	result := slicex.ToMap([]int{}, strconv.Itoa)
+	assert.Empty(t, result)
 	assert.Equal(t, map[string]int{}, result)
 
-	result = slicex.ToMap(numberList, mapperFunc)
+	result = slicex.ToMap(numberList, strconv.Itoa)
 	assert.Len(t, result, len(numberList))
 	assert.Equal(t, numberList[0], result[strconv.Itoa(numberList[0])])
 }
@@ -273,16 +274,16 @@ func TestSlice_GroupBy(t *testing.T) {
 }
 
 func TestSlice_Partition(t *testing.T) {
-	r1, r2 := slicex.Partition([]int{}, func(item int) bool { return true })
-	assert.Len(t, r1, 0)
-	assert.Len(t, r2, 0)
+	r1, r2 := slicex.Partition([]int{}, func(_ int) bool { return true })
+	assert.Empty(t, r1)
+	assert.Empty(t, r2)
 
-	r1, r2 = slicex.Partition(numberList, func(item int) bool { return true })
+	r1, r2 = slicex.Partition(numberList, func(_ int) bool { return true })
 	assert.Len(t, r1, 7)
-	assert.Len(t, r2, 0)
+	assert.Empty(t, r2)
 
-	r1, r2 = slicex.Partition(numberList, func(item int) bool { return false })
-	assert.Len(t, r1, 0)
+	r1, r2 = slicex.Partition(numberList, func(_ int) bool { return false })
+	assert.Empty(t, r1)
 	assert.Len(t, r2, 7)
 
 	r1, r2 = slicex.Partition(numberList, func(item int) bool { return item%2 == 0 })
@@ -335,7 +336,7 @@ func TestSlice_Difference(t *testing.T) {
 	slice2 := []int{4, 5, 6, 7, 256}
 
 	result := slicex.Difference(slice1, slice1)
-	assert.Len(t, result, 0)
+	assert.Empty(t, result)
 
 	result = slicex.Difference(slice1, slice2)
 	assert.Len(t, result, 3)

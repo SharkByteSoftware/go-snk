@@ -14,7 +14,7 @@ import (
 
 type errReader struct{}
 
-func (e errReader) Read(p []byte) (n int, err error) {
+func (e errReader) Read(_ []byte) (int, error) {
 	return 0, errors.New("read error")
 }
 
@@ -49,7 +49,7 @@ func TestDecodeResponse_DecodeFailure(t *testing.T) {
 
 	resp, err := httpx.DecodeResponse[testResponse](response, httpx.NewHTTPXOptions())
 	require.Error(t, err)
-	assert.ErrorIs(t, err, httpx.ErrDecoding)
+	require.ErrorIs(t, err, httpx.ErrDecoding)
 	require.NotNil(t, resp)
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -68,18 +68,18 @@ func TestDecodeResponse_500StatusCode(t *testing.T) {
 
 	resp, err := httpx.DecodeResponse[testResponse](response, httpx.NewHTTPXOptions())
 	require.Error(t, err)
-	assert.ErrorIs(t, err, httpx.ErrNon2xxStatusCode)
+	require.ErrorIs(t, err, httpx.ErrNon2xxStatusCode)
 	require.NotNil(t, resp)
 
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 	assert.Equal(t, http.StatusText(http.StatusInternalServerError), resp.Status)
 	assert.Nil(t, resp.Result)
-	assert.Equal(t, []byte(goodResponse), resp.RawBody)
+	assert.JSONEq(t, goodResponse, string(resp.RawBody))
 
 	response.Body = errReader{}
 	resp, err = httpx.DecodeResponse[testResponse](response, httpx.NewHTTPXOptions())
 	require.Error(t, err)
-	assert.ErrorIs(t, err, httpx.ErrTransport)
+	require.ErrorIs(t, err, httpx.ErrTransport)
 	require.NotNil(t, resp)
 
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
@@ -111,7 +111,7 @@ func TestDecodeRawBody(t *testing.T) {
 		result, err := httpx.DecodeRawBody[testResponse](resp)
 		require.Error(t, err)
 		require.Nil(t, result)
-		assert.ErrorIs(t, err, httpx.ErrDecoding)
+		require.ErrorIs(t, err, httpx.ErrDecoding)
 		assert.ErrorContains(t, err, "unable to decode, raw body is nil")
 	})
 
@@ -126,5 +126,4 @@ func TestDecodeRawBody(t *testing.T) {
 		require.Nil(t, result)
 		assert.ErrorContains(t, err, "failed to decode raw body")
 	})
-
 }

@@ -12,6 +12,7 @@ import (
 func TestDoRawRequest(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		ctx := context.Background()
+
 		ts := setupTestServer(http.StatusOK, goodResponse)
 		defer ts.Close()
 
@@ -23,6 +24,7 @@ func TestDoRawRequest(t *testing.T) {
 
 	t.Run("happy path with client", func(t *testing.T) {
 		ctx := context.Background()
+
 		ts := setupTestServer(http.StatusOK, "")
 		defer ts.Close()
 
@@ -35,6 +37,7 @@ func TestDoRawRequest(t *testing.T) {
 
 	t.Run("bad option", func(t *testing.T) {
 		ctx := context.Background()
+
 		ts := setupTestServer(http.StatusOK, "")
 		defer ts.Close()
 

@@ -13,9 +13,9 @@ BENCH_COUNT := 1
 
 .PHONY: default all test bench bench/% vet lint tidy clean dist godoc browse update-pkg-go-dev
 
-default: test lint
+default: test lint lint-tests
 
-all: test lint bench
+all: default bench
 
 test: | dist
 	$(printTarget)
@@ -30,6 +30,10 @@ bench/%:
 lint:
 	$(printTarget)
 	@golangci-lint run
+
+lint-tests:
+	$(printTarget)
+	@golangci-lint run --tests -c .golangci-tests.yml
 
 tidy:
 	$(printTarget)

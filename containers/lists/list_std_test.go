@@ -8,15 +8,21 @@ package lists
 
 import "testing"
 
-func checkListLen[T comparable](t *testing.T, l *List[T], len int) bool {
-	if n := l.Len(); n != len {
-		t.Errorf("l.Len() = %d, want %d", n, len)
+func checkListLen[T comparable](t *testing.T, l *List[T], length int) bool {
+	t.Helper()
+
+	if n := l.Len(); n != length {
+		t.Errorf("l.Len() = %d, want %d", n, length)
 		return false
 	}
+
 	return true
 }
 
+//nolint:cyclop
 func checkListPointers[T comparable](t *testing.T, l *List[T], es []*Element[T]) {
+	t.Helper()
+
 	root := &l.root
 
 	if !checkListLen(t, l, len(es)) {
@@ -28,6 +34,7 @@ func checkListPointers[T comparable](t *testing.T, l *List[T], es []*Element[T])
 		if l.root.next != nil && l.root.next != root || l.root.prev != nil && l.root.prev != root {
 			t.Errorf("l.root.next = %p, l.root.prev = %p; both should both be nil or %p", l.root.next, l.root.prev, root)
 		}
+
 		return
 	}
 	// len(es) > 0
@@ -36,26 +43,32 @@ func checkListPointers[T comparable](t *testing.T, l *List[T], es []*Element[T])
 	for i, e := range es {
 		prev := root
 		Prev := (*Element[T])(nil)
+
 		if i > 0 {
 			prev = es[i-1]
 			Prev = prev
 		}
+
 		if p := e.prev; p != prev {
 			t.Errorf("elt[%d](%p).prev = %p, want %p", i, e, p, prev)
 		}
+
 		if p := e.Prev(); p != Prev {
 			t.Errorf("elt[%d](%p).Prev() = %p, want %p", i, e, p, Prev)
 		}
 
 		next := root
 		Next := (*Element[T])(nil)
+
 		if i < len(es)-1 {
 			next = es[i+1]
 			Next = next
 		}
+
 		if n := e.next; n != next {
 			t.Errorf("elt[%d](%p).next = %p, want %p", i, e, n, next)
 		}
+
 		if n := e.Next(); n != Next {
 			t.Errorf("elt[%d](%p).Next() = %p, want %p", i, e, n, Next)
 		}
@@ -128,6 +141,7 @@ func TestList(t *testing.T) {
 	for e := l.Front(); e != nil; e = e.Next() {
 		sum += e.Value
 	}
+
 	if sum != 560 {
 		t.Errorf("sum over l = %d, want 4", sum)
 	}
@@ -138,10 +152,13 @@ func TestList(t *testing.T) {
 		next = e.Next()
 		l.Remove(e)
 	}
+
 	checkListPointers(t, l, []*Element[int]{})
 }
 
 func checkList[T comparable](t *testing.T, l *List[T], es []T) {
+	t.Helper()
+
 	if !checkListLen(t, l, len(es)) {
 		return
 	}
@@ -151,6 +168,7 @@ func checkList[T comparable](t *testing.T, l *List[T], es []T) {
 		if e.Value != es[i] {
 			t.Errorf("elt[%d].Value = %v, want %v", i, e.Value, es[i])
 		}
+
 		i++
 	}
 }
@@ -223,11 +241,13 @@ func TestIssue4103(t *testing.T) {
 
 	e := l1.Front()
 	l2.Remove(e) // l2 should not change because e is not an element of l2
+
 	if n := l2.Len(); n != 2 {
 		t.Errorf("l2.Len() = %d, want 2", n)
 	}
 
 	l1.InsertBefore(8, e)
+
 	if n := l1.Len(); n != 3 {
 		t.Errorf("l1.Len() = %d, want 3", n)
 	}
@@ -240,12 +260,15 @@ func TestIssue6349(t *testing.T) {
 
 	e := l.Front()
 	l.Remove(e)
+
 	if e.Value != 1 {
 		t.Errorf("e.value = %d, want 1", e.Value)
 	}
+
 	if e.Next() != nil {
 		t.Errorf("e.Next() != nil")
 	}
+
 	if e.Prev() != nil {
 		t.Errorf("e.Prev() != nil")
 	}
@@ -284,7 +307,7 @@ func TestMove(t *testing.T) {
 	checkListPointers(t, l, []*Element[int]{e1, e3, e2, e4})
 }
 
-// Test PushFront, Append, PushFrontList, PushBackList with uninitialized List
+// Test PushFront, Append, PushFrontList, PushBackList with uninitialized List.
 func TestZeroList(t *testing.T) {
 	var l1 = new(List[int])
 	l1.PushFront(1)
@@ -326,9 +349,11 @@ func TestInsertAfterUnknownMark(t *testing.T) {
 // Test that a lists l is not modified when calling MoveAfter or MoveBefore with a mark that is not an element of l.
 func TestMoveUnknownMark(t *testing.T) {
 	var l1 List[int]
+
 	e1 := l1.PushBack(1)
 
 	var l2 List[int]
+
 	e2 := l2.PushBack(2)
 
 	l1.MoveAfter(e1, e2)

@@ -25,6 +25,8 @@ func DecodeResponse[T any](resp *http.Response, config *ConfigOptions) (*Respons
 		StatusCode: resp.StatusCode,
 		Header:     resp.Header,
 		Request:    resp.Request,
+		Result:     nil,
+		RawBody:    nil,
 	}
 
 	if resp.StatusCode == http.StatusNoContent {

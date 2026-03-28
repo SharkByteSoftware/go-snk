@@ -42,6 +42,7 @@ func BenchmarkList_Remove(b *testing.B) {
 			for v := range size {
 				l.PushBack(v)
 			}
+
 			for b.Loop() {
 				if !l.IsEmpty() {
 					l.Remove(l.Front())
@@ -58,6 +59,7 @@ func BenchmarkList_MoveToFront(b *testing.B) {
 			for v := range size {
 				l.PushBack(v)
 			}
+
 			for b.Loop() {
 				if !l.IsEmpty() {
 					l.MoveToFront(l.Back())
@@ -74,6 +76,7 @@ func BenchmarkList_MoveToBack(b *testing.B) {
 			for v := range size {
 				l.PushBack(v)
 			}
+
 			for b.Loop() {
 				if !l.IsEmpty() {
 					l.MoveToBack(l.Front())
@@ -90,6 +93,7 @@ func BenchmarkList_PushFrontList(b *testing.B) {
 			for v := range size {
 				other.PushBack(v)
 			}
+
 			for b.Loop() {
 				l := lists.New[int]()
 				l.PushFrontList(other)
@@ -105,6 +109,7 @@ func BenchmarkList_PushBackList(b *testing.B) {
 			for v := range size {
 				other.PushBack(v)
 			}
+
 			for b.Loop() {
 				l := lists.New[int]()
 				l.PushBackList(other)

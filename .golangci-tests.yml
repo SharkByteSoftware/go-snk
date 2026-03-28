@@ -6,7 +6,21 @@ linters:
     - wsl
     - ginkgolinter
     - arangolint
+    - varnamelen
+    - paralleltest
+    - testpackage
+    - gosec
+    - gochecknoglobals
+    - staticcheck
+    - exhaustruct
+    - err113
+    - dupl
+    - bodyclose
   settings:
+    funlen:
+      lines: 65
+      statements: 60
+      ignore-comments: true
     ireturn:
       allow:
         - generic
@@ -24,6 +38,7 @@ linters:
           allow:
             - "$gostd"
             - "github.com/SharkByteSoftware/go-snk"
+            - "github.com/stretchr/testify"
 
 issues:
   max-issues-per-linter: 0
@@ -40,5 +55,4 @@ output:
 
 run:
   timeout: 30s
-  tests: false
   allow-parallel-runners: true

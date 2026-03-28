@@ -74,14 +74,14 @@ func TestMeanBy(t *testing.T) {
 }
 
 func TestMax(t *testing.T) {
-	max := slicex.Max(numberList)
-	assert.Equal(t, 333, max)
+	maxValue := slicex.Max(numberList)
+	assert.Equal(t, 333, maxValue)
 
-	max = slicex.Max(duplicateList)
-	assert.Equal(t, 333, max)
+	maxValue = slicex.Max(duplicateList)
+	assert.Equal(t, 333, maxValue)
 
-	max = slicex.Max([]int{})
-	assert.Equal(t, 0, max)
+	maxValue = slicex.Max([]int{})
+	assert.Equal(t, 0, maxValue)
 }
 
 func TestMaxBy(t *testing.T) {
@@ -93,17 +93,17 @@ func TestMaxBy(t *testing.T) {
 }
 
 func TestMin(t *testing.T) {
-	min := slicex.Min(numberList)
-	assert.Equal(t, 1, min)
+	minValue := slicex.Min(numberList)
+	assert.Equal(t, 1, minValue)
 
-	min = slicex.Min(duplicateList)
-	assert.Equal(t, 1, min)
+	minValue = slicex.Min(duplicateList)
+	assert.Equal(t, 1, minValue)
 
-	min = slicex.Min(slicex.Reverse(numberList))
-	assert.Equal(t, 1, min)
+	minValue = slicex.Min(slicex.Reverse(numberList))
+	assert.Equal(t, 1, minValue)
 
-	min = slicex.Min([]int{})
-	assert.Equal(t, 0, min)
+	minValue = slicex.Min([]int{})
+	assert.Equal(t, 0, minValue)
 }
 
 func TestMinBy(t *testing.T) {

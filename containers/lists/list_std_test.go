@@ -8,15 +8,16 @@ package lists
 
 import "testing"
 
-func checkListLen[T comparable](t *testing.T, l *List[T], len int) bool {
-	if n := l.Len(); n != len {
-		t.Errorf("l.Len() = %d, want %d", n, len)
+func checkListLen[T comparable](t *testing.T, l *List[T], length int) bool {
+	if n := l.Len(); n != length {
+		t.Errorf("l.Len() = %d, want %d", n, length)
 		return false
 	}
 
 	return true
 }
 
+//nolint:cyclop
 func checkListPointers[T comparable](t *testing.T, l *List[T], es []*Element[T]) {
 	root := &l.root
 
@@ -300,7 +301,7 @@ func TestMove(t *testing.T) {
 	checkListPointers(t, l, []*Element[int]{e1, e3, e2, e4})
 }
 
-// Test PushFront, Append, PushFrontList, PushBackList with uninitialized List
+// Test PushFront, Append, PushFrontList, PushBackList with uninitialized List.
 func TestZeroList(t *testing.T) {
 	var l1 = new(List[int])
 	l1.PushFront(1)

@@ -118,7 +118,7 @@ func BenchmarkUnique(b *testing.B) {
 
 func BenchmarkGroupBy(b *testing.B) {
 	b.Run(fmt.Sprintf("size: %d", sliceSize), func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
+		for range b.N {
 			_ = generateNestedIntSlices(sliceCount, sliceSize)
 		}
 	})

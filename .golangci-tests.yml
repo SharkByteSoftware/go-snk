@@ -1,0 +1,57 @@
+version: "2"
+
+linters:
+  default: all
+  disable:
+    - wsl
+    - varnamelen
+    - paralleltest
+    - testpackage
+    - gosec
+    - gocritic
+    - gochecknoglobals
+    - thelper
+    - testifylint
+    - staticcheck
+    - revive
+    - funlen
+    - exhaustruct
+    - err113
+    - dupl
+    - bodyclose
+  settings:
+    ireturn:
+      allow:
+        - generic
+        - error
+    lll:
+      line-length: 140
+    nlreturn:
+      block-size: 2
+    depguard:
+      rules:
+        main:
+          files:
+            - "$all"
+            - "$test"
+          allow:
+            - "$gostd"
+            - "github.com/SharkByteSoftware/go-snk"
+            - "github.com/stretchr/testify"
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  fix: false
+
+output:
+  sort-order:
+    - linter
+    - severity
+    - file
+
+  show-stats: true
+
+run:
+  timeout: 30s
+  allow-parallel-runners: true

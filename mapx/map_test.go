@@ -145,15 +145,15 @@ func TestMap_ToSlice(t *testing.T) {
 }
 
 func TestMap_Filter(t *testing.T) {
-	result := mapx.Filter(numberMap, func(k int, v string) bool { return true })
+	result := mapx.Filter(numberMap, func(_ int, _ string) bool { return true })
 	assert.Equal(t, numberMap, result)
 
-	result = mapx.Filter(numberMap, func(k int, v string) bool { return v == "zero" })
+	result = mapx.Filter(numberMap, func(_ int, v string) bool { return v == "zero" })
 	assert.Equal(t, map[int]string{0: "zero"}, result)
 
-	result = mapx.Filter(numberMap, func(k int, v string) bool { return k%2 == 0 })
+	result = mapx.Filter(numberMap, func(k int, _ string) bool { return k%2 == 0 })
 	assert.Equal(t, map[int]string{0: "zero", 2: "two", 8: "one", 12: "four", 256: "five"}, result)
 
-	result = mapx.Filter(map[int]string{}, func(k int, v string) bool { return true })
+	result = mapx.Filter(map[int]string{}, func(_ int, _ string) bool { return true })
 	assert.Equal(t, map[int]string{}, result)
 }

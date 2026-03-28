@@ -155,7 +155,7 @@ func ExampleFilter() {
 		256: "five",
 	}
 
-	result := mapx.Filter(numMap, func(key int, value string) bool {
+	result := mapx.Filter(numMap, func(key int, _ string) bool {
 		return key%2 != 0
 	})
 

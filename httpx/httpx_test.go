@@ -21,7 +21,7 @@ const (
 	badURL              = "snk://localhost:1234"
 )
 
-var badParseURLFunc = func(baseURL string) (*url.URL, error) {
+var badParseURLFunc = func(_ string) (*url.URL, error) {
 	url := &url.URL{
 		Scheme: "://invalid",
 		Host:   "example.com",
@@ -684,7 +684,7 @@ func TestWithOptions(t *testing.T) {
 	})
 
 	t.Run("fail with timeout config error", func(t *testing.T) {
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ts := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 			time.Sleep(10 * time.Millisecond)
 		}))
 		defer ts.Close()
@@ -697,7 +697,7 @@ func TestWithOptions(t *testing.T) {
 	})
 
 	t.Run("fail with timeout", func(t *testing.T) {
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ts := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 			time.Sleep(10 * time.Millisecond)
 		}))
 		defer ts.Close()
@@ -852,7 +852,7 @@ func assertRawNilContext(t *testing.T, err error, resp *http.Response) {
 }
 
 func setupTestServer(statusCode int, body string) *httptest.Server {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(statusCode)
 		_, _ = w.Write([]byte(body))
 	}))

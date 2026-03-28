@@ -40,14 +40,14 @@ func TestParallelSlice_MapWithLimit(t *testing.T) {
 func TestParallelSlice_Apply(t *testing.T) {
 	var counter int32
 
-	parallel.Apply(numberList, func(n int) { atomic.AddInt32(&counter, 1) })
+	parallel.Apply(numberList, func(_ int) { atomic.AddInt32(&counter, 1) })
 	assert.Equal(t, int32(7), counter)
 }
 
 func TestParallelSlice_ApplyWithLimit(t *testing.T) {
 	var counter int32
 
-	parallel.ApplyWithLimit(numberList, func(n int) { atomic.AddInt32(&counter, 1) }, 2)
+	parallel.ApplyWithLimit(numberList, func(_ int) { atomic.AddInt32(&counter, 1) }, 2)
 	assert.Equal(t, int32(7), counter)
 }
 
@@ -82,15 +82,15 @@ func TestParallelSlice_GroupByWithLimit(t *testing.T) {
 }
 
 func TestParallelSlice_Partition(t *testing.T) {
-	r1, r2 := parallel.Partition([]int{}, func(item int) bool { return true })
+	r1, r2 := parallel.Partition([]int{}, func(_ int) bool { return true })
 	assert.Empty(t, r1)
 	assert.Empty(t, r2)
 
-	r1, r2 = parallel.Partition(numberList, func(item int) bool { return true })
+	r1, r2 = parallel.Partition(numberList, func(_ int) bool { return true })
 	assert.Len(t, r1, 7)
 	assert.Empty(t, r2)
 
-	r1, r2 = parallel.Partition(numberList, func(item int) bool { return false })
+	r1, r2 = parallel.Partition(numberList, func(_ int) bool { return false })
 	assert.Empty(t, r1)
 	assert.Len(t, r2, 7)
 
@@ -100,15 +100,15 @@ func TestParallelSlice_Partition(t *testing.T) {
 }
 
 func TestParallelSlice_PartitionWithLimit(t *testing.T) {
-	r1, r2 := parallel.PartitionWithLimit([]int{}, func(item int) bool { return true }, 1)
+	r1, r2 := parallel.PartitionWithLimit([]int{}, func(_ int) bool { return true }, 1)
 	assert.Empty(t, r1)
 	assert.Empty(t, r2)
 
-	r1, r2 = parallel.PartitionWithLimit(numberList, func(item int) bool { return true }, 2)
+	r1, r2 = parallel.PartitionWithLimit(numberList, func(_ int) bool { return true }, 2)
 	assert.Len(t, r1, 7)
 	assert.Empty(t, r2)
 
-	r1, r2 = parallel.PartitionWithLimit(numberList, func(item int) bool { return false }, 4)
+	r1, r2 = parallel.PartitionWithLimit(numberList, func(_ int) bool { return false }, 4)
 	assert.Empty(t, r1)
 	assert.Len(t, r2, 7)
 

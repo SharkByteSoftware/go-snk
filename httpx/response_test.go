@@ -14,7 +14,7 @@ import (
 
 type errReader struct{}
 
-func (e errReader) Read(p []byte) (int, error) {
+func (e errReader) Read(_ []byte) (int, error) {
 	return 0, errors.New("read error")
 }
 

@@ -33,9 +33,6 @@ func BenchmarkValues(b *testing.B) {
 	}
 }
 
-func BenchmarkCombine(b *testing.B) {
-}
-
 func generateMap(size int) map[int]int {
 	return slicex.ToMap(generateIntSlice(size), adapt.ValueAdapter)
 }

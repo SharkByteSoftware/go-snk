@@ -40,13 +40,13 @@ func TestSlice_Filter(t *testing.T) {
 	result := slicex.Filter(numberList, func(n int) bool { return n%2 == 0 })
 	assert.Equal(t, []int{2, 4, 256}, result)
 
-	result = slicex.Filter(numberList, func(n int) bool { return false })
+	result = slicex.Filter(numberList, func(_ int) bool { return false })
 	assert.Equal(t, []int{}, result)
 
-	result = slicex.Filter(numberList, func(n int) bool { return true })
+	result = slicex.Filter(numberList, func(_ int) bool { return true })
 	assert.Equal(t, numberList, result)
 
-	result = slicex.Filter([]int{}, func(n int) bool { return true })
+	result = slicex.Filter([]int{}, func(_ int) bool { return true })
 	assert.Equal(t, []int{}, result)
 }
 
@@ -274,15 +274,15 @@ func TestSlice_GroupBy(t *testing.T) {
 }
 
 func TestSlice_Partition(t *testing.T) {
-	r1, r2 := slicex.Partition([]int{}, func(item int) bool { return true })
+	r1, r2 := slicex.Partition([]int{}, func(_ int) bool { return true })
 	assert.Empty(t, r1)
 	assert.Empty(t, r2)
 
-	r1, r2 = slicex.Partition(numberList, func(item int) bool { return true })
+	r1, r2 = slicex.Partition(numberList, func(_ int) bool { return true })
 	assert.Len(t, r1, 7)
 	assert.Empty(t, r2)
 
-	r1, r2 = slicex.Partition(numberList, func(item int) bool { return false })
+	r1, r2 = slicex.Partition(numberList, func(_ int) bool { return false })
 	assert.Empty(t, r1)
 	assert.Len(t, r2, 7)
 

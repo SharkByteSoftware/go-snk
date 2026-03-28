@@ -22,6 +22,8 @@ func TestContainers_Interface(t *testing.T) {
 }
 
 func runAssertions[T any](t *testing.T, container containers.Container[T]) {
+	t.Helper()
+
 	assert.False(t, container.IsEmpty())
 	assert.Equal(t, 3, container.Size())
 	assert.Len(t, container.Values(), 3)

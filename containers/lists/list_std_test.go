@@ -9,6 +9,8 @@ package lists
 import "testing"
 
 func checkListLen[T comparable](t *testing.T, l *List[T], length int) bool {
+	t.Helper()
+
 	if n := l.Len(); n != length {
 		t.Errorf("l.Len() = %d, want %d", n, length)
 		return false
@@ -19,6 +21,8 @@ func checkListLen[T comparable](t *testing.T, l *List[T], length int) bool {
 
 //nolint:cyclop
 func checkListPointers[T comparable](t *testing.T, l *List[T], es []*Element[T]) {
+	t.Helper()
+
 	root := &l.root
 
 	if !checkListLen(t, l, len(es)) {
@@ -153,6 +157,8 @@ func TestList(t *testing.T) {
 }
 
 func checkList[T comparable](t *testing.T, l *List[T], es []T) {
+	t.Helper()
+
 	if !checkListLen(t, l, len(es)) {
 		return
 	}

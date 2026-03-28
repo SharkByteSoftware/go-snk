@@ -45,7 +45,7 @@ type Option func(options *ConfigOptions) error
 func WithHTTPClient(client *http.Client) Option {
 	return func(options *ConfigOptions) error {
 		if client == nil {
-			return fmt.Errorf("%w: http client is nil", ErrConfig)
+			return NewOptionsError("WithHTTPClient", "http client is nil", nil)
 		}
 
 		options.httpClient = client
@@ -75,7 +75,7 @@ func WithHeaders(headers http.Header) Option {
 func WithTimeout(timeout time.Duration) Option {
 	return func(options *ConfigOptions) error {
 		if timeout <= 0 {
-			return fmt.Errorf("%w: invalid timeout, must be positive", ErrConfig)
+			return NewOptionsError("WithTimeout", "invalid timeout, must be positive", nil)
 		}
 
 		options.timeout = timeout
@@ -100,14 +100,6 @@ func WithParams(params url.Values) Option {
 	}
 }
 
-// AlwaysIncludeRawBody enables the inclusion of the raw request body in the ConfigOptions configuration.
-func AlwaysIncludeRawBody() Option {
-	return func(options *ConfigOptions) error {
-		options.includeRawBody = true
-		return nil
-	}
-}
-
 // StrictDecoding enables strict decoding of the response body.
 func StrictDecoding() Option {
 	return func(options *ConfigOptions) error {
@@ -124,7 +116,7 @@ func WithParseURLFunc(fn func(url string) (*url.URL, error)) Option {
 	}
 }
 
-func configWithAppliedOptions(options []Option) (*ConfigOptions, error) {
+func applyOptions(options []Option) (*ConfigOptions, error) {
 	config := NewHTTPXOptions()
 
 	err := errors.Join(slicex.Map(options, func(option Option) error { return option(config) })...)

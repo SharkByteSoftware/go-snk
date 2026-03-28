@@ -5,29 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"net/http"
-)
-
-var (
-	// ErrNon2xxStatusCode is returned when the server responds with a non-2xx HTTP status code.
-	ErrNon2xxStatusCode = errors.New("non-2xx status code")
-
-	// ErrConfig is returned when the options are invalid.
-	ErrConfig = errors.New("configuration error")
-
-	// ErrTimeout is returned when the request times out.
-	ErrTimeout = errors.New("timeout")
-
-	// ErrTransport is returned when the transport fails.
-	ErrTransport = errors.New("transport failure")
-
-	// ErrDecoding is returned when the decoding fails.
-	ErrDecoding = errors.New("decoding failed")
-
-	// ErrMarshaling is returned when the marshaling fails.
-	ErrMarshaling = errors.New("marshaling failed")
 )
 
 // Get sends an HTTP GET request to the specified URL with context, headers, and timeout and parses the response.
@@ -44,7 +22,7 @@ func GetRawResponse(ctx context.Context, url string, options ...Option) (*http.R
 func Post[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
+		return nil, NewEncodingError(payload, err)
 	}
 
 	return DoRequest[R](ctx, http.MethodPost, url, bytes.NewReader(body), options...)
@@ -54,7 +32,7 @@ func Post[R any, T any](ctx context.Context, url string, payload T, options ...O
 func PostRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
+		return nil, NewEncodingError(payload, err)
 	}
 
 	return DoRawRequest(ctx, http.MethodPost, url, bytes.NewReader(body), options...)
@@ -64,7 +42,7 @@ func PostRawResponse[T any](ctx context.Context, url string, payload T, options 
 func Put[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
+		return nil, NewEncodingError(payload, err)
 	}
 
 	return DoRequest[R](ctx, http.MethodPut, url, bytes.NewReader(body), options...)
@@ -74,7 +52,7 @@ func Put[R any, T any](ctx context.Context, url string, payload T, options ...Op
 func PutRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
+		return nil, NewEncodingError(payload, err)
 	}
 
 	return DoRawRequest(ctx, http.MethodPut, url, bytes.NewReader(body), options...)
@@ -84,7 +62,7 @@ func PutRawResponse[T any](ctx context.Context, url string, payload T, options .
 func Patch[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
+		return nil, NewEncodingError(payload, err)
 	}
 
 	return DoRequest[R](ctx, http.MethodPatch, url, bytes.NewReader(body), options...)
@@ -94,7 +72,7 @@ func Patch[R any, T any](ctx context.Context, url string, payload T, options ...
 func PatchRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrMarshaling, err)
+		return nil, NewEncodingError(payload, err)
 	}
 
 	return DoRawRequest(ctx, http.MethodPatch, url, bytes.NewReader(body), options...)

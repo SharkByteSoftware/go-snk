@@ -11,12 +11,15 @@ linters:
     - gochecknoglobals
     - staticcheck
     - revive
-    - funlen
     - exhaustruct
     - err113
     - dupl
     - bodyclose
   settings:
+    funlen:
+      lines: 65
+      statements: 60
+      ignore-comments: true
     ireturn:
       allow:
         - generic

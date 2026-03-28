@@ -83,15 +83,15 @@ func TestParallelSlice_GroupByWithLimit(t *testing.T) {
 
 func TestParallelSlice_Partition(t *testing.T) {
 	r1, r2 := parallel.Partition([]int{}, func(item int) bool { return true })
-	assert.Len(t, r1, 0)
-	assert.Len(t, r2, 0)
+	assert.Empty(t, r1)
+	assert.Empty(t, r2)
 
 	r1, r2 = parallel.Partition(numberList, func(item int) bool { return true })
 	assert.Len(t, r1, 7)
-	assert.Len(t, r2, 0)
+	assert.Empty(t, r2)
 
 	r1, r2 = parallel.Partition(numberList, func(item int) bool { return false })
-	assert.Len(t, r1, 0)
+	assert.Empty(t, r1)
 	assert.Len(t, r2, 7)
 
 	r1, r2 = parallel.Partition(numberList, func(item int) bool { return item%2 == 0 })
@@ -101,15 +101,15 @@ func TestParallelSlice_Partition(t *testing.T) {
 
 func TestParallelSlice_PartitionWithLimit(t *testing.T) {
 	r1, r2 := parallel.PartitionWithLimit([]int{}, func(item int) bool { return true }, 1)
-	assert.Len(t, r1, 0)
-	assert.Len(t, r2, 0)
+	assert.Empty(t, r1)
+	assert.Empty(t, r2)
 
 	r1, r2 = parallel.PartitionWithLimit(numberList, func(item int) bool { return true }, 2)
 	assert.Len(t, r1, 7)
-	assert.Len(t, r2, 0)
+	assert.Empty(t, r2)
 
 	r1, r2 = parallel.PartitionWithLimit(numberList, func(item int) bool { return false }, 4)
-	assert.Len(t, r1, 0)
+	assert.Empty(t, r1)
 	assert.Len(t, r2, 7)
 
 	r1, r2 = parallel.PartitionWithLimit(numberList, func(item int) bool { return item%2 == 0 }, 2)

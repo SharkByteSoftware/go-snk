@@ -13,8 +13,8 @@ type valueTestType struct {
 }
 
 func TestEmpty(t *testing.T) {
-	assert.Equal(t, 0, helpers.Empty[int]())
-	assert.Equal(t, "", helpers.Empty[string]())
+	assert.Empty(t, helpers.Empty[int]())
+	assert.Empty(t, helpers.Empty[string]())
 	assert.Equal(t, ptrTestType{}, helpers.Empty[ptrTestType]())
 }
 

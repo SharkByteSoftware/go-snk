@@ -46,7 +46,7 @@ func TestAsPtr(t *testing.T) {
 	testTypePtr := helpers.AsPtr(ptrTestType{name: "test", num: 5})
 	assert.IsType(t, (*ptrTestType)(nil), testTypePtr)
 	assert.Equal(t, "test", testTypePtr.name)
-	assert.Equal(t, testTypePtr.num, 5)
+	assert.Equal(t, 5, testTypePtr.num)
 }
 
 func TestAsValue(t *testing.T) {
@@ -60,7 +60,7 @@ func TestAsValue(t *testing.T) {
 	assert.Equal(t, helpers.Empty[ptrTestType](), result)
 
 	assert.Equal(t, 0, helpers.AsValue[int](nil))
-	assert.Equal(t, "", helpers.AsValue[string](nil))
+	assert.Empty(t, helpers.AsValue[string](nil))
 }
 
 func TestAsValueOr(t *testing.T) {

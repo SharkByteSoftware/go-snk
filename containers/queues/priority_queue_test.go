@@ -146,8 +146,8 @@ func TestPackagePriorityQueue(t *testing.T) {
 	assert.Equal(t, 2, packageQueue.Len()) // 6,7
 
 	v := packageQueue.Values()
-	assert.Equal(t, 2, len(v))
+	assert.Len(t, v, 2)
 	v = append(v, Package{Weight: 1})
-	assert.Equal(t, 3, len(v))
+	assert.Len(t, v, 3)
 	assert.Equal(t, 2, packageQueue.Len())
 }

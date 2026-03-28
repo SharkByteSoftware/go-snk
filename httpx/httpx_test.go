@@ -680,7 +680,7 @@ func TestWithOptions(t *testing.T) {
 		resp, err := httpx.Get[testResponse](ctx, ts.URL, httpx.AlwaysIncludeRawBody())
 		require.NoError(t, err)
 		require.NotNil(t, resp)
-		assert.Equal(t, goodResponse, string(resp.RawBody))
+		assert.JSONEq(t, goodResponse, string(resp.RawBody))
 	})
 
 	t.Run("fail with timeout config error", func(t *testing.T) {
@@ -737,7 +737,7 @@ func assertRawInvalidPayload(t *testing.T, err error, resp *http.Response) {
 
 	require.Error(t, err)
 	require.Nil(t, resp)
-	assert.ErrorIs(t, err, httpx.ErrMarshaling)
+	require.ErrorIs(t, err, httpx.ErrMarshaling)
 	assert.ErrorContains(t, err, "json: unsupported type")
 }
 
@@ -746,8 +746,8 @@ func assertStatusOkInvalidResponse(t *testing.T, err error, resp *httpx.Response
 
 	require.Error(t, err)
 	require.NotNil(t, resp)
-	assert.ErrorIs(t, err, httpx.ErrDecoding)
-	assert.ErrorContains(t, err, "failed to decode response body")
+	require.ErrorIs(t, err, httpx.ErrDecoding)
+	require.ErrorContains(t, err, "failed to decode response body")
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Nil(t, resp.Result)
 	assert.Equal(t, []byte(badResponse), resp.RawBody)
@@ -758,8 +758,8 @@ func assertNon2xxStatus(t *testing.T, err error, resp *httpx.Response[testRespon
 
 	require.Error(t, err)
 	require.NotNil(t, resp)
-	assert.ErrorIs(t, err, httpx.ErrNon2xxStatusCode)
-	assert.ErrorContains(t, err, "non-2xx status code")
+	require.ErrorIs(t, err, httpx.ErrNon2xxStatusCode)
+	require.ErrorContains(t, err, "non-2xx status code")
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 	assert.Nil(t, resp.Result)
 	assert.Equal(t, []byte(internalServerError), resp.RawBody)
@@ -770,7 +770,7 @@ func assertTransportError(t *testing.T, err error, resp *httpx.Response[testResp
 
 	require.Error(t, err)
 	require.Nil(t, resp)
-	assert.ErrorIs(t, err, httpx.ErrTransport)
+	require.ErrorIs(t, err, httpx.ErrTransport)
 	assert.ErrorContains(t, err, "transport failure")
 }
 
@@ -779,7 +779,7 @@ func assertNilContext(t *testing.T, err error, resp *httpx.Response[testResponse
 
 	require.Error(t, err)
 	require.Nil(t, resp)
-	assert.ErrorIs(t, err, httpx.ErrConfig)
+	require.ErrorIs(t, err, httpx.ErrConfig)
 	assert.ErrorContains(t, err, "configuration error: context cannot be nil")
 }
 
@@ -788,7 +788,7 @@ func assertNewRequestError(t *testing.T, err error, resp *httpx.Response[testRes
 
 	require.Error(t, err)
 	require.Nil(t, resp)
-	assert.ErrorIs(t, err, httpx.ErrTransport)
+	require.ErrorIs(t, err, httpx.ErrTransport)
 	assert.ErrorContains(t, err, "transport failure: new request: parse")
 }
 
@@ -797,7 +797,7 @@ func assertInvalidPayload(t *testing.T, err error, resp *httpx.Response[testResp
 
 	require.Error(t, err)
 	require.Nil(t, resp)
-	assert.ErrorIs(t, err, httpx.ErrMarshaling)
+	require.ErrorIs(t, err, httpx.ErrMarshaling)
 	assert.ErrorContains(t, err, "json: unsupported type")
 }
 
@@ -838,7 +838,7 @@ func assertRawTransportError(t *testing.T, err error, resp *http.Response) {
 
 	require.Error(t, err)
 	require.Nil(t, resp)
-	assert.ErrorIs(t, err, httpx.ErrTransport)
+	require.ErrorIs(t, err, httpx.ErrTransport)
 	assert.ErrorContains(t, err, "transport failure")
 }
 

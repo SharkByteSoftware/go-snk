@@ -10,7 +10,6 @@ linters:
     - gosec
     - gocritic
     - gochecknoglobals
-    - testifylint
     - staticcheck
     - revive
     - funlen

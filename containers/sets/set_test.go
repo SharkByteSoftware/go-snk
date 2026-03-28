@@ -96,7 +96,7 @@ func TestSet_Values(t *testing.T) {
 	assert.Equal(t, 5, set.Size())
 
 	values := set.Values()
-	assert.Equal(t, 5, len(values))
+	assert.Len(t, values, 5)
 
 	for _, v := range values {
 		assert.True(t, set.Contains(v))

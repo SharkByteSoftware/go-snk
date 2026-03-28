@@ -100,7 +100,7 @@ func TestDQueue_Peek(t *testing.T) {
 
 	v, ok := q.Peek()
 	assert.False(t, ok)
-	assert.Equal(t, v, 0)
+	assert.Equal(t, 0, v)
 
 	q.Enqueue(1)
 	v, ok = q.Peek()
@@ -120,7 +120,7 @@ func TestDQueue_PeekBack(t *testing.T) {
 
 	v, ok := q.PeekBack()
 	assert.False(t, ok)
-	assert.Equal(t, v, 0)
+	assert.Equal(t, 0, v)
 
 	q.Enqueue(1)
 	v, ok = q.PeekBack()
@@ -156,7 +156,7 @@ func TestDQueue_Values(t *testing.T) {
 	q := queues.NewQueue[int]()
 
 	values := q.Values()
-	assert.Len(t, values, 0)
+	assert.Empty(t, values, 0)
 
 	q = queues.NewQueue(1, 2, 5)
 	values = q.Values()

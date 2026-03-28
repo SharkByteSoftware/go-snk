@@ -252,7 +252,7 @@ func TestSlice_ToMap(t *testing.T) {
 	mapperFunc := func(item int) string { return strconv.Itoa(item) }
 
 	result := slicex.ToMap([]int{}, mapperFunc)
-	assert.Len(t, result, 0)
+	assert.Empty(t, result)
 	assert.Equal(t, map[string]int{}, result)
 
 	result = slicex.ToMap(numberList, mapperFunc)
@@ -277,15 +277,15 @@ func TestSlice_GroupBy(t *testing.T) {
 
 func TestSlice_Partition(t *testing.T) {
 	r1, r2 := slicex.Partition([]int{}, func(item int) bool { return true })
-	assert.Len(t, r1, 0)
-	assert.Len(t, r2, 0)
+	assert.Empty(t, r1)
+	assert.Empty(t, r2)
 
 	r1, r2 = slicex.Partition(numberList, func(item int) bool { return true })
 	assert.Len(t, r1, 7)
-	assert.Len(t, r2, 0)
+	assert.Empty(t, r2)
 
 	r1, r2 = slicex.Partition(numberList, func(item int) bool { return false })
-	assert.Len(t, r1, 0)
+	assert.Empty(t, r1)
 	assert.Len(t, r2, 7)
 
 	r1, r2 = slicex.Partition(numberList, func(item int) bool { return item%2 == 0 })
@@ -338,7 +338,7 @@ func TestSlice_Difference(t *testing.T) {
 	slice2 := []int{4, 5, 6, 7, 256}
 
 	result := slicex.Difference(slice1, slice1)
-	assert.Len(t, result, 0)
+	assert.Empty(t, result)
 
 	result = slicex.Difference(slice1, slice2)
 	assert.Len(t, result, 3)

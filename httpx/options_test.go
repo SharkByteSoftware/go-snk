@@ -82,11 +82,11 @@ func TestWithTimeout(t *testing.T) {
 
 	err = WithTimeout(0)(config)
 	require.Error(t, err)
-	assert.ErrorIs(t, err, ErrConfig)
+	require.ErrorIs(t, err, ErrConfig)
 
 	err = WithTimeout(-1)(config)
 	require.Error(t, err)
-	assert.ErrorIs(t, err, ErrConfig)
+	require.ErrorIs(t, err, ErrConfig)
 }
 
 func TestAlwaysIncludeRawBody(t *testing.T) {

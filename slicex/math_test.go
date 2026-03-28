@@ -12,10 +12,10 @@ func TestSum(t *testing.T) {
 	assert.Equal(t, 6, intResult)
 
 	floatResult := slicex.Sum([]float32{1.0, 2.0, 3.0})
-	assert.Equal(t, float32(6.0), floatResult)
+	assert.InEpsilon(t, 6.0, floatResult, 0.000001)
 
 	float64Result := slicex.Sum([]float64{1.0, 2.0, 3.0})
-	assert.Equal(t, 6.0, float64Result)
+	assert.InEpsilon(t, 6.0, float64Result, 0.000001)
 }
 
 func TestSumBy(t *testing.T) {
@@ -67,10 +67,10 @@ func TestMean(t *testing.T) {
 
 func TestMeanBy(t *testing.T) {
 	result := slicex.MeanBy([]float32{-1, 0, 1, 2}, func(i float32) float32 { return i * i })
-	assert.Equal(t, float32(1.5), result)
+	assert.InEpsilon(t, 1.5, result, 0.000001)
 
 	result = slicex.MeanBy([]float32{}, func(i float32) float32 { return i * i })
-	assert.Equal(t, float32(0), result)
+	assert.InDelta(t, float32(0.0), result, 1e-6)
 }
 
 func TestMax(t *testing.T) {
@@ -89,7 +89,7 @@ func TestMaxBy(t *testing.T) {
 	assert.Equal(t, "aaa", result)
 
 	result = slicex.MaxBy([]string{}, func(a string, b string) bool { return len(a) < len(b) })
-	assert.Equal(t, "", result)
+	assert.Empty(t, result)
 }
 
 func TestMin(t *testing.T) {
@@ -111,5 +111,5 @@ func TestMinBy(t *testing.T) {
 	assert.Equal(t, "a", result)
 
 	result = slicex.MinBy([]string{}, func(a string, b string) bool { return len(a) > len(b) })
-	assert.Equal(t, "", result)
+	assert.Empty(t, result)
 }

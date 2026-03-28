@@ -27,22 +27,22 @@ var (
 
 // OptionsError is returned when one or more options fail to apply.
 type OptionsError struct {
-	Option string
-	Msg    string
-	Err    error
+	Option  string
+	Message string
+	Err     error
 }
 
 // NewOptionsError returns a new OptionsError.
 func NewOptionsError(option string, msg string, err error) *OptionsError {
 	return &OptionsError{
-		Option: option,
-		Msg:    msg,
-		Err:    err,
+		Option:  option,
+		Message: msg,
+		Err:     err,
 	}
 }
 
 func (e *OptionsError) Error() string {
-	return fmt.Sprintf("%s: %s: %s: %v", ErrOptions, e.Option, e.Msg, e.Err)
+	return fmt.Sprintf("%s: %s: %s: %v", ErrOptions, e.Option, e.Message, e.Err)
 }
 
 func (e *OptionsError) Unwrap() error { return errors.Join(ErrOptions, e.Err) }

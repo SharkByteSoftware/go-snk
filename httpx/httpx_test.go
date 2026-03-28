@@ -2,9 +2,9 @@ package httpx_test
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
 
@@ -20,6 +20,15 @@ const (
 	internalServerError = "internal server error: something went wrong"
 	badURL              = "snk://localhost:1234"
 )
+
+var badParseURLFunc = func(baseURL string) (*url.URL, error) {
+	url := &url.URL{
+		Scheme: "://invalid",
+		Host:   "example.com",
+	}
+
+	return url, nil
+}
 
 type testResponse struct {
 	Name string
@@ -73,7 +82,7 @@ func TestGet(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.Get[testResponse](ctx, badURL)
-		assertTransportError(t, http.MethodGet, err, resp)
+		assertTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -82,6 +91,12 @@ func TestGet(t *testing.T) {
 
 		resp, err := httpx.Get[testResponse](nil, ts.URL)
 		assertNilContext(t, err, resp)
+	})
+
+	t.Run("fail creating request", func(t *testing.T) {
+		resp, err := httpx.Get[testResponse](ctx, badURL, httpx.WithParseURLFunc(badParseURLFunc))
+
+		assertNewRequestError(t, err, resp)
 	})
 }
 
@@ -122,7 +137,7 @@ func TestGetRawResponse(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.GetRawResponse(ctx, badURL)
-		assertRawTransportError(t, http.MethodGet, err, resp)
+		assertRawTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -177,7 +192,7 @@ func TestPost(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.Post[testResponse](ctx, badURL, payload)
-		assertTransportError(t, http.MethodPost, err, resp)
+		assertTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -233,7 +248,7 @@ func TestPostRawResponse(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.PostRawResponse(ctx, badURL, payload)
-		assertRawTransportError(t, http.MethodPost, err, resp)
+		assertRawTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -288,7 +303,7 @@ func TestPut(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.Put[testResponse](ctx, badURL, payload)
-		assertTransportError(t, http.MethodPut, err, resp)
+		assertTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -343,7 +358,7 @@ func TestPutRawResponse(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.PutRawResponse(ctx, badURL, payload)
-		assertRawTransportError(t, http.MethodPut, err, resp)
+		assertRawTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -398,7 +413,7 @@ func TestPatch(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.Patch[testResponse](ctx, badURL, payload)
-		assertTransportError(t, http.MethodPatch, err, resp)
+		assertTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -455,7 +470,7 @@ func TestPatchRawResponse(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.PatchRawResponse(ctx, badURL, testPayload{Name: "Test", Age: 18})
-		assertRawTransportError(t, http.MethodPatch, err, resp)
+		assertRawTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -504,7 +519,7 @@ func TestDelete(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.Delete[testResponse](ctx, badURL)
-		assertTransportError(t, http.MethodDelete, err, resp)
+		assertTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -553,7 +568,7 @@ func TestDeleteRawResponse(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.DeleteRawResponse(ctx, badURL)
-		assertRawTransportError(t, http.MethodDelete, err, resp)
+		assertRawTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -602,7 +617,7 @@ func TestHead(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.Head(ctx, badURL)
-		assertRawTransportError(t, http.MethodHead, err, resp)
+		assertRawTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -643,7 +658,7 @@ func TestOptions(t *testing.T) {
 
 	t.Run("transport error", func(t *testing.T) {
 		resp, err := httpx.Options(ctx, badURL)
-		assertRawTransportError(t, http.MethodOptions, err, resp)
+		assertRawTransportError(t, err, resp)
 	})
 
 	t.Run("nil context", func(t *testing.T) {
@@ -658,6 +673,29 @@ func TestOptions(t *testing.T) {
 func TestWithOptions(t *testing.T) {
 	ctx := context.Background()
 
+	t.Run("always include raw body", func(t *testing.T) {
+		ts := setupTestServer(http.StatusOK, goodResponse)
+		defer ts.Close()
+
+		resp, err := httpx.Get[testResponse](ctx, ts.URL, httpx.AlwaysIncludeRawBody())
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, goodResponse, string(resp.RawBody))
+	})
+
+	t.Run("fail with timeout config error", func(t *testing.T) {
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			time.Sleep(10 * time.Millisecond)
+		}))
+		defer ts.Close()
+
+		resp, err := httpx.Get[testResponse](ctx, ts.URL, httpx.WithTimeout(0))
+		require.Error(t, err)
+		require.Nil(t, resp)
+		require.ErrorIs(t, err, httpx.ErrConfig)
+		assert.ErrorContains(t, err, "apply options: configuration error: invalid timeout, must be positive")
+	})
+
 	t.Run("fail with timeout", func(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			time.Sleep(10 * time.Millisecond)
@@ -667,6 +705,7 @@ func TestWithOptions(t *testing.T) {
 		resp, err := httpx.Get[testResponse](ctx, ts.URL, httpx.WithTimeout(1*time.Millisecond))
 		require.Error(t, err)
 		require.Nil(t, resp)
+		require.ErrorIs(t, err, httpx.ErrTimeout)
 		assert.ErrorContains(t, err, "context deadline exceeded")
 	})
 }
@@ -726,13 +765,13 @@ func assertNon2xxStatus(t *testing.T, err error, resp *httpx.Response[testRespon
 	assert.Equal(t, []byte(internalServerError), resp.RawBody)
 }
 
-func assertTransportError(t *testing.T, method string, err error, resp *httpx.Response[testResponse]) {
+func assertTransportError(t *testing.T, err error, resp *httpx.Response[testResponse]) {
 	t.Helper()
 
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorIs(t, err, httpx.ErrTransport)
-	assert.ErrorContains(t, err, fmt.Sprintf("failed to send %s request:", method))
+	assert.ErrorContains(t, err, "transport failure")
 }
 
 func assertNilContext(t *testing.T, err error, resp *httpx.Response[testResponse]) {
@@ -740,7 +779,17 @@ func assertNilContext(t *testing.T, err error, resp *httpx.Response[testResponse
 
 	require.Error(t, err)
 	require.Nil(t, resp)
+	assert.ErrorIs(t, err, httpx.ErrConfig)
+	assert.ErrorContains(t, err, "configuration error: context cannot be nil")
+}
+
+func assertNewRequestError(t *testing.T, err error, resp *httpx.Response[testResponse]) {
+	t.Helper()
+
+	require.Error(t, err)
+	require.Nil(t, resp)
 	assert.ErrorIs(t, err, httpx.ErrTransport)
+	assert.ErrorContains(t, err, "transport failure: new request: parse")
 }
 
 func assertInvalidPayload(t *testing.T, err error, resp *httpx.Response[testResponse]) {
@@ -784,13 +833,13 @@ func assertRawNon2xxStatusCode(t *testing.T, err error, resp *http.Response) {
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 }
 
-func assertRawTransportError(t *testing.T, method string, err error, resp *http.Response) {
+func assertRawTransportError(t *testing.T, err error, resp *http.Response) {
 	t.Helper()
 
 	require.Error(t, err)
 	require.Nil(t, resp)
 	assert.ErrorIs(t, err, httpx.ErrTransport)
-	assert.ErrorContains(t, err, fmt.Sprintf("failed to send %s request:", method))
+	assert.ErrorContains(t, err, "transport failure")
 }
 
 func assertRawNilContext(t *testing.T, err error, resp *http.Response) {
@@ -798,8 +847,8 @@ func assertRawNilContext(t *testing.T, err error, resp *http.Response) {
 
 	require.Error(t, err)
 	require.Nil(t, resp)
-	require.ErrorIs(t, err, httpx.ErrTransport)
-	assert.ErrorContains(t, err, "context cannot be nil:")
+	require.ErrorIs(t, err, httpx.ErrConfig)
+	assert.ErrorContains(t, err, "context cannot be nil")
 }
 
 func setupTestServer(statusCode int, body string) *httptest.Server {

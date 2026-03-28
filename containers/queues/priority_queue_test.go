@@ -37,7 +37,7 @@ func TestIntPriorityQueueAscending(t *testing.T) {
 	top, ok := intQueue.Dequeue()
 	assert.Equal(t, 3, top) // 3
 	assert.True(t, ok)
-	assert.Equal(t, 2, intQueue.Len()) //5,7
+	assert.Equal(t, 2, intQueue.Len()) // 5,7
 
 	intQueue.Enqueue(2) // 2,5,7
 	peekAgain, okAgain := intQueue.Peek()
@@ -47,7 +47,7 @@ func TestIntPriorityQueueAscending(t *testing.T) {
 	topAgain, okAgainAgain := intQueue.Dequeue() // 2
 	assert.Equal(t, 2, topAgain)
 	assert.True(t, okAgainAgain)
-	assert.Equal(t, 2, intQueue.Len()) //5,7
+	assert.Equal(t, 2, intQueue.Len()) // 5,7
 
 	intQueue.Enqueue(6)                                    // 5, 6, 7
 	topAgainAgain, okAgainAgainAgain := intQueue.Dequeue() // 5
@@ -82,7 +82,7 @@ func TestIntPriorityQueueDescending(t *testing.T) {
 	top, ok := intQueue.Dequeue()
 	assert.Equal(t, 7, top) // 7
 	assert.True(t, ok)
-	assert.Equal(t, 2, intQueue.Len()) //5,3
+	assert.Equal(t, 2, intQueue.Len()) // 5,3
 
 	intQueue.Enqueue(2) // 5,3,2
 	peekAgain, okAgain := intQueue.Peek()
@@ -92,7 +92,7 @@ func TestIntPriorityQueueDescending(t *testing.T) {
 	topAgain, okAgainAgain := intQueue.Dequeue() // 5
 	assert.Equal(t, 5, topAgain)
 	assert.True(t, okAgainAgain)
-	assert.Equal(t, 2, intQueue.Len()) //3,2
+	assert.Equal(t, 2, intQueue.Len()) // 3,2
 
 	intQueue.Enqueue(6)                                    // 6,3,2
 	topAgainAgain, okAgainAgainAgain := intQueue.Dequeue() // 6
@@ -127,7 +127,7 @@ func TestPackagePriorityQueue(t *testing.T) {
 	top, ok := packageQueue.Dequeue()
 	assert.Equal(t, 3, top.Weight) // 3
 	assert.True(t, ok)
-	assert.Equal(t, 2, packageQueue.Len()) //5,7
+	assert.Equal(t, 2, packageQueue.Len()) // 5,7
 
 	packageQueue.Enqueue(Package{Weight: 2}) // 2,5,7
 	peekAgain, okAgain := packageQueue.Peek()

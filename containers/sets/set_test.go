@@ -35,7 +35,7 @@ func TestSet_IsEmpty(t *testing.T) {
 
 func TestSet_Equals(t *testing.T) {
 	set := sets.New[int]()
-	assert.True(t, set.Equals(set))
+	assert.True(t, set.Equals(set)) //nolint:gocritic
 
 	set.Add(1)
 

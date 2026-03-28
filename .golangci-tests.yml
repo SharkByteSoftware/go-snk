@@ -8,7 +8,6 @@ linters:
     - paralleltest
     - testpackage
     - gosec
-    - gocritic
     - gochecknoglobals
     - staticcheck
     - revive

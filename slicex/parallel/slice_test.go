@@ -14,25 +14,25 @@ var numberList = []int{1, 2, 3, 4, 5, 333, 256}
 var duplicateList = []int{1, 2, 3, 4, 5, 333, 256, 1, 2, 3, 4, 5, 333, 256}
 
 func TestParallelSlice_Map(t *testing.T) {
-	result := parallel.Map(numberList, func(n int) string { return strconv.Itoa(n) })
+	result := parallel.Map(numberList, strconv.Itoa)
 	assert.Equal(t, []string{"1", "2", "3", "4", "5", "333", "256"}, result)
 	assert.Equal(t, len(numberList), cap(result))
 
-	result = parallel.Map([]int{}, func(n int) string { return strconv.Itoa(n) })
+	result = parallel.Map([]int{}, strconv.Itoa)
 	assert.Equal(t, []string{}, result)
 	assert.Equal(t, 0, cap(result))
 }
 
 func TestParallelSlice_MapWithLimit(t *testing.T) {
-	result := parallel.MapWithLimit(numberList, func(n int) string { return strconv.Itoa(n) }, 2)
+	result := parallel.MapWithLimit(numberList, strconv.Itoa, 2)
 	assert.Equal(t, []string{"1", "2", "3", "4", "5", "333", "256"}, result)
 	assert.Equal(t, len(numberList), cap(result))
 
-	result = parallel.MapWithLimit([]int{}, func(n int) string { return strconv.Itoa(n) }, 1)
+	result = parallel.MapWithLimit([]int{}, strconv.Itoa, 1)
 	assert.Equal(t, []string{}, result)
 	assert.Equal(t, 0, cap(result))
 
-	result = parallel.MapWithLimit(numberList, func(n int) string { return strconv.Itoa(n) }, len(numberList)+1)
+	result = parallel.MapWithLimit(numberList, strconv.Itoa, len(numberList)+1)
 	assert.Equal(t, []string{"1", "2", "3", "4", "5", "333", "256"}, result)
 	assert.Equal(t, len(numberList), cap(result))
 }

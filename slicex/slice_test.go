@@ -51,11 +51,11 @@ func TestSlice_Filter(t *testing.T) {
 }
 
 func TestSlice_Map(t *testing.T) {
-	result := slicex.Map(numberList, func(n int) string { return strconv.Itoa(n) })
+	result := slicex.Map(numberList, strconv.Itoa)
 	assert.Equal(t, []string{"1", "2", "3", "4", "5", "333", "256"}, result)
 	assert.Equal(t, len(numberList), cap(result))
 
-	result = slicex.Map([]int{}, func(n int) string { return strconv.Itoa(n) })
+	result = slicex.Map([]int{}, strconv.Itoa)
 	assert.Equal(t, []string{}, result)
 	assert.Equal(t, 0, cap(result))
 }
@@ -73,7 +73,7 @@ func TestSlice_FilterMap(t *testing.T) {
 }
 
 func TestSlice_UniqueMap(t *testing.T) {
-	result := slicex.UniqueMap(duplicateList, func(n int) string { return strconv.Itoa(n) })
+	result := slicex.UniqueMap(duplicateList, strconv.Itoa)
 	assert.Equal(t, []string{"1", "2", "3", "4", "5", "333", "256"}, result)
 	assert.Len(t, result, 7)
 }
@@ -249,13 +249,11 @@ func TestSlice_Apply(t *testing.T) {
 }
 
 func TestSlice_ToMap(t *testing.T) {
-	mapperFunc := func(item int) string { return strconv.Itoa(item) }
-
-	result := slicex.ToMap([]int{}, mapperFunc)
+	result := slicex.ToMap([]int{}, strconv.Itoa)
 	assert.Empty(t, result)
 	assert.Equal(t, map[string]int{}, result)
 
-	result = slicex.ToMap(numberList, mapperFunc)
+	result = slicex.ToMap(numberList, strconv.Itoa)
 	assert.Len(t, result, len(numberList))
 	assert.Equal(t, numberList[0], result[strconv.Itoa(numberList[0])])
 }

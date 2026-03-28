@@ -137,7 +137,7 @@ func TestPackagePriorityQueue(t *testing.T) {
 	topAgain, okAgainAgain := packageQueue.Dequeue() // 2
 	assert.Equal(t, 2, topAgain.Weight)
 	assert.True(t, okAgainAgain)
-	assert.Equal(t, 2, packageQueue.Len()) //5,7
+	assert.Equal(t, 2, packageQueue.Len()) // 5,7
 
 	packageQueue.Enqueue(Package{Weight: 6})                   // 5, 6, 7
 	topAgainAgain, okAgainAgainAgain := packageQueue.Dequeue() // 5

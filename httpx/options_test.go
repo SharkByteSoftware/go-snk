@@ -23,7 +23,7 @@ func TestWithHttpClient(t *testing.T) {
 
 	err = WithHTTPClient(nil)(config)
 	require.Error(t, err)
-	assert.ErrorIs(t, err, ErrOptions)
+	assert.ErrorIs(t, err, ErrConfig)
 }
 
 func TestWithHeader(t *testing.T) {
@@ -82,11 +82,11 @@ func TestWithTimeout(t *testing.T) {
 
 	err = WithTimeout(0)(config)
 	require.Error(t, err)
-	assert.ErrorIs(t, err, ErrOptions)
+	assert.ErrorIs(t, err, ErrConfig)
 
 	err = WithTimeout(-1)(config)
 	require.Error(t, err)
-	assert.ErrorIs(t, err, ErrOptions)
+	assert.ErrorIs(t, err, ErrConfig)
 }
 
 func TestAlwaysIncludeRawBody(t *testing.T) {

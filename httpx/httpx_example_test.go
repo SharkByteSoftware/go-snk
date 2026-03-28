@@ -86,7 +86,7 @@ func ExamplePost() {
 	// Output:
 	// &{Test 18} 200 <nil>
 	// &{Test 18} 200 <nil>
-	// &{custom error message 400} failed to decode response body: decoding error: json: unknown field "Message"
+	// &{custom error message 400} failed to decode response body: decoding failed: json: unknown field "Message"
 }
 
 func ExamplePut() {

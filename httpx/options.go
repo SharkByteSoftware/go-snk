@@ -21,6 +21,7 @@ type ConfigOptions struct {
 	params         url.Values
 	includeRawBody bool
 	strictDecoding bool
+	parseURLFunc   func(url string) (*url.URL, error)
 }
 
 // NewHTTPXOptions creates a new ConfigOptions instance.
@@ -32,6 +33,7 @@ func NewHTTPXOptions() *ConfigOptions {
 		params:         make(url.Values),
 		includeRawBody: false,
 		strictDecoding: false,
+		parseURLFunc:   url.Parse,
 	}
 }
 
@@ -43,7 +45,7 @@ type Option func(options *ConfigOptions) error
 func WithHTTPClient(client *http.Client) Option {
 	return func(options *ConfigOptions) error {
 		if client == nil {
-			return fmt.Errorf("http client is nil: %w", ErrOptions)
+			return fmt.Errorf("%w: http client is nil", ErrConfig)
 		}
 
 		options.httpClient = client
@@ -73,7 +75,7 @@ func WithHeaders(headers http.Header) Option {
 func WithTimeout(timeout time.Duration) Option {
 	return func(options *ConfigOptions) error {
 		if timeout <= 0 {
-			return fmt.Errorf("invalid timeout, must be positive: %w", ErrOptions)
+			return fmt.Errorf("%w: invalid timeout, must be positive", ErrConfig)
 		}
 
 		options.timeout = timeout
@@ -114,16 +116,20 @@ func StrictDecoding() Option {
 	}
 }
 
+// WithParseURLFunc sets the function to parse the URL.
+func WithParseURLFunc(fn func(url string) (*url.URL, error)) Option {
+	return func(options *ConfigOptions) error {
+		options.parseURLFunc = fn
+		return nil
+	}
+}
+
 func configWithAppliedOptions(options []Option) (*ConfigOptions, error) {
 	config := NewHTTPXOptions()
 
-	errs := slicex.FilterMap(options, func(option Option) (error, bool) {
-		err := option(config)
-		return err, err != nil
-	})
-
-	if len(errs) > 0 {
-		return nil, fmt.Errorf("failed to apply options: %w", errors.Join(errs...))
+	err := errors.Join(slicex.Map(options, func(option Option) error { return option(config) })...)
+	if err != nil {
+		return nil, fmt.Errorf("apply options: %w", err)
 	}
 
 	return config, nil

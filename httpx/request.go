@@ -2,7 +2,6 @@ package httpx
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,7 +9,7 @@ import (
 
 // DoRawRequest sends an HTTP request with the given method and body, without any shared request logic.
 func DoRawRequest(ctx context.Context, method string, url string, body io.Reader, options ...Option) (*http.Response, error) {
-	config, err := configWithAppliedOptions(options)
+	config, err := applyOptions(options)
 	if err != nil {
 		return nil, fmt.Errorf("DoRawRequest: %w", err)
 	}
@@ -20,7 +19,7 @@ func DoRawRequest(ctx context.Context, method string, url string, body io.Reader
 
 // DoRequest sends an HTTP request with the given method and body, applying shared request logic.
 func DoRequest[T any](ctx context.Context, method string, url string, body io.Reader, options ...Option) (*Response[T], error) {
-	config, err := configWithAppliedOptions(options)
+	config, err := applyOptions(options)
 	if err != nil {
 		return nil, fmt.Errorf("DoRequest: %w", err)
 	}
@@ -37,23 +36,19 @@ func DoRequest[T any](ctx context.Context, method string, url string, body io.Re
 
 func doRawRequest(ctx context.Context, method string, url string, body io.Reader, config *ConfigOptions) (*http.Response, error) {
 	if ctx == nil {
-		return nil, fmt.Errorf("%w: context cannot be nil", ErrConfig)
+		return nil, NewTransportError(fmt.Errorf("%w: nil context", ErrOptions))
 	}
 
 	req, err := newRequestWithAppliedConfig(ctx, method, url, body, config)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrTransport, err)
+		return nil, NewTransportError(err)
 	}
 
 	client := clientWithAppliedConfig(config)
 
 	resp, err := client.Do(req)
-	if errors.Is(err, context.DeadlineExceeded) {
-		return nil, fmt.Errorf("%w: %w", ErrTimeout, err)
-	}
-
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrTransport, err)
+		return nil, NewTransportError(err)
 	}
 
 	return resp, nil

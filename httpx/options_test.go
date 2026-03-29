@@ -23,7 +23,8 @@ func TestWithHttpClient(t *testing.T) {
 
 	err = WithHTTPClient(nil)(config)
 	require.Error(t, err)
-	assert.ErrorIs(t, err, ErrConfig)
+	require.ErrorIs(t, err, ErrOptions)
+	require.ErrorContains(t, err, "invalid options: WithHTTPClient: http client is nil: <nil>")
 }
 
 func TestWithHeader(t *testing.T) {
@@ -82,24 +83,16 @@ func TestWithTimeout(t *testing.T) {
 
 	err = WithTimeout(0)(config)
 	require.Error(t, err)
-	require.ErrorIs(t, err, ErrConfig)
+	require.ErrorIs(t, err, ErrOptions)
+	require.ErrorContains(t, err, "invalid options: WithTimeout: invalid timeout, must be positive: <nil>")
 
 	err = WithTimeout(-1)(config)
 	require.Error(t, err)
-	require.ErrorIs(t, err, ErrConfig)
+	require.ErrorIs(t, err, ErrOptions)
+	require.ErrorContains(t, err, "invalid options: WithTimeout: invalid timeout, must be positive: <nil>")
 }
 
-func TestAlwaysIncludeRawBody(t *testing.T) {
-	config := NewHTTPXOptions()
-
-	assert.False(t, config.includeRawBody)
-
-	err := AlwaysIncludeRawBody()(config)
-	require.NoError(t, err)
-	assert.True(t, config.includeRawBody)
-}
-
-func Test_configWithAppliedOptions(t *testing.T) {
+func Test_applyOptions(t *testing.T) {
 	options := []Option{
 		WithTimeout(100),
 		WithHeader("Content-Type", "application/json"),
@@ -109,7 +102,7 @@ func Test_configWithAppliedOptions(t *testing.T) {
 		WithHTTPClient(http.DefaultClient),
 	}
 
-	config, err := configWithAppliedOptions(options)
+	config, err := applyOptions(options)
 	require.NoError(t, err)
 	require.NotNil(t, config)
 
@@ -126,7 +119,7 @@ func Test_configWithAppliedOptions(t *testing.T) {
 		WithHTTPClient(nil),
 	}
 
-	config, err = configWithAppliedOptions(options)
+	config, err = applyOptions(options)
 	require.Error(t, err)
 	assert.Nil(t, config)
 }

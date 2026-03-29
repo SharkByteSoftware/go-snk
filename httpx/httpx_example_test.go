@@ -2,6 +2,7 @@ package httpx_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -71,22 +72,21 @@ func ExamplePost() {
 	ts = setupTestServer(http.StatusOK, errResponse)
 	defer ts.Close()
 
-	result, err = httpx.Post[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18},
+	_, err = httpx.Post[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18},
 		httpx.StrictDecoding(),
 	)
 
 	// if the server returns a 200 status code, but the payload is not the expected type,
 	// the error will be returned.
-	if err != nil && result != nil && result.StatusCode == http.StatusOK {
-		// decode the error response from the server
-		errResult, _ := httpx.DecodeRawBody[errorResponse](result)
-		fmt.Println(errResult, err)
+	var decodingError *httpx.DecodingError
+	if errors.As(err, &decodingError) {
+		fmt.Println(decodingError.Error())
 	}
 
 	// Output:
 	// &{Test 18} 200 <nil>
 	// &{Test 18} 200 <nil>
-	// &{custom error message 400} failed to decode response body: decoding failed: json: unknown field "Message"
+	// decoding failed: text/plain; charset=utf-8 : json: unknown field "Message"
 }
 
 func ExamplePut() {

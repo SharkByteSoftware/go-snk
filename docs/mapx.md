@@ -13,8 +13,8 @@ It is designed to help you replace repetitive map loops with small functions for
 - extracting keys and values
 - checking for key presence
 - transforming maps into other shapes
-- filtering entries
-- combining or inverting maps
+- filtering and partitioning entries
+- combining, inverting, or counting entries
 
 ## Overview
 
@@ -59,18 +59,21 @@ Prefer a simpler local loop when:
 
 ### Transform or reshape data
 
-| Function  | Purpose                                                         |
-|-----------|-----------------------------------------------------------------|
-| `ToSlice` | Converts a map into a slice using a mapper function             |
-| `Invert`  | Swaps map keys and values                                       |
-| `Combine` | Merges multiple maps into one; last writer wins on key conflict |
+| Function  | Purpose                                                                  |
+|-----------|--------------------------------------------------------------------------|
+| `ToSlice` | Converts a map into a slice using a mapper function                      |
+| `MapKeys` | Returns a new map with each key transformed by a mapper function         |
+| `Invert`  | Swaps map keys and values                                                |
+| `Combine` | Merges multiple maps into one; last writer wins on key conflict          |
 
-### Filter or visit entries
+### Filter, partition, or visit entries
 
-| Function | Purpose                                                         |
-|----------|-----------------------------------------------------------------|
-| `Filter` | Returns a map containing only entries that satisfy a predicate  |
-| `Apply`  | Runs a function on each map entry for side effects              |
+| Function    | Purpose                                                              |
+|-------------|----------------------------------------------------------------------|
+| `Filter`    | Returns a map containing only entries that satisfy a predicate       |
+| `Partition` | Splits a map into two based on a predicate                           |
+| `CountBy`   | Returns a map of counts grouped by the result of a classifier        |
+| `Apply`     | Runs a function on each map entry for side effects                   |
 
 ## Notes
 

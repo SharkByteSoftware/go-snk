@@ -183,3 +183,59 @@ func ExampleApply() {
 	fmt.Println(result)
 	// Output: five
 }
+
+func ExampleMapKeys() {
+	scores := map[string]int{
+		"alice": 90,
+		"bob":   75,
+		"carol": 88,
+	}
+
+	result := mapx.MapKeys(scores, func(key string) string {
+		return "user_" + key
+	})
+
+	fmt.Println(result)
+	// Output: map[user_alice:90 user_bob:75 user_carol:88]
+}
+
+func ExamplePartition() {
+	var numMap = map[int]string{
+		0:   "zero",
+		2:   "two",
+		3:   "three",
+		8:   "one",
+		12:  "four",
+		256: "five",
+	}
+
+	even, odd := mapx.Partition(numMap, func(key int, _ string) bool {
+		return key%2 == 0
+	})
+
+	fmt.Println(even)
+	fmt.Println(odd)
+	// Output: map[0:zero 2:two 8:one 12:four 256:five]
+	// map[3:three]
+}
+
+func ExampleCountBy() {
+	inventory := map[string]int{
+		"apple":      5,
+		"banana":     12,
+		"cherry":     3,
+		"date":       8,
+		"elderberry": 1,
+	}
+
+	result := mapx.CountBy(inventory, func(_ string, qty int) string {
+		if qty < 5 {
+			return "low"
+		}
+
+		return "ok"
+	})
+
+	fmt.Println(result)
+	// Output: map[low:2 ok:3]
+}

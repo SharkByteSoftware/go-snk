@@ -107,3 +107,46 @@ func Apply[M map[K]V, K comparable, V any](collection M, apply func(key K, value
 		apply(key, value)
 	}
 }
+
+// MapKeys returns a new map with each key transformed by the mapper function.
+// Values are preserved as-is. When the mapper produces duplicate keys,
+// no guarantee is made about which value will be used.
+func MapKeys[M map[K]V, K comparable, V any, R comparable](collection M, mapper func(key K) R) map[R]V {
+	result := make(map[R]V, len(collection))
+
+	Apply(collection, func(key K, value V) {
+		result[mapper(key)] = value
+	})
+
+	return result
+}
+
+// Partition splits a map into two maps based on a predicate.
+// Entries for which the predicate returns true are placed in the first map;
+// all other entries are placed in the second.
+func Partition[M map[K]V, K comparable, V any](collection M, predicate func(key K, value V) bool) (M, M) {
+	trueMap := make(M)
+	falseMap := make(M)
+
+	Apply(collection, func(key K, value V) {
+		conditional.IfCall(predicate(key, value),
+			func() { trueMap[key] = value },
+			func() { falseMap[key] = value },
+		)
+	})
+
+	return trueMap, falseMap
+}
+
+// CountBy returns a map of counts keyed by the result of the classifier function.
+// Each call to a classifier produces a key; the returned map tracks how many
+// entries produced each key.
+func CountBy[M map[K]V, K comparable, V any, R comparable](collection M, classifier func(key K, value V) R) map[R]int {
+	result := make(map[R]int)
+
+	Apply(collection, func(key K, value V) {
+		result[classifier(key, value)]++
+	})
+
+	return result
+}

@@ -1,8 +1,9 @@
 package httpx
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/SharkByteSoftware/go-snk/jsonx"
 )
 
 // Response represents the structure for an HTTP response, supporting generics for handling various result types.
@@ -30,20 +31,17 @@ func DecodeResponse[T any](resp *http.Response, config *ConfigOptions) (*Respons
 		return nil, NewResponseError(resp)
 	}
 
-	var result T
-
-	decoder := json.NewDecoder(resp.Body)
-
+	var opts []jsonx.Option
 	if config.strictDecoding {
-		decoder.DisallowUnknownFields()
+		opts = append(opts, jsonx.WithStrictDecoding())
 	}
 
-	err := decoder.Decode(&result)
+	result, err := jsonx.Decode[T](resp.Body, opts...)
 	if err != nil {
 		return nil, NewDecodingError(resp, err)
 	}
 
-	response.Result = &result
+	response.Result = result
 
 	return &response, nil
 }

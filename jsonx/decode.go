@@ -1,0 +1,50 @@
+// Package jsonx provides helpers for decoding JSON from common sources.
+package jsonx
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"strings"
+)
+
+// Decode decodes JSON from an [io.Reader] into T.
+// The caller is responsible for closing the reader if applicable.
+//
+// Returns an error if decoding fails.
+func Decode[T any](r io.Reader, options ...Option) (*T, error) {
+	cfg := newDecodeOptions(options)
+
+	dec := json.NewDecoder(r)
+	if cfg.strictDecoding {
+		dec.DisallowUnknownFields()
+	}
+
+	if cfg.useNumber {
+		dec.UseNumber()
+	}
+
+	var result T
+
+	err := dec.Decode(&result)
+	if err != nil {
+		return nil, fmt.Errorf("decode: %w", err)
+	}
+
+	return &result, nil
+}
+
+// DecodeBytes decodes JSON from a byte slice into T.
+//
+// Returns an error if decoding fails.
+func DecodeBytes[T any](b []byte, options ...Option) (*T, error) {
+	return Decode[T](bytes.NewReader(b), options...)
+}
+
+// DecodeString decodes JSON from a string into T.
+//
+// Returns an error if decoding fails.
+func DecodeString[T any](s string, options ...Option) (*T, error) {
+	return Decode[T](strings.NewReader(s), options...)
+}

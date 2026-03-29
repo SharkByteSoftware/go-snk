@@ -24,4 +24,4 @@ jobs:
           install-mode: goinstall
       - name: Run tests lint
         run: |
-          make lint-test
+          make lint-tests

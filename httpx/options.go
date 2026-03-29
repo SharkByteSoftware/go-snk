@@ -117,12 +117,12 @@ func WithParseURLFunc(fn func(url string) (*url.URL, error)) Option {
 }
 
 func applyOptions(options []Option) (*ConfigOptions, error) {
-	config := NewHTTPXOptions()
+	cfg := NewHTTPXOptions()
 
-	err := errors.Join(slicex.Map(options, func(option Option) error { return option(config) })...)
+	err := errors.Join(slicex.Map(options, func(option Option) error { return option(cfg) })...)
 	if err != nil {
 		return nil, fmt.Errorf("apply options: %w", err)
 	}
 
-	return config, nil
+	return cfg, nil
 }

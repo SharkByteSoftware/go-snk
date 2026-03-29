@@ -15,9 +15,9 @@
 [![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/graphs/contributors)
 
-`go-snk` is the library you pull into any Go project to clean it up and keep it clean. The name is short for 
-*kitchen sink* — not because it does everything, but because it collects the small, type-safe helpers you keep reaching 
-for across projects. No repeated loops, no one-off helpers scattered through your codebase, just consistent patterns 
+`go-snk` is the library you pull into any Go project to clean it up and keep it clean. The name is short for
+*kitchen sink* — not because it does everything, but because it collects the small, type-safe helpers you keep reaching
+for across projects. No repeated loops, no one-off helpers scattered through your codebase, just consistent patterns
 for the things you do all the time.
 
 ## Getting Started
@@ -45,6 +45,7 @@ import "github.com/SharkByteSoftware/go-snk/mapx"
 | `slicex/parallel` | Parallel slice helpers for independent per-item work | [slicex.md](docs/parallel/slicex.md) |
 | `mapx` | Helpers for common map operations | [mapx.md](docs/mapx.md) |
 | `httpx` | Lightweight helpers for HTTP requests with less boilerplate | [httpx.md](docs/httpx.md) |
+| `jsonx` | Helpers for decoding JSON from readers, byte slices, and strings | [jsonx.md](docs/jsonx.md) |
 | `conditional` | Concise helpers for branching and value selection | [conditional.md](docs/conditional.md) |
 | `containers` | Reusable data structures including lists, sets, stacks, and queues | [README.md](docs/containers/README.md) |
 

@@ -17,8 +17,11 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version: stable
-      - name: golangci-lint
+      - name: Run code lint
         uses: golangci/golangci-lint-action@v8
         with:
           version: v2.5
           install-mode: goinstall
+      - name: Run tests lint
+        run: |
+          make lint-test

@@ -329,3 +329,42 @@ func ExampleMinBy() {
 	fmt.Println(shortest)
 	// Output: a
 }
+
+func ExampleZip() {
+	names := []string{"alice", "bob", "carol"}
+	scores := []int{92, 85, 78}
+
+	pairs := slicex.Zip(names, scores)
+
+	for _, p := range pairs {
+		fmt.Printf("%s: %d\n", p.Left, p.Right)
+	}
+	// Output:
+	// alice: 92
+	// bob: 85
+	// carol: 78
+}
+
+func ExampleWindow() {
+	numbers := []int{1, 2, 3, 4, 5}
+
+	windows := slicex.Window(numbers, 3)
+
+	for _, w := range windows {
+		fmt.Println(w)
+	}
+	// Output:
+	// [1 2 3]
+	// [2 3 4]
+	// [3 4 5]
+}
+
+func ExampleRotate() {
+	numbers := []int{1, 2, 3, 4, 5}
+
+	fmt.Println(slicex.Rotate(numbers, 2))
+	fmt.Println(slicex.Rotate(numbers, -2))
+	// Output:
+	// [3 4 5 1 2]
+	// [4 5 1 2 3]
+}

@@ -186,3 +186,46 @@ func generateNestedIntSlices(count int, size int) [][]int {
 
 	return result
 }
+
+func BenchmarkZip(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
+			left := generateIntSlice(size)
+			right := generateIntSlice(size)
+
+			for b.Loop() {
+				_ = slicex.Zip(left, right)
+			}
+		})
+	}
+}
+
+func BenchmarkWindow(b *testing.B) {
+	windowSizes := []int{2, 10, 100}
+
+	for _, size := range startingSize {
+		for _, windowSize := range windowSizes {
+			if windowSize > size {
+				continue
+			}
+
+			b.Run(fmt.Sprintf("slice size: %d window size: %d", size, windowSize), func(b *testing.B) {
+				ints := generateIntSlice(size)
+				for b.Loop() {
+					_ = slicex.Window(ints, windowSize)
+				}
+			})
+		}
+	}
+}
+
+func BenchmarkRotate(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_ = slicex.Rotate(ints, size/2)
+			}
+		})
+	}
+}

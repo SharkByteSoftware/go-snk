@@ -15,6 +15,8 @@ It is designed to help you replace repetitive slice loops with small functions f
 - searching for items
 - grouping and partitioning data
 - removing duplicates
+- combining slices into pairs
+- creating sliding windows
 - performing set-like operations
 - simple numeric aggregation
 
@@ -99,18 +101,19 @@ Prefer a simpler local loop when:
 
 ### Reorder slices
 
-| Function  | Purpose                              |
-|-----------|--------------------------------------|
-| `Reverse` | Returns a reversed copy of the slice |
+| Function  | Purpose                                                            |
+|-----------|--------------------------------------------------------------------|
+| `Reverse` | Returns a reversed copy of the slice                               |
+| `Rotate`  | Returns a copy with elements shifted left by n positions; negative n shifts right |
 
 ### Group, split, or combine collections
 
-| Function    | Purpose                                                         |
-|-------------|-----------------------------------------------------------------|
-| `GroupBy`   | Groups items into a map by a computed key                       |
-| `Partition` | Splits items into two slices based on a predicate               |
-| `Combine`   | Merges multiple maps into one; last writer wins on key conflict |
-| `Invert`    | Swaps map keys and values                                       |
+| Function    | Purpose                                                                       |
+|-------------|-------------------------------------------------------------------------------|
+| `GroupBy`   | Groups items into a map by a computed key                                     |
+| `Partition` | Splits items into two slices based on a predicate                             |
+| `Zip`       | Combines two slices into a slice of `Pair` values, pairing elements by index  |
+| `Window`    | Returns overlapping sub-slices of a fixed size, advancing one position at a time |
 
 ### Perform set-like operations
 
@@ -140,6 +143,9 @@ Prefer a simpler local loop when:
 - Prefer the simplest helper that matches the operation.
 - Check each function’s documentation for details such as ordering, stability, and zero-value behavior.
 - For very large workloads, consider whether a specialized implementation would be more appropriate.
+- `Zip` returns a `Pair[A, B]` value for each position; the result length equals the shorter of the two input slices.
+- `Window` returns an empty slice when `size` is less than 1 or greater than the length of the input slice.
+- `Rotate` with a positive n shifts left; negative n shifts right. Values wrap around.
 
 ## Examples
 

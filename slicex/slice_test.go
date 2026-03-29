@@ -342,3 +342,117 @@ func TestSlice_Difference(t *testing.T) {
 	assert.Len(t, result, 3)
 	assert.Subset(t, result, []int{1, 2, 3})
 }
+
+func TestSlice_Zip(t *testing.T) {
+	// equal length slices
+	result := slicex.Zip([]int{1, 2, 3}, []string{"a", "b", "c"})
+	assert.Len(t, result, 3)
+	assert.Equal(t, slicex.Pair[int, string]{Left: 1, Right: "a"}, result[0])
+	assert.Equal(t, slicex.Pair[int, string]{Left: 2, Right: "b"}, result[1])
+	assert.Equal(t, slicex.Pair[int, string]{Left: 3, Right: "c"}, result[2])
+
+	// left shorter than right — result is capped at left length
+	result = slicex.Zip([]int{1, 2}, []string{"a", "b", "c"})
+	assert.Len(t, result, 2)
+	assert.Equal(t, slicex.Pair[int, string]{Left: 1, Right: "a"}, result[0])
+	assert.Equal(t, slicex.Pair[int, string]{Left: 2, Right: "b"}, result[1])
+
+	// right shorter than left — result is capped at right length
+	result = slicex.Zip([]int{1, 2, 3}, []string{"a"})
+	assert.Len(t, result, 1)
+	assert.Equal(t, slicex.Pair[int, string]{Left: 1, Right: "a"}, result[0])
+
+	// empty left
+	result = slicex.Zip([]int{}, []string{"a", "b"})
+	assert.Empty(t, result)
+
+	// empty right
+	result = slicex.Zip([]int{1, 2}, []string{})
+	assert.Empty(t, result)
+
+	// both empty
+	result = slicex.Zip([]int{}, []string{})
+	assert.Empty(t, result)
+}
+
+func TestSlice_Window(t *testing.T) {
+	input := []int{1, 2, 3, 4, 5}
+
+	// standard window
+	result := slicex.Window(input, 3)
+	assert.Len(t, result, 3)
+	assert.Equal(t, []int{1, 2, 3}, result[0])
+	assert.Equal(t, []int{2, 3, 4}, result[1])
+	assert.Equal(t, []int{3, 4, 5}, result[2])
+
+	// window of 1 — one element per window
+	result = slicex.Window(input, 1)
+	assert.Len(t, result, 5)
+
+	for i, w := range result {
+		assert.Equal(t, []int{input[i]}, w)
+	}
+
+	// window equal to slice length — single window containing all elements
+	result = slicex.Window(input, len(input))
+	assert.Len(t, result, 1)
+	assert.Equal(t, input, result[0])
+
+	// window larger than slice — returns empty
+	result = slicex.Window(input, len(input)+1)
+	assert.Empty(t, result)
+
+	// size less than 1 — returns empty
+	result = slicex.Window(input, 0)
+	assert.Empty(t, result)
+
+	result = slicex.Window(input, -1)
+	assert.Empty(t, result)
+
+	// empty input
+	result = slicex.Window([]int{}, 3)
+	assert.Empty(t, result)
+}
+
+func TestSlice_Rotate(t *testing.T) {
+	input := []int{1, 2, 3, 4, 5}
+
+	// positive rotation — shift left
+	result := slicex.Rotate(input, 2)
+	assert.Equal(t, []int{3, 4, 5, 1, 2}, result)
+
+	// single step
+	result = slicex.Rotate(input, 1)
+	assert.Equal(t, []int{2, 3, 4, 5, 1}, result)
+
+	// negative rotation — shift right
+	result = slicex.Rotate(input, -1)
+	assert.Equal(t, []int{5, 1, 2, 3, 4}, result)
+
+	result = slicex.Rotate(input, -2)
+	assert.Equal(t, []int{4, 5, 1, 2, 3}, result)
+
+	// zero rotation — identical copy
+	result = slicex.Rotate(input, 0)
+	assert.Equal(t, input, result)
+
+	// n equal to slice length — full wrap, identical copy
+	result = slicex.Rotate(input, len(input))
+	assert.Equal(t, input, result)
+
+	// n larger than slice length — normalised correctly
+	result = slicex.Rotate(input, len(input)+2)
+	assert.Equal(t, slicex.Rotate(input, 2), result)
+
+	// original is not modified
+	_ = slicex.Rotate(input, 2)
+	assert.Equal(t, []int{1, 2, 3, 4, 5}, input)
+
+	// empty slice
+	result = slicex.Rotate([]int{}, 3)
+	assert.Empty(t, result)
+
+	// single element
+	result = slicex.Rotate([]int{42}, 1)
+	assert.Equal(t, []int{42}, result)
+}

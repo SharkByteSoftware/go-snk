@@ -288,3 +288,53 @@ func Difference[S ~[]T, T comparable](slice S, other S) S {
 		Difference(sets.New[T](other...)).
 		Values()
 }
+
+// Zip combines two slices into a slice of Pairs, pairing elements by position.
+// The result length is equal to the shorter of the two input slices.
+func Zip[A any, B any](left []A, right []B) []Pair[A, B] {
+	size := min(len(left), len(right))
+	result := make([]Pair[A, B], size)
+
+	for i := range size {
+		result[i] = Pair[A, B]{Left: left[i], Right: right[i]}
+	}
+
+	return result
+}
+
+// Window returns a slice of overlapping sub-slices of the given size,
+// advancing one position at a time. If size is less than 1 or greater
+// than the length of the slice, an empty slice is returned.
+func Window[S ~[]T, T any](slice S, size int) []S {
+	if size < 1 || size > len(slice) {
+		return []S{}
+	}
+
+	result := make([]S, len(slice)-size+1)
+
+	for i := range result {
+		result[i] = slice[i : i+size]
+	}
+
+	return result
+}
+
+// Rotate returns a copy of the slice with elements shifted left by n positions.
+// Elements shifted off the front are wrapped to the back.
+// A negative n shifts right instead. If the slice is empty, it is returned as-is.
+func Rotate[S ~[]T, T any](slice S, slen int) S {
+	if len(slice) == 0 {
+		return slices.Clone(slice)
+	}
+
+	slen %= len(slice)
+	if slen < 0 {
+		slen += len(slice)
+	}
+
+	result := make(S, len(slice))
+	copy(result, slice[slen:])
+	copy(result[len(slice)-slen:], slice[:slen])
+
+	return result
+}

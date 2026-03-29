@@ -8,17 +8,28 @@ import (
 	"net/http"
 )
 
-// Get sends an HTTP GET request to the specified URL with context, headers, and timeout and parses the response.
+// Get sends an HTTP GET request to the specified URL and decodes the response body into T.
+//
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
+// Returns [ErrDecoding] as [*DecodingError] if the response body cannot be decoded into T.
+// Returns [ErrResponse] as [*ResponseError] if the server responds with a non-2xx status code.
 func Get[T any](ctx context.Context, url string, options ...Option) (*Response[T], error) {
 	return DoRequest[T](ctx, http.MethodGet, url, nil, options...)
 }
 
-// GetRawResponse sends an HTTP GET request to the specified URL with context, headers, and timeout.
+// GetRawResponse sends an HTTP GET request to the specified URL and returns the raw response.
+//
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
 func GetRawResponse(ctx context.Context, url string, options ...Option) (*http.Response, error) {
 	return DoRawRequest(ctx, http.MethodGet, url, nil, options...)
 }
 
-// Post sends an HTTP POST request to the specified URL with context, headers, and timeout and parses the response.
+// Post sends an HTTP POST request to the specified URL with the given payload and decodes the response body into R.
+//
+// Returns [ErrEncoding] as [*EncodingError] if the payload cannot be marshaled to JSON.
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
+// Returns [ErrDecoding] as [*DecodingError] if the response body cannot be decoded into R.
+// Returns [ErrResponse] as [*ResponseError] if the server responds with a non-2xx status code.
 func Post[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
@@ -28,7 +39,10 @@ func Post[R any, T any](ctx context.Context, url string, payload T, options ...O
 	return DoRequest[R](ctx, http.MethodPost, url, bytes.NewReader(body), options...)
 }
 
-// PostRawResponse sends an HTTP POST request to the specified URL with context, headers, and timeout.
+// PostRawResponse sends an HTTP POST request to the specified URL with the given payload and returns the raw response.
+//
+// Returns [ErrEncoding] as [*EncodingError] if the payload cannot be marshaled to JSON.
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
 func PostRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
@@ -38,7 +52,12 @@ func PostRawResponse[T any](ctx context.Context, url string, payload T, options 
 	return DoRawRequest(ctx, http.MethodPost, url, bytes.NewReader(body), options...)
 }
 
-// Put sends an HTTP PUT request to the specified URL with context, headers, and timeout and parses the response.
+// Put sends an HTTP PUT request to the specified URL with the given payload and decodes the response body into R.
+//
+// Returns [ErrEncoding] as [*EncodingError] if the payload cannot be marshaled to JSON.
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
+// Returns [ErrDecoding] as [*DecodingError] if the response body cannot be decoded into R.
+// Returns [ErrResponse] as [*ResponseError] if the server responds with a non-2xx status code.
 func Put[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
@@ -48,7 +67,10 @@ func Put[R any, T any](ctx context.Context, url string, payload T, options ...Op
 	return DoRequest[R](ctx, http.MethodPut, url, bytes.NewReader(body), options...)
 }
 
-// PutRawResponse sends an HTTP PUT request to the specified URL with context, headers, and timeout.
+// PutRawResponse sends an HTTP PUT request to the specified URL with the given payload and returns the raw response.
+//
+// Returns [ErrEncoding] as [*EncodingError] if the payload cannot be marshaled to JSON.
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
 func PutRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
@@ -58,7 +80,12 @@ func PutRawResponse[T any](ctx context.Context, url string, payload T, options .
 	return DoRawRequest(ctx, http.MethodPut, url, bytes.NewReader(body), options...)
 }
 
-// Patch sends an HTTP PATCH request to the specified URL with context, headers, and timeout and parses the response.
+// Patch sends an HTTP PATCH request to the specified URL with the given payload and decodes the response body into R.
+//
+// Returns [ErrEncoding] as [*EncodingError] if the payload cannot be marshaled to JSON.
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
+// Returns [ErrDecoding] as [*DecodingError] if the response body cannot be decoded into R.
+// Returns [ErrResponse] as [*ResponseError] if the server responds with a non-2xx status code.
 func Patch[R any, T any](ctx context.Context, url string, payload T, options ...Option) (*Response[R], error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
@@ -68,7 +95,10 @@ func Patch[R any, T any](ctx context.Context, url string, payload T, options ...
 	return DoRequest[R](ctx, http.MethodPatch, url, bytes.NewReader(body), options...)
 }
 
-// PatchRawResponse sends an HTTP PATCH request to the specified URL with context, headers, and timeout.
+// PatchRawResponse sends an HTTP PATCH request to the specified URL with the given payload and returns the raw response.
+//
+// Returns [ErrEncoding] as [*EncodingError] if the payload cannot be marshaled to JSON.
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
 func PatchRawResponse[T any](ctx context.Context, url string, payload T, options ...Option) (*http.Response, error) {
 	body, err := json.Marshal(payload)
 	if err != nil {
@@ -78,22 +108,32 @@ func PatchRawResponse[T any](ctx context.Context, url string, payload T, options
 	return DoRawRequest(ctx, http.MethodPatch, url, bytes.NewReader(body), options...)
 }
 
-// Delete sends an HTTP DELETE request to the specified URL with context, headers, and timeout and parses the response.
+// Delete sends an HTTP DELETE request to the specified URL and decodes the response body into T.
+//
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
+// Returns [ErrDecoding] as [*DecodingError] if the response body cannot be decoded into T.
+// Returns [ErrResponse] as [*ResponseError] if the server responds with a non-2xx status code.
 func Delete[T any](ctx context.Context, url string, options ...Option) (*Response[T], error) {
 	return DoRequest[T](ctx, http.MethodDelete, url, nil, options...)
 }
 
-// DeleteRawResponse sends an HTTP DELETE request to the specified URL with context, headers, and timeout.
+// DeleteRawResponse sends an HTTP DELETE request to the specified URL and returns the raw response.
+//
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
 func DeleteRawResponse(ctx context.Context, url string, options ...Option) (*http.Response, error) {
 	return DoRawRequest(ctx, http.MethodDelete, url, nil, options...)
 }
 
-// Head sends an HTTP HEAD request to the specified URL with context, headers, and timeout.
+// Head sends an HTTP HEAD request to the specified URL and returns the raw response.
+//
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
 func Head(ctx context.Context, url string, options ...Option) (*http.Response, error) {
 	return DoRawRequest(ctx, http.MethodHead, url, nil, options...)
 }
 
-// Options sends an HTTP OPTIONS request to the specified URL with context, headers, and timeout.
+// Options sends an HTTP OPTIONS request to the specified URL and returns the raw response.
+//
+// Returns [ErrTransport] if the request fails to send or the response fails to read.
 func Options(ctx context.Context, url string, options ...Option) (*http.Response, error) {
 	return DoRawRequest(ctx, http.MethodOptions, url, nil, options...)
 }

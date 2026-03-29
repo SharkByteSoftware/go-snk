@@ -71,7 +71,7 @@ Prefer a simpler local implementation when:
 
 ## Errors
 
-`httpx` returns sentinel errors for common failure cases:
+`httpx` returns sentinel errors for common failure cases. Use `errors.Is` to check which kind of error occurred:
 
 - `ErrResponse` — the server responded with a non-2xx status code.
 - `ErrDecoding` — the response body could not be decoded into the target type.
@@ -79,6 +79,27 @@ Prefer a simpler local implementation when:
 - `ErrEncoding` — request payload serialization failed before the request was sent.
 - `ErrOptions` — one or more request options were invalid.
 
+### Typed errors
+
+Each sentinel has a corresponding typed error that carries additional context. Use `errors.As` to access the fields:
+
+| Type             | Sentinel      | Fields                                          |
+|------------------|---------------|-------------------------------------------------|
+| `*ResponseError` | `ErrResponse` | `Method`, `URL`, `StatusCode`, `Status`, `Body` |
+| `*DecodingError` | `ErrDecoding` | `ContentType`, `Err`                            |
+| `*EncodingError` | `ErrEncoding` | `PayloadType`, `Err`                            |
+| `*OptionsError`  | `ErrOptions`  | `Option`, `Message`, `Err`                      |
+
+Example:
+```go
+resp, err := httpx.Get[MyType](ctx, url)
+if err != nil {
+    var respErr *httpx.ResponseError
+    if errors.As(err, &respErr) {
+        log.Printf("server returned %d for %s %s", respErr.StatusCode, respErr.Method, respErr.URL)
+    }
+}
+```
 ## Notes
 
 - Prefer the function that most clearly expresses your intent.

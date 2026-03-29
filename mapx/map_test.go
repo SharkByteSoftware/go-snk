@@ -1,6 +1,7 @@
 package mapx_test
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/SharkByteSoftware/go-snk/internal/adapt"
@@ -156,4 +157,111 @@ func TestMap_Filter(t *testing.T) {
 
 	result = mapx.Filter(map[int]string{}, func(_ int, _ string) bool { return true })
 	assert.Equal(t, map[int]string{}, result)
+}
+
+func TestMap_MapKeys(t *testing.T) {
+	// transforms keys using the mapper
+	result := mapx.MapKeys(numberMap, strconv.Itoa)
+
+	assert.Len(t, result, len(numberMap))
+
+	for k, v := range numberMap {
+		assert.Contains(t, result, strconv.Itoa(k))
+		assert.Equal(t, v, result[strconv.Itoa(k)])
+	}
+
+	// empty map returns empty map
+	result = mapx.MapKeys(map[int]string{}, strconv.Itoa)
+
+	assert.Empty(t, result)
+
+	// duplicate mapped keys: result length is <= original length
+	dupKeyMap := map[int]string{1: "one", 2: "two", 3: "three"}
+	collapsed := mapx.MapKeys(dupKeyMap, func(_ int) string { return "same" })
+
+	assert.Len(t, collapsed, 1)
+	assert.Contains(t, collapsed, "same")
+}
+
+func TestMap_Partition(t *testing.T) {
+	// all entries match predicate
+	trueMap, falseMap := mapx.Partition(numberMap, func(_ int, _ string) bool { return true })
+
+	assert.Equal(t, numberMap, trueMap)
+	assert.Empty(t, falseMap)
+
+	// no entries match predicate
+	trueMap, falseMap = mapx.Partition(numberMap, func(_ int, _ string) bool { return false })
+
+	assert.Empty(t, trueMap)
+	assert.Equal(t, numberMap, falseMap)
+
+	// split by key parity
+	trueMap, falseMap = mapx.Partition(numberMap, func(k int, _ string) bool { return k%2 == 0 })
+
+	for k, v := range trueMap {
+		assert.Equal(t, 0, k%2, "expected even key in true map, got %d", k)
+		assert.Equal(t, numberMap[k], v)
+	}
+
+	for k, v := range falseMap {
+		assert.NotEqual(t, 0, k%2, "expected odd key in false map, got %d", k)
+		assert.Equal(t, numberMap[k], v)
+	}
+
+	assert.Len(t, trueMap, 5)
+	assert.Len(t, falseMap, 1)
+
+	// split by value
+	trueMap, falseMap = mapx.Partition(numberMap, func(_ int, v string) bool { return v == "zero" })
+
+	assert.Equal(t, map[int]string{0: "zero"}, trueMap)
+	assert.Len(t, falseMap, 5)
+
+	// empty map returns two empty maps
+	trueMap, falseMap = mapx.Partition(map[int]string{}, func(_ int, _ string) bool { return true })
+
+	assert.Empty(t, trueMap)
+	assert.Empty(t, falseMap)
+}
+
+func TestMap_CountBy(t *testing.T) {
+	// count by value
+	counts := mapx.CountBy(numberMap, func(_ int, v string) string { return v })
+
+	assert.Len(t, counts, len(numberMap))
+
+	for _, v := range numberMap {
+		assert.Equal(t, 1, counts[v])
+	}
+
+	// count by value with duplicates
+	counts = mapx.CountBy(dupValueMap, func(_ int, v string) string { return v })
+
+	assert.Equal(t, 2, counts["zero"])
+	assert.Equal(t, 1, counts["two"])
+	assert.Equal(t, 4, counts["five"])
+
+	// count by classifier on key (even vs odd)
+	keyCounts := mapx.CountBy(numberMap, func(k int, _ string) string {
+		if k%2 == 0 {
+			return "even"
+		}
+
+		return "odd"
+	})
+
+	assert.Equal(t, 5, keyCounts["even"])
+	assert.Equal(t, 1, keyCounts["odd"])
+
+	// all entries produce same classifier key
+	sameKey := mapx.CountBy(numberMap, func(_ int, _ string) string { return "all" })
+
+	assert.Len(t, sameKey, 1)
+	assert.Equal(t, len(numberMap), sameKey["all"])
+
+	// empty map returns empty counts
+	emptyCounts := mapx.CountBy(map[int]string{}, func(_ int, v string) string { return v })
+
+	assert.Empty(t, emptyCounts)
 }

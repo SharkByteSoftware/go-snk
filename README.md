@@ -47,6 +47,7 @@ import "github.com/SharkByteSoftware/go-snk/mapx"
 | `httpx` | Lightweight helpers for HTTP requests with less boilerplate | [httpx.md](docs/httpx.md) |
 | `jsonx` | Helpers for decoding JSON from readers, byte slices, and strings | [jsonx.md](docs/jsonx.md) |
 | `conditional` | Concise helpers for branching and value selection | [conditional.md](docs/conditional.md) |
+| `stringx` | Helpers for blank checks, fallback selection, truncation, wrapping, and padding strings | [stringx.md](docs/stringx.md) |
 | `errorx` | Helpers for intentional error suppression, initialization panics, and multi-target error checks | [errorx.md](docs/errorx.md) |
 | `containers` | Reusable data structures including lists, sets, stacks, and queues | [README.md](docs/containers/README.md) |
 

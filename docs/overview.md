@@ -37,6 +37,9 @@ Helpers for decoding JSON from common sources such as readers, byte slices, and 
 ### [`conditional`](conditional.md)
 Helpers for concise conditional expressions and callback-style branching.
 
+### [`stringx`](stringx.md)
+Helpers for common string operations such as blank checks, fallback selection, truncation, wrapping, and padding.
+
 ### [`errorx`](errorx.md)
 Helpers for common error handling patterns such as intentional error suppression, initialization-time panics, and
 matching an error against multiple targets.

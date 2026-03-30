@@ -7,7 +7,6 @@ import (
 	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/containers/sets"
 	"github.com/SharkByteSoftware/go-snk/helpers"
-	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 )
 
 // FirstOr returns the first item in the slice or a fallback value
@@ -28,7 +27,7 @@ func FirstOrEmpty[T any](slice []T) T {
 
 // Filter filters a slice using a predicate function.
 func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) []T {
-	return FilterWithIndex(slice, adapt.ItemIndexAdapter(predicate))
+	return FilterWithIndex(slice, func(item T, _ int) bool { return predicate(item) })
 }
 
 // FilterWithIndex is like Filter, but it accepts a predicate function that takes an index as well.
@@ -46,7 +45,7 @@ func FilterWithIndex[S ~[]T, T any](slice S, predicate func(item T, index int) b
 
 // Map transforms a slice to a slice of another type using a mapper function.
 func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
-	return MapWithIndex(slice, adapt.ItemIndexAdapter(mapper))
+	return MapWithIndex(slice, func(item T, idx int) R { return mapper(item) })
 }
 
 // MapWithIndex is like Map, but it accepts a mapper function that takes an index as well.
@@ -109,7 +108,7 @@ func Reduce[S ~[]T, T any, R any](slice S, accumulator func(agg R, item T) R, in
 
 // Find returns the first item in the slice that is equal to the given candidate.
 func Find[S ~[]T, T comparable](slice S, candidate T) (T, bool) {
-	return FindBy(slice, adapt.ItemEqualsAdapter(candidate))
+	return FindBy(slice, func(item T) bool { return item == candidate })
 }
 
 // FindBy returns the first item in the slice that satisfies the predicate.
@@ -128,7 +127,7 @@ func FindBy[S ~[]T, T any](slice S, predicate func(item T) bool) (T, bool) {
 // FindOr returns the first item in the slice that is equal to the given candidate,
 // or the fallback value if not found.
 func FindOr[S ~[]T, T comparable](slice S, candidate T, fallback T) T {
-	return FindOrBy(slice, adapt.ItemEqualsAdapter(candidate), fallback)
+	return FindOrBy(slice, func(item T) bool { return item == candidate }, fallback)
 }
 
 // FindOrBy returns the first item in the slice that satisfies the predicate,
@@ -146,7 +145,7 @@ func Contains[S ~[]T, T comparable](slice S, candidate T) bool {
 
 // Any returns true if any item in the slice satisfies the predicate.
 func Any[S ~[]T, T comparable](slice S, candidate T) bool {
-	return AnyBy(slice, adapt.ItemEqualsAdapter(candidate))
+	return AnyBy(slice, func(item T) bool { return item == candidate })
 }
 
 // AnyBy returns true if any item in the slice satisfies the predicate.
@@ -255,14 +254,17 @@ func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map
 
 // Partition splits a slice into two slices based on a predicate.
 func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
-	part1 := make(S, 0, len(slice))
-	part2 := make(S, 0, len(slice))
+	half := len(slice) / 2
+	part1 := make(S, 0, half)
+	part2 := make(S, 0, half)
 
 	Apply(slice, func(item T) {
-		conditional.IfCall(predicate(item),
-			func() { part1 = append(part1, item) },
-			func() { part2 = append(part2, item) },
-		)
+		if predicate(item) {
+			part1 = append(part1, item)
+			return
+		}
+
+		part2 = append(part2, item)
 	})
 
 	return part1, part2

@@ -3,13 +3,12 @@ package slicex
 import (
 	"cmp"
 
-	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 	"github.com/SharkByteSoftware/go-snk/internal/constraint"
 )
 
 // Sum returns the sum of all the values of the slice.
 func Sum[T constraint.Numeric](slice []T) T {
-	return SumBy(slice, adapt.ValueAdapter)
+	return SumBy(slice, func(item T) T { return item })
 }
 
 // SumBy returns the sum of all the values of the slice as determined by the provided sum function.
@@ -25,7 +24,7 @@ func SumBy[S ~[]T, T any, R constraint.Numeric](slice S, sumFunc func(item T) R)
 
 // Product returns the product of the values of the slice.
 func Product[S ~[]T, T constraint.Numeric](slice S) T {
-	return ProductBy(slice, adapt.ValueAdapter)
+	return ProductBy(slice, func(item T) T { return item })
 }
 
 // ProductBy returns the product of the values in the slice as determined by the provided product function.
@@ -45,7 +44,7 @@ func ProductBy[S ~[]T, T any, R constraint.Numeric](slice S, productFunc func(it
 
 // Mean returns the mean of the values of the slice.
 func Mean[S ~[]T, T constraint.Numeric](slice S) T {
-	return MeanBy(slice, adapt.ValueAdapter)
+	return MeanBy(slice, func(item T) T { return item })
 }
 
 // MeanBy returns the mean of the values of the slice as determined by the provided value function.

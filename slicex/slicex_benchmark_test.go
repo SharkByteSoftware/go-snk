@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/SharkByteSoftware/go-snk/containers/sets"
-	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
@@ -56,7 +55,7 @@ func BenchmarkBind(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateNestedIntSlices(sliceCount, size)
 			for b.Loop() {
-				_ = slicex.Bind(ints, adapt.ValueAdapter)
+				_ = slicex.Bind(ints, func(item []int) []int { return item })
 			}
 		})
 	}
@@ -245,5 +244,40 @@ func BenchmarkDifference(b *testing.B) {
 				}
 			})
 		}
+	}
+}
+
+func BenchmarkPartition(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_, _ = slicex.Partition(ints, func(i int) bool { return i%2 == 0 })
+			}
+		})
+	}
+}
+
+func BenchmarkPartition_SplitRatio(b *testing.B) {
+	const size = 10000
+
+	ratios := []struct {
+		name      string
+		predicate func(int, int) bool
+	}{
+		{"50/50", func(i, idx int) bool { return idx%2 == 0 }},
+		{"90/10", func(i, idx int) bool { return idx%10 != 0 }},
+		{"all true", func(i, idx int) bool { return true }},
+		{"all false", func(i, idx int) bool { return false }},
+	}
+
+	ints := generateIntSlice(size)
+
+	for _, ratio := range ratios {
+		b.Run(ratio.name, func(b *testing.B) {
+			for b.Loop() {
+				_, _ = slicex.Partition(ints, func(i int) bool { return ratio.predicate(i, 0) })
+			}
+		})
 	}
 }

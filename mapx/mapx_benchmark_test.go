@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 	"github.com/SharkByteSoftware/go-snk/mapx"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
@@ -68,7 +67,7 @@ func BenchmarkCountBy(b *testing.B) {
 }
 
 func generateMap(size int) map[int]int {
-	return slicex.ToMap(generateIntSlice(size), adapt.ValueAdapter)
+	return slicex.ToMap(generateIntSlice(size), func(k int) int { return k })
 }
 
 func generateIntSlice(size int) []int {

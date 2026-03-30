@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/SharkByteSoftware/go-snk/conditional"
-	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 	"github.com/stretchr/testify/assert"
 )
@@ -80,9 +79,9 @@ func TestSlice_UniqueMap(t *testing.T) {
 
 func TestSlice_Bind(t *testing.T) {
 	x := [][]int{{1, 2}, {3, 4}}
-	_ = slicex.Bind(x, adapt.ValueAdapter)
+	_ = slicex.Bind(x, func(item []int) []int { return item })
 
-	result := slicex.Bind(nestedNumberList, adapt.ValueAdapter)
+	result := slicex.Bind(nestedNumberList, func(item []int) []int { return item })
 	assert.Equal(t, append(numberList, numberList...), result)
 }
 

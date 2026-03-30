@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 	"github.com/SharkByteSoftware/go-snk/mapx"
 	"github.com/stretchr/testify/assert"
 )
@@ -129,7 +128,7 @@ func TestMap_Combine(t *testing.T) {
 }
 
 func TestMap_ToSlice(t *testing.T) {
-	stringResult := mapx.ToSlice(numberMap, adapt.ValueSelectorAdapter)
+	stringResult := mapx.ToSlice(numberMap, func(_ int, value string) string { return value })
 
 	assert.Len(t, stringResult, 6)
 
@@ -137,7 +136,7 @@ func TestMap_ToSlice(t *testing.T) {
 		assert.Contains(t, stringResult, value)
 	}
 
-	intResult := mapx.ToSlice(numberMap, adapt.KeySelectorAdapter)
+	intResult := mapx.ToSlice(numberMap, func(key int, _ string) int { return key })
 	assert.Len(t, intResult, 6)
 
 	for key := range numberMap {

@@ -130,6 +130,17 @@ func BenchmarkDifference(b *testing.B) {
 	}
 }
 
+func BenchmarkClone(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("len: %d", size), func(b *testing.B) {
+			set := sets.New(generateIntSlice(size)...)
+			for b.Loop() {
+				_ = set.Clone()
+			}
+		})
+	}
+}
+
 func generateIntSlice(size int) []int {
 	result := make([]int, size)
 	for i := range result {

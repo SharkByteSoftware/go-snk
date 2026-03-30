@@ -191,6 +191,13 @@ func (l *List[T]) Values() []T {
 	return values
 }
 
+// ForEach calls the provided function for each element in the list.
+func (l *List[T]) ForEach(fn func(T)) {
+	for e := l.Front(); e != nil; e = e.Next() {
+		fn(e.Value)
+	}
+}
+
 func (l *List[T]) isNotMember(element *Element[T]) bool {
 	return l != element.parent
 }

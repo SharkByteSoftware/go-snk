@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/SharkByteSoftware/go-snk/internal/adapt"
+	"github.com/SharkByteSoftware/go-snk/containers/sets"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
@@ -55,7 +55,7 @@ func BenchmarkBind(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateNestedIntSlices(sliceCount, size)
 			for b.Loop() {
-				_ = slicex.Bind(ints, adapt.ValueAdapter)
+				_ = slicex.Bind(ints, func(item []int) []int { return item })
 			}
 		})
 	}
@@ -225,6 +225,58 @@ func BenchmarkRotate(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
 				_ = slicex.Rotate(ints, size/2)
+			}
+		})
+	}
+}
+
+func BenchmarkDifference(b *testing.B) {
+	otherSizes := []int{0, 10, 100, 1000}
+
+	for _, size := range startingSize {
+		for _, otherSize := range otherSizes {
+			b.Run(fmt.Sprintf("len: %d other: %d", size, otherSize), func(b *testing.B) {
+				set := sets.New(generateIntSlice(size)...)
+				other := sets.New(generateIntSlice(otherSize)...)
+
+				for b.Loop() {
+					_ = set.Difference(other)
+				}
+			})
+		}
+	}
+}
+
+func BenchmarkPartition(b *testing.B) {
+	for _, size := range startingSize {
+		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
+			ints := generateIntSlice(size)
+			for b.Loop() {
+				_, _ = slicex.Partition(ints, func(i int) bool { return i%2 == 0 })
+			}
+		})
+	}
+}
+
+func BenchmarkPartition_SplitRatio(b *testing.B) {
+	const size = 10000
+
+	ratios := []struct {
+		name      string
+		predicate func(int, int) bool
+	}{
+		{"50/50", func(_, idx int) bool { return idx%2 == 0 }},
+		{"90/10", func(_, idx int) bool { return idx%10 != 0 }},
+		{"all true", func(_, _ int) bool { return true }},
+		{"all false", func(_, _ int) bool { return false }},
+	}
+
+	ints := generateIntSlice(size)
+
+	for _, ratio := range ratios {
+		b.Run(ratio.name, func(b *testing.B) {
+			for b.Loop() {
+				_, _ = slicex.Partition(ints, func(i int) bool { return ratio.predicate(i, 0) })
 			}
 		})
 	}

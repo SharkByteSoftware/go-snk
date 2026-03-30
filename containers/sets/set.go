@@ -12,7 +12,7 @@ type Set[T comparable] struct {
 
 // New creates a new set with the given items.
 func New[T comparable](items ...T) *Set[T] {
-	set := Set[T]{items: make(map[T]struct{})}
+	set := Set[T]{items: make(map[T]struct{}, len(items))}
 	set.Add(items...)
 
 	return &set
@@ -40,10 +40,10 @@ func (s *Set[T]) Remove(item T) {
 func (s *Set[T]) Intersect(other *Set[T]) *Set[T] {
 	size1 := s.Size()
 	size2 := other.Size()
-	smallSet := conditional.If(size1 < size2, s, other)
-	largerSet := conditional.If(size1 < size2, other, s)
+	smallSet := conditional.If(size1 < size2, *s, *other)
+	largerSet := conditional.If(size1 < size2, *other, *s)
 
-	result := New[T]()
+	result := &Set[T]{items: make(map[T]struct{}, max(size1, size2))}
 
 	for item := range smallSet.items {
 		if largerSet.Contains(item) {
@@ -136,7 +136,13 @@ func (s *Set[T]) Equals(other *Set[T]) bool {
 
 // Clone creates a clone of the set.
 func (s *Set[T]) Clone() *Set[T] {
-	return New[T](s.Values()...)
+	result := &Set[T]{items: make(map[T]struct{}, len(s.items))}
+
+	for k := range s.items {
+		result.items[k] = struct{}{}
+	}
+
+	return result
 }
 
 // IsEmpty returns true of the set contains zero items.

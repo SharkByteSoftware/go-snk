@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"testing"
 
+	"github.com/SharkByteSoftware/go-snk/containers/sets"
 	"github.com/SharkByteSoftware/go-snk/internal/adapt"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
@@ -227,5 +228,22 @@ func BenchmarkRotate(b *testing.B) {
 				_ = slicex.Rotate(ints, size/2)
 			}
 		})
+	}
+}
+
+func BenchmarkDifference(b *testing.B) {
+	otherSizes := []int{0, 10, 100, 1000}
+
+	for _, size := range startingSize {
+		for _, otherSize := range otherSizes {
+			b.Run(fmt.Sprintf("len: %d other: %d", size, otherSize), func(b *testing.B) {
+				set := sets.New(generateIntSlice(size)...)
+				other := sets.New(generateIntSlice(otherSize)...)
+
+				for b.Loop() {
+					_ = set.Difference(other)
+				}
+			})
+		}
 	}
 }

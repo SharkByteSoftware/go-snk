@@ -41,12 +41,13 @@ import "github.com/SharkByteSoftware/go-snk/mapx"
 
 | Package | Description | Docs |
 |---|---|---|
-| `slicex` | Helpers for filtering, mapping, searching, grouping, and numeric operations on slices | [slicex.md](docs/slicex.md) |
+| `slicex` | Helpers for filtering, mapping, searching, grouping, zipping, windowing, rotating, and numeric operations on slices | [slicex.md](docs/slicex.md) |
 | `slicex/parallel` | Parallel slice helpers for independent per-item work | [slicex.md](docs/parallel/slicex.md) |
-| `mapx` | Helpers for common map operations | [mapx.md](docs/mapx.md) |
+| `mapx` | Helpers for common map operations including partitioning, key mapping, and counting by classifier | [mapx.md](docs/mapx.md) |
 | `httpx` | Lightweight helpers for HTTP requests with less boilerplate | [httpx.md](docs/httpx.md) |
 | `jsonx` | Helpers for decoding JSON from readers, byte slices, and strings | [jsonx.md](docs/jsonx.md) |
 | `conditional` | Concise helpers for branching and value selection | [conditional.md](docs/conditional.md) |
+| `errorx` | Helpers for intentional error suppression, initialization panics, and multi-target error checks | [errorx.md](docs/errorx.md) |
 | `containers` | Reusable data structures including lists, sets, stacks, and queues | [README.md](docs/containers/README.md) |
 
 For a full overview of the library, see [docs/overview.md](docs/overview.md).

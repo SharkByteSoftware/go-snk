@@ -125,8 +125,11 @@ func MapKeys[M map[K]V, K comparable, V any, R comparable](collection M, mapper 
 // Entries for which the predicate returns true are placed in the first map;
 // all other entries are placed in the second.
 func Partition[M map[K]V, K comparable, V any](collection M, predicate func(key K, value V) bool) (M, M) {
-	trueMap := make(M)
-	falseMap := make(M)
+	const halfDivisor = 2
+
+	half := len(collection) / halfDivisor
+	trueMap := make(M, half)
+	falseMap := make(M, half)
 
 	Apply(collection, func(key K, value V) {
 		conditional.IfCall(predicate(key, value),

@@ -17,16 +17,16 @@ narrow so you can adopt only what you need.
 ## Packages
 
 ### [`slicex`](slicex.md)
-Helpers for slice operations such as filtering, mapping, reducing, grouping, deduplicating, partitioning, and
-basic numeric aggregation.
+Helpers for slice operations such as filtering, mapping, reducing, grouping, deduplicating, partitioning, zipping,
+windowing, rotating, and basic numeric aggregation.
 
 ### [`slicex/parallel`](parallel/slicex.md)
 Helpers for parallel slice operations where each item can be processed independently and concurrency can improve
 throughput.
 
 ### [`mapx`](mapx.md)
-Helpers for common map operations such as extracting keys or values, filtering entries, transforming maps, and
-combining maps.
+Helpers for common map operations such as extracting keys or values, filtering, partitioning, transforming keys,
+counting entries by a classifier, and combining maps.
 
 ### [`httpx`](httpx.md)
 Helpers for HTTP client code that reduce boilerplate and support typed response handling.
@@ -36,6 +36,10 @@ Helpers for decoding JSON from common sources such as readers, byte slices, and 
 
 ### [`conditional`](conditional.md)
 Helpers for concise conditional expressions and callback-style branching.
+
+### [`errorx`](errorx.md)
+Helpers for common error handling patterns such as intentional error suppression, initialization-time panics, and
+matching an error against multiple targets.
 
 ### [`containers`](containers/README.md)
 Reusable collection types including lists, sets, stacks, and queues.

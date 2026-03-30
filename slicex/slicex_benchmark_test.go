@@ -265,10 +265,10 @@ func BenchmarkPartition_SplitRatio(b *testing.B) {
 		name      string
 		predicate func(int, int) bool
 	}{
-		{"50/50", func(i, idx int) bool { return idx%2 == 0 }},
-		{"90/10", func(i, idx int) bool { return idx%10 != 0 }},
-		{"all true", func(i, idx int) bool { return true }},
-		{"all false", func(i, idx int) bool { return false }},
+		{"50/50", func(_, idx int) bool { return idx%2 == 0 }},
+		{"90/10", func(_, idx int) bool { return idx%10 != 0 }},
+		{"all true", func(_, _ int) bool { return true }},
+		{"all false", func(_, _ int) bool { return false }},
 	}
 
 	ints := generateIntSlice(size)

@@ -27,7 +27,15 @@ func FirstOrEmpty[T any](slice []T) T {
 
 // Filter filters a slice using a predicate function.
 func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) []T {
-	return FilterWithIndex(slice, func(item T, _ int) bool { return predicate(item) })
+	result := make(S, 0, len(slice))
+
+	Apply(slice, func(item T) {
+		if predicate(item) {
+			result = append(result, item)
+		}
+	})
+
+	return result
 }
 
 // FilterWithIndex is like Filter, but it accepts a predicate function that takes an index as well.
@@ -45,7 +53,7 @@ func FilterWithIndex[S ~[]T, T any](slice S, predicate func(item T, index int) b
 
 // Map transforms a slice to a slice of another type using a mapper function.
 func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
-	return MapWithIndex(slice, func(item T, idx int) R { return mapper(item) })
+	return MapWithIndex(slice, func(item T, _ int) R { return mapper(item) })
 }
 
 // MapWithIndex is like Map, but it accepts a mapper function that takes an index as well.
@@ -85,7 +93,7 @@ func UniqueMap[S ~[]T, T any, R comparable](slice S, mapper func(item T) R) []R 
 }
 
 // Bind transforms and flattens a slice from one type to another using a mapper
-// function. Function should return a slice or `nil`, if `nil` is returned then no
+// function. Function should return a slice or `nil`, if `nil` is returned, then no
 // value is added to the final result.
 func Bind[S ~[]T, T any, R any, RS ~[]R](slice S, mapper func(item T) RS) RS {
 	result := make([]R, 0, len(slice))
@@ -254,17 +262,16 @@ func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map
 
 // Partition splits a slice into two slices based on a predicate.
 func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
-	half := len(slice) / 2
+	const halfDivisor = 2
+
+	half := len(slice) / halfDivisor
 	part1 := make(S, 0, half)
 	part2 := make(S, 0, half)
 
 	Apply(slice, func(item T) {
-		if predicate(item) {
-			part1 = append(part1, item)
-			return
-		}
-
-		part2 = append(part2, item)
+		conditional.IfCall(predicate(item),
+			func() { part1 = append(part1, item) },
+			func() { part2 = append(part2, item) })
 	})
 
 	return part1, part2
@@ -305,7 +312,7 @@ func Zip[A any, B any](left []A, right []B) []Pair[A, B] {
 }
 
 // Window returns a slice of overlapping sub-slices of the given size,
-// advancing one position at a time. If size is less than 1 or greater
+// advancing one position at a time. If the size is less than 1 or greater
 // than the length of the slice, an empty slice is returned.
 func Window[S ~[]T, T any](slice S, size int) []S {
 	if size < 1 || size > len(slice) {

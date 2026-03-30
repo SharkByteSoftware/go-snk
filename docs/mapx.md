@@ -84,4 +84,5 @@ Prefer a simpler local loop when:
 
 ## Examples
 
-Examples can be found in the [mapx examples](../mapx/map_example_test.go) and in the [test suite](../mapx/map_test.go).
+- [Examples](../mapx/map_example_test.go)
+- [Unit tests](../mapx/mapx_test.go)

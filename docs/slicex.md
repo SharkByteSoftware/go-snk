@@ -149,5 +149,6 @@ Prefer a simpler local loop when:
 
 ## Examples
 
-Examples can be found in the [slicex examples](../slicex/slice_example_test.go) and in the [test suite](../slicex/slice_test.go).
+- [Examples](../slicex/slice_example_test.go)
+- [Unit tests](../slicex/slice_test.go)
 

@@ -109,4 +109,5 @@ if err != nil {
 
 ## Examples
 
-Examples can be found in the [httpx examples](../httpx/httpx_example_test.go) and in the [test suite](../httpx/httpx_test.go).
+- [Examples](../httpx/httpx_example_test.go)
+- [Unit tests](../httpx/httpx_test.go)

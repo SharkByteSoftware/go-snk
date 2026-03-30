@@ -74,4 +74,5 @@ Prefer standard library calls when:
 
 ## Examples
 
-Examples can be found in the [test suite](../stringx/stringx_example_test.go).
+- [Examples](../stringx/stringx_example_test.go)
+- [Unit tests](../stringx/stringx_test.go)

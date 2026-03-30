@@ -64,4 +64,5 @@ Prefer a direct `if err != nil` when:
 
 ## Examples
 
-Examples can be found in the [test suite](../errorx/errorx_example_test.go).
+- [Examples](../errorx/errorx_example_test.go)
+- [Unit tests](../errorx/errorx_test.go)

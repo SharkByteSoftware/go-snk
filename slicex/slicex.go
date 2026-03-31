@@ -25,6 +25,56 @@ func FirstOrEmpty[T any](slice []T) T {
 	return FirstOr(slice, helpers.Empty[T]())
 }
 
+// FirstBy returns the first item in the slice that satisfies the predicate,
+// along with a boolean indicating whether a match was found.
+// Delegates to FindBy — exists for naming symmetry with LastBy.
+func FirstBy[S ~[]T, T any](slice S, predicate func(item T) bool) (T, bool) {
+	return FindBy(slice, predicate)
+}
+
+// FirstOrBy returns the first item in the slice that satisfies the predicate,
+// or the fallback value if no match is found.
+// Delegates to FindOrBy — exists for naming symmetry with LastOrBy.
+func FirstOrBy[S ~[]T, T any](slice S, predicate func(item T) bool, fallback T) T {
+	return FindOrBy(slice, predicate, fallback)
+}
+
+// LastOr returns the last element of the slice or a fallback
+// value if the slice is empty.
+func LastOr[T any](slice []T, fallback T) T {
+	if len(slice) == 0 {
+		return fallback
+	}
+
+	return slice[len(slice)-1]
+}
+
+// LastOrEmpty returns the last element of the slice or the
+// zero value if the slice is empty.
+func LastOrEmpty[T any](slice []T) T {
+	return LastOr(slice, helpers.Empty[T]())
+}
+
+// LastBy returns the last item in the slice that satisfies
+// the predicate, along with a boolean indicating whether a
+// match was found.
+func LastBy[S ~[]T, T any](slice S, predicate func(item T) bool) (T, bool) {
+	for i := len(slice) - 1; i >= 0; i-- {
+		if predicate(slice[i]) {
+			return slice[i], true
+		}
+	}
+
+	return helpers.Empty[T](), false
+}
+
+// LastOrBy returns the last item in the slice that satisfies
+// the predicate, or the fallback value if no match is found.
+func LastOrBy[S ~[]T, T any](slice S, predicate func(item T) bool, fallback T) T {
+	item, found := LastBy(slice, predicate)
+	return conditional.If(found, item, fallback)
+}
+
 // Filter filters a slice using a predicate function.
 func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) []T {
 	result := make(S, 0, len(slice))
@@ -346,4 +396,60 @@ func Rotate[S ~[]T, T any](slice S, slen int) S {
 	copy(result[len(slice)-slen:], slice[:slen])
 
 	return result
+}
+
+// Chunk splits a slice into sub-slices of at most size n.
+// The final chunk may be smaller than n if the slice length
+// is not evenly divisible.
+// Chunk panics if n < 1.
+func Chunk[S ~[]T, T any](slice S, size int) []S {
+	if size < 1 {
+		panic("slicex.Chunk: chunk size must be at least 1")
+	}
+
+	if len(slice) == 0 {
+		return []S{}
+	}
+
+	result := make([]S, 0, (len(slice)+size-1)/size)
+
+	for len(slice) > 0 {
+		end := min(size, len(slice))
+		result = append(result, slice[:end])
+		slice = slice[end:]
+	}
+
+	return result
+}
+
+// Flatten collapses a slice of slices into a single flat slice.
+// Nil inner slices are skipped.
+// This is equivalent to Bind with an identity mapper, but
+// expresses intent more clearly when no transformation is needed.
+func Flatten[S ~[]T, T any](slice []S) []T {
+	result := make([]T, 0, len(slice))
+
+	for _, inner := range slice {
+		result = append(result, inner...)
+	}
+
+	return result
+}
+
+// IndexOf returns the index of the first element in the slice
+// equal to the candidate, or -1 if not found.
+func IndexOf[S ~[]T, T comparable](slice S, candidate T) int {
+	return IndexBy(slice, func(item T) bool { return item == candidate })
+}
+
+// IndexBy returns the index of the first element in the slice
+// that satisfies the predicate, or -1 if not found.
+func IndexBy[S ~[]T, T any](slice S, predicate func(item T) bool) int {
+	for i, item := range slice {
+		if predicate(item) {
+			return i
+		}
+	}
+
+	return -1
 }

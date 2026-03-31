@@ -52,10 +52,21 @@ Prefer a simpler local loop when:
 |----------------|----------------------------------------------------------------------|
 | `FirstOr`      | Returns the first element of a slice or a fallback value             |
 | `FirstOrEmpty` | Returns the first element of a slice or the zero value               |
+| `FirstBy`      | Returns the first item satisfying a predicate, and a found boolean   |
+| `FirstOrBy`    | Returns the first item satisfying a predicate, or a fallback value   |
 | `Find`         | Returns the first item in a slice equal to a given value             |
 | `FindBy`       | Returns the first item in a slice that matches a predicate           |
 | `FindOr`       | Returns the first item equal to a given value, or a fallback         |
 | `FindOrBy`     | Returns the first item matching a predicate, or a fallback value     |
+
+### Get the last matching or default value
+
+| Function       | Purpose                                                              |
+|----------------|----------------------------------------------------------------------|
+| `LastOr`       | Returns the last element of a slice or a fallback value              |
+| `LastOrEmpty`  | Returns the last element of a slice or the zero value                |
+| `LastBy`       | Returns the last item satisfying a predicate, and a found boolean    |
+| `LastOrBy`     | Returns the last item satisfying a predicate, or a fallback value    |
 
 ### Test for presence or match
 
@@ -84,36 +95,43 @@ Prefer a simpler local loop when:
 | `FilterMap`          | Filters and transforms elements in one pass                                |
 | `FilterMapWithIndex` | Filters and transforms elements in one pass, with index access             |
 | `Bind`               | Maps each item to a slice and flattens the results (flatMap)               |
+| `Flatten`            | Collapses a slice of slices into a single flat slice                       |
 | `Reduce`             | Folds slice values into a single accumulated result                        |
 | `ToMap`              | Converts a slice into a map using a key selector                           |
-| `ToSlice`            | Converts a map into a slice using a mapper function                        |
 | `Apply`              | Runs a function on each item for side effects; does not return a new slice |
 | `ApplyWithIndex`     | Runs a function on each item for side effects, also receiving the index    |
 
 ### Remove duplicates or keep unique values
 
-| Function       | Purpose                                              |
-|----------------|------------------------------------------------------|
-| `Unique`       | Removes duplicate values from a slice                |
-| `UniqueBy`     | Removes duplicates by a derived key                  |
-| `UniqueMap`    | Transforms items and returns only unique results     |
-| `UniqueValues` | Returns unique values from a map                     |
+| Function    | Purpose                                          |
+|-------------|--------------------------------------------------|
+| `Unique`    | Removes duplicate values from a slice            |
+| `UniqueBy`  | Removes duplicates by a derived key              |
+| `UniqueMap` | Transforms items and returns only unique results |
 
 ### Reorder slices
 
-| Function  | Purpose                                                            |
-|-----------|--------------------------------------------------------------------|
-| `Reverse` | Returns a reversed copy of the slice                               |
+| Function  | Purpose                                                                           |
+|-----------|-----------------------------------------------------------------------------------|
+| `Reverse` | Returns a reversed copy of the slice                                              |
 | `Rotate`  | Returns a copy with elements shifted left by n positions; negative n shifts right |
 
 ### Group, split, or combine collections
 
-| Function    | Purpose                                                                       |
-|-------------|-------------------------------------------------------------------------------|
-| `GroupBy`   | Groups items into a map by a computed key                                     |
-| `Partition` | Splits items into two slices based on a predicate                             |
-| `Zip`       | Combines two slices into a slice of `Pair` values, pairing elements by index  |
+| Function    | Purpose                                                                          |
+|-------------|----------------------------------------------------------------------------------|
+| `GroupBy`   | Groups items into a map by a computed key                                        |
+| `Partition` | Splits items into two slices based on a predicate                                |
+| `Chunk`     | Splits a slice into sub-slices of at most size n                                 |
+| `Zip`       | Combines two slices into a slice of `Pair` values, pairing elements by index     |
 | `Window`    | Returns overlapping sub-slices of a fixed size, advancing one position at a time |
+
+### Find by index
+
+| Function  | Purpose                                                              |
+|-----------|----------------------------------------------------------------------|
+| `IndexOf` | Returns the index of the first element equal to a given value, or -1 |
+| `IndexBy` | Returns the index of the first element satisfying a predicate, or -1 |
 
 ### Perform set-like operations
 
@@ -143,8 +161,12 @@ Prefer a simpler local loop when:
 - Prefer the simplest helper that matches the operation.
 - Check each function’s documentation for details such as ordering, stability, and zero-value behavior.
 - For very large workloads, consider whether a specialized implementation would be more appropriate.
+- `FirstBy` and `FirstOrBy` delegate to `FindBy` and `FindOrBy` respectively; they exist for naming symmetry with `LastBy` and `LastOrBy`.
 - `Zip` returns a `Pair[A, B]` value for each position; the result length equals the shorter of the two input slices.
 - `Window` returns an empty slice when `size` is less than 1 or greater than the length of the input slice.
+- `Chunk` panics if the chunk size is less than 1.
+- `Flatten` skips nil inner slices.
+- `IndexOf` and `IndexBy` return -1 when no match is found.
 - `Rotate` with a positive n shifts left; negative n shifts right. Values wrap around.
 
 ## Examples

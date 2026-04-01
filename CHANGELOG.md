@@ -206,4 +206,3 @@
 - **`httpx`** — initial implementation of `Get`, `Post`, `Put`, `Patch`, `Delete`, `Head`, `Options` with raw response variants. Note: the request configuration API was significantly expanded in v0.9.8 with the functional options pattern (`WithHTTPClient`, `WithHeader`, `WithTimeout`, etc.) and error handling was overhauled in v1.1.0
 - Benchmark tests for `slicex` and `containers/sets`
 - CI workflow via GitHub Actions
-- 

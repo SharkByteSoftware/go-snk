@@ -61,5 +61,5 @@ func Test_DecodingError(t *testing.T) {
 	assert.Equal(t, "application/json", err.ContentType)
 	assert.Equal(t, err.Err, httpx.ErrOptions)
 
-	assert.Equal(t, "decoding failed: application/json : invalid options", err.Error())
+	assert.Equal(t, "decoding failed: application/json: invalid options", err.Error())
 }

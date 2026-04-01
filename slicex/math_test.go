@@ -90,6 +90,12 @@ func TestMaxBy(t *testing.T) {
 
 	result = slicex.MaxBy([]string{}, func(a string, b string) bool { return len(a) < len(b) })
 	assert.Empty(t, result)
+
+	intResult := slicex.MaxBy([]int{}, func(a int, b int) bool { return a < b })
+	assert.Empty(t, intResult)
+
+	intResult = slicex.MaxBy([]int{-5, -3, -1}, func(a int, b int) bool { return a < b })
+	assert.Equal(t, -1, intResult)
 }
 
 func TestMin(t *testing.T) {

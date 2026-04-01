@@ -86,7 +86,7 @@ func ExamplePost() {
 	// Output:
 	// &{Test 18} 200 <nil>
 	// &{Test 18} 200 <nil>
-	// decoding failed: text/plain; charset=utf-8 : decode: json: unknown field "Message"
+	// decoding failed: text/plain; charset=utf-8: decode: json: unknown field "Message"
 }
 
 func ExamplePut() {

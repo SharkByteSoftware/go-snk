@@ -3,6 +3,7 @@ package slicex
 import (
 	"cmp"
 
+	"github.com/SharkByteSoftware/go-snk/helpers"
 	"github.com/SharkByteSoftware/go-snk/internal/constraint"
 )
 
@@ -65,9 +66,12 @@ func Max[S ~[]T, T cmp.Ordered](slice S) T {
 
 // MaxBy returns the maximum value of the slice as determined by the provided maximum function.
 func MaxBy[S ~[]T, T any](slice S, maxFunc func(a T, b T) bool) T {
-	var maxValue T
+	if len(slice) == 0 {
+		return helpers.Empty[T]()
+	}
 
-	Apply(slice, func(item T) {
+	maxValue := slice[0]
+	Apply(slice[1:], func(item T) {
 		if maxFunc(maxValue, item) {
 			maxValue = item
 		}

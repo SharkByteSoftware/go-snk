@@ -87,7 +87,7 @@ func NewDecodingError(resp *http.Response, err error) *DecodingError {
 }
 
 func (e *DecodingError) Error() string {
-	return fmt.Sprintf("%s: %s : %v", ErrDecoding, e.ContentType, e.Err)
+	return fmt.Sprintf("%s: %s: %v", ErrDecoding, e.ContentType, e.Err)
 }
 
 func (e *DecodingError) Unwrap() error { return errors.Join(ErrDecoding, e.Err) }

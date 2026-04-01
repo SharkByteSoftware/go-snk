@@ -6,12 +6,12 @@ import (
 )
 
 // Stack provides a stack implementation based on a linked list.
-type Stack[T comparable] struct {
+type Stack[T any] struct {
 	members *lists.List[T]
 }
 
 // New creates a new stack of a given type.
-func New[T comparable](values ...T) *Stack[T] {
+func New[T any](values ...T) *Stack[T] {
 	return &Stack[T]{
 		members: lists.New[T](values...),
 	}

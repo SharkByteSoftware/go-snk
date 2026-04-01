@@ -7,6 +7,8 @@ linters:
     - ginkgolinter
     - arangolint
   settings:
+    varnamelen:
+      max-distance: 12
     ireturn:
       allow:
         - generic

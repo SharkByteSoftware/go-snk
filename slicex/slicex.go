@@ -331,19 +331,19 @@ func Window[S ~[]T, T any](slice S, size int) []S {
 // Rotate returns a copy of the slice with elements shifted left by n positions.
 // Elements shifted off the front are wrapped to the back.
 // A negative n shifts right instead. If the slice is empty, it is returned as-is.
-func Rotate[S ~[]T, T any](slice S, slen int) S {
+func Rotate[S ~[]T, T any](slice S, n int) S {
 	if len(slice) == 0 {
 		return slices.Clone(slice)
 	}
 
-	slen %= len(slice)
-	if slen < 0 {
-		slen += len(slice)
+	n %= len(slice)
+	if n < 0 {
+		n += len(slice)
 	}
 
 	result := make(S, len(slice))
-	copy(result, slice[slen:])
-	copy(result[len(slice)-slen:], slice[:slen])
+	copy(result, slice[n:])
+	copy(result[len(slice)-n:], slice[:n])
 
 	return result
 }

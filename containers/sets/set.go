@@ -101,7 +101,7 @@ func (s *Set[T]) SymmetricDifference(other *Set[T]) *Set[T] {
 	return result
 }
 
-// Subset returns true of the set is a subset of a given set.
+// Subset returns true if the set is a subset of a given set.
 func (s *Set[T]) Subset(other *Set[T]) bool {
 	for item := range s.items {
 		if !other.Contains(item) {
@@ -119,7 +119,7 @@ func (s *Set[T]) Apply(apply func(item T)) {
 	}
 }
 
-// Equals returns true of the two sets contain the same items.
+// Equals returns true if the two sets contain the same items.
 func (s *Set[T]) Equals(other *Set[T]) bool {
 	if len(s.items) != len(other.items) {
 		return false
@@ -145,12 +145,12 @@ func (s *Set[T]) Clone() *Set[T] {
 	return result
 }
 
-// IsEmpty returns true of the set contains zero items.
+// IsEmpty returns true if the set contains zero items.
 func (s *Set[T]) IsEmpty() bool {
 	return len(s.items) == 0
 }
 
-// Size returns the len of the set.
+// Size returns the length of the set.
 func (s *Set[T]) Size() int {
 	return len(s.items)
 }

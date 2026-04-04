@@ -6,7 +6,8 @@ func Nil[T any]() *T {
 	return nil
 }
 
-// IsNil returns true if the value is nil.
+// IsNil returns true if the pointer is nil.
+// Note: this accepts typed pointers only. For interface or func nil checks, use == nil directly.
 func IsNil[T any](value *T) bool {
 	return value == nil
 }

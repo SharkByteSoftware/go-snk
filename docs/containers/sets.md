@@ -87,12 +87,23 @@ Prefer a slice when:
 |---------|--------------------------------------------|
 | `Apply` | Calls a function for each item in the set  |
 
+### Serialization
+
+| Method          | Purpose                                                                 |
+|-----------------|-------------------------------------------------------------------------|
+| `ToJSON`        | Returns the set as a JSON array (`[]byte, error`)                       |
+| `FromJSON`      | Replaces the set contents from a JSON array; clears existing items first |
+| `MarshalJSON`   | Implements `json.Marshaler`; allows sets to be used in `json.Marshal`   |
+| `UnmarshalJSON` | Implements `json.Unmarshaler`; allows sets to be used in `json.Unmarshal` |
+
 ## Notes
 
 - Iteration order is not guaranteed; sets are backed by a Go map.
 - `Intersect` and `Union` optimize by iterating the smaller set.
 - `New` accepts optional seed items, making initialization concise.
 - `Clone` produces an independent copy; mutations do not affect the original.
+- Sets serialize as JSON arrays. `FromJSON` clears the set before populating it, so it replaces rather than merges.
+- `MarshalJSON` and `UnmarshalJSON` make sets compatible with the standard `encoding/json` package transparently.
 
 ## Examples
 

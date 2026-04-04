@@ -30,12 +30,12 @@ func (s *Set[T]) FromJSON(data []byte) error {
 	return nil
 }
 
-// UnmarshalJSON @implements json.Unmarshaler.
+// UnmarshalJSON implements json.Unmarshaler.
 func (s *Set[T]) UnmarshalJSON(bytes []byte) error {
 	return s.FromJSON(bytes)
 }
 
-// MarshalJSON @implements json.Marshaler.
+// MarshalJSON implements json.Marshaler.
 func (s *Set[T]) MarshalJSON() ([]byte, error) {
 	return s.ToJSON()
 }

@@ -47,6 +47,10 @@ matching an error against multiple targets.
 ### [`containers`](containers/README.md)
 Reusable collection types including lists, sets, stacks, and queues.
 
+### [`helpers`](helpers.md)
+Generic utilities for working with pointers and zero values, including safe dereferencing with fallbacks, typed nil
+and zero value construction, and nil checks.
+
 ## Design principles
 
 The library aims to stay small and focused rather than grow into a full application framework. Most packages are

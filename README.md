@@ -50,6 +50,7 @@ import "github.com/SharkByteSoftware/go-snk/mapx"
 | `stringx` | Helpers for blank checks, fallback selection, truncation, wrapping, and padding strings | [stringx.md](docs/stringx.md) |
 | `errorx` | Helpers for intentional error suppression, initialization panics, and multi-target error checks | [errorx.md](docs/errorx.md) |
 | `containers` | Reusable data structures including lists, sets, stacks, and queues | [README.md](docs/containers/README.md) |
+| `helpers` | Generic utilities for pointer handling and zero value operations | [helpers.md](docs/helpers.md) |
 
 For a full overview of the library, see [docs/overview.md](docs/overview.md).
 

@@ -149,6 +149,6 @@ Prefer a simpler local loop when:
 
 ## Examples
 
-- [Examples](../slicex/slice_example_test.go)
-- [Unit tests](../slicex/slice_test.go)
+- [Examples](../slicex/slicex_example_test.go)
+- [Unit tests](../slicex/slicex_test.go)
 

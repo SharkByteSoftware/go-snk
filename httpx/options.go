@@ -19,7 +19,6 @@ type ConfigOptions struct {
 	headers        http.Header
 	timeout        time.Duration
 	params         url.Values
-	includeRawBody bool
 	strictDecoding bool
 	parseURLFunc   func(url string) (*url.URL, error)
 }
@@ -31,7 +30,6 @@ func NewHTTPXOptions() *ConfigOptions {
 		headers:        make(http.Header),
 		timeout:        defaultTimeout,
 		params:         make(url.Values),
-		includeRawBody: false,
 		strictDecoding: false,
 		parseURLFunc:   url.Parse,
 	}

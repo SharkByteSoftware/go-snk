@@ -116,3 +116,14 @@ func TestParallelSlice_PartitionWithLimit(t *testing.T) {
 	assert.Len(t, r1, 3)
 	assert.Len(t, r2, 4)
 }
+
+func TestParallelSlice_Apply_Empty(t *testing.T) {
+	// Apply on an empty slice should not panic and should invoke the
+	// function zero times. wg.Add(0) + wg.Wait() is valid Go and
+	// this test confirms the empty case is handled gracefully.
+	var counter int32
+
+	parallel.Apply([]int{}, func(_ int) { atomic.AddInt32(&counter, 1) })
+
+	assert.Equal(t, int32(0), counter)
+}

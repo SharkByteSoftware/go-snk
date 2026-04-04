@@ -6,7 +6,7 @@ func Empty[T any]() T {
 	return empty
 }
 
-// IsEmpty returns true of the value is the zero value of the type.
+// IsEmpty returns true if the value is the zero value of the type.
 func IsEmpty[T comparable](value T) bool {
 	var empty T
 	return empty == value

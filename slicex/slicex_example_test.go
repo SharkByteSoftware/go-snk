@@ -6,6 +6,92 @@ import (
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
+func ExampleFirstOr() {
+	numbers := []int{10, 20, 30}
+
+	fmt.Println(slicex.FirstOr(numbers, -1))
+	fmt.Println(slicex.FirstOr([]int{}, -1))
+	// Output:
+	// 10
+	// -1
+}
+
+func ExampleFirstOrEmpty() {
+	numbers := []int{10, 20, 30}
+
+	fmt.Println(slicex.FirstOrEmpty(numbers))
+	fmt.Println(slicex.FirstOrEmpty([]int{}))
+	// Output:
+	// 10
+	// 0
+}
+
+func ExampleFirstBy() {
+	numbers := []int{1, 3, 4, 6}
+
+	value, found := slicex.FirstBy(numbers, func(n int) bool { return n%2 == 0 })
+	fmt.Println(value, found)
+
+	value, found = slicex.FirstBy(numbers, func(n int) bool { return n > 100 })
+	fmt.Println(value, found)
+	// Output:
+	// 4 true
+	// 0 false
+}
+
+func ExampleFirstOrBy() {
+	numbers := []int{1, 3, 4, 6}
+
+	fmt.Println(slicex.FirstOrBy(numbers, func(n int) bool { return n%2 == 0 }, -1))
+	fmt.Println(slicex.FirstOrBy(numbers, func(n int) bool { return n > 100 }, -1))
+	// Output:
+	// 4
+	// -1
+}
+
+func ExampleLastOr() {
+	numbers := []int{1, 2, 3}
+
+	fmt.Println(slicex.LastOr(numbers, -1))
+	fmt.Println(slicex.LastOr([]int{}, -1))
+	// Output:
+	// 3
+	// -1
+}
+
+func ExampleLastOrEmpty() {
+	numbers := []int{1, 2, 3}
+
+	fmt.Println(slicex.LastOrEmpty(numbers))
+	fmt.Println(slicex.LastOrEmpty([]int{}))
+	// Output:
+	// 3
+	// 0
+}
+
+func ExampleLastBy() {
+	numbers := []int{1, 2, 3, 4, 5}
+
+	value, found := slicex.LastBy(numbers, func(n int) bool { return n%2 == 0 })
+	fmt.Println(value, found)
+
+	value, found = slicex.LastBy(numbers, func(n int) bool { return n > 100 })
+	fmt.Println(value, found)
+	// Output:
+	// 4 true
+	// 0 false
+}
+
+func ExampleLastOrBy() {
+	numbers := []int{1, 2, 3, 4, 5}
+
+	fmt.Println(slicex.LastOrBy(numbers, func(n int) bool { return n%2 == 0 }, -1))
+	fmt.Println(slicex.LastOrBy(numbers, func(n int) bool { return n > 100 }, -1))
+	// Output:
+	// 4
+	// -1
+}
+
 func ExampleFilter() {
 	numbers := []int{1, 2, 3, 4, 5, 6}
 
@@ -367,4 +453,41 @@ func ExampleRotate() {
 	// Output:
 	// [3 4 5 1 2]
 	// [4 5 1 2 3]
+}
+
+func ExampleChunk() {
+	numbers := []int{1, 2, 3, 4, 5}
+
+	chunks := slicex.Chunk(numbers, 2)
+
+	fmt.Println(chunks)
+	// Output: [[1 2] [3 4] [5]]
+}
+
+func ExampleFlatten() {
+	nested := [][]int{{1, 2}, {3, 4}, {5}}
+
+	result := slicex.Flatten(nested)
+
+	fmt.Println(result)
+	// Output: [1 2 3 4 5]
+}
+
+func ExampleIndexOf() {
+	numbers := []int{10, 20, 30, 40}
+
+	fmt.Println(slicex.IndexOf(numbers, 30))
+	fmt.Println(slicex.IndexOf(numbers, 99))
+	// Output:
+	// 2
+	// -1
+}
+
+func ExampleIndexBy() {
+	numbers := []int{1, 3, 5, 6, 7}
+
+	idx := slicex.IndexBy(numbers, func(n int) bool { return n%2 == 0 })
+
+	fmt.Println(idx)
+	// Output: 3
 }

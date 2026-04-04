@@ -35,6 +35,62 @@ func TestSlice_FirstOrEmpty(t *testing.T) {
 	assert.Equal(t, 1, result)
 }
 
+func TestSlice_FirstBy(t *testing.T) {
+	isEven := func(n int) bool { return n%2 == 0 }
+
+	result, found := slicex.FirstBy([]int{}, isEven)
+	assert.False(t, found)
+	assert.Equal(t, 0, result)
+
+	result, found = slicex.FirstBy([]int{1, 3, 5}, isEven)
+	assert.False(t, found)
+	assert.Equal(t, 0, result)
+
+	result, found = slicex.FirstBy([]int{1, 2, 4, 6}, isEven)
+	assert.True(t, found)
+	assert.Equal(t, 2, result)
+}
+
+func TestSlice_FirstOrBy(t *testing.T) {
+	isEven := func(n int) bool { return n%2 == 0 }
+
+	assert.Equal(t, -1, slicex.FirstOrBy([]int{1, 3, 5}, isEven, -1))
+	assert.Equal(t, 2, slicex.FirstOrBy([]int{1, 2, 4}, isEven, -1))
+}
+
+func TestSlice_LastOr(t *testing.T) {
+	assert.Equal(t, -1, slicex.LastOr([]int{}, -1))
+	assert.Equal(t, 3, slicex.LastOr([]int{1, 2, 3}, -1))
+}
+
+func TestSlice_LastOrEmpty(t *testing.T) {
+	assert.Equal(t, 0, slicex.LastOrEmpty([]int{}))
+	assert.Equal(t, 3, slicex.LastOrEmpty([]int{1, 2, 3}))
+}
+
+func TestSlice_LastBy(t *testing.T) {
+	isEven := func(n int) bool { return n%2 == 0 }
+
+	result, found := slicex.LastBy([]int{}, isEven)
+	assert.False(t, found)
+	assert.Equal(t, 0, result)
+
+	result, found = slicex.LastBy([]int{1, 3, 5}, isEven)
+	assert.False(t, found)
+	assert.Equal(t, 0, result)
+
+	result, found = slicex.LastBy([]int{2, 4, 6, 7}, isEven)
+	assert.True(t, found)
+	assert.Equal(t, 6, result)
+}
+
+func TestSlice_LastOrBy(t *testing.T) {
+	isEven := func(n int) bool { return n%2 == 0 }
+
+	assert.Equal(t, -1, slicex.LastOrBy([]int{1, 3, 5}, isEven, -1))
+	assert.Equal(t, 6, slicex.LastOrBy([]int{2, 4, 6, 7}, isEven, -1))
+}
+
 func TestSlice_Filter(t *testing.T) {
 	result := slicex.Filter(numberList, func(n int) bool { return n%2 == 0 })
 	assert.Equal(t, []int{2, 4, 256}, result)
@@ -454,4 +510,61 @@ func TestSlice_Rotate(t *testing.T) {
 	// single element
 	result = slicex.Rotate([]int{42}, 1)
 	assert.Equal(t, []int{42}, result)
+}
+
+func TestSlice_Chunk(t *testing.T) {
+	// empty slice
+	assert.Empty(t, slicex.Chunk([]int{}, 3))
+
+	// evenly divisible
+	result := slicex.Chunk([]int{1, 2, 3, 4, 5, 6}, 2)
+	assert.Equal(t, [][]int{{1, 2}, {3, 4}, {5, 6}}, result)
+
+	// remainder chunk
+	result = slicex.Chunk([]int{1, 2, 3, 4, 5}, 2)
+	assert.Equal(t, [][]int{{1, 2}, {3, 4}, {5}}, result)
+
+	// chunk size larger than slice
+	result = slicex.Chunk([]int{1, 2, 3}, 10)
+	assert.Equal(t, [][]int{{1, 2, 3}}, result)
+
+	// chunk size of 1
+	result = slicex.Chunk([]int{1, 2, 3}, 1)
+	assert.Equal(t, [][]int{{1}, {2}, {3}}, result)
+
+	// panics on invalid size
+	assert.Panics(t, func() { slicex.Chunk([]int{1, 2, 3}, 0) })
+}
+
+func TestSlice_Flatten(t *testing.T) {
+	assert.Empty(t, slicex.Flatten([][]int{}))
+
+	result := slicex.Flatten([][]int{{1, 2}, {3, 4}, {5}})
+	assert.Equal(t, []int{1, 2, 3, 4, 5}, result)
+
+	// nil inner slices are skipped
+	result = slicex.Flatten([][]int{{1, 2}, nil, {3}})
+	assert.Equal(t, []int{1, 2, 3}, result)
+
+	// single inner slice
+	result = slicex.Flatten([][]int{{1, 2, 3}})
+	assert.Equal(t, []int{1, 2, 3}, result)
+}
+
+func TestSlice_IndexOf(t *testing.T) {
+	assert.Equal(t, -1, slicex.IndexOf([]int{}, 1))
+	assert.Equal(t, -1, slicex.IndexOf([]int{1, 2, 3}, 99))
+	assert.Equal(t, 0, slicex.IndexOf([]int{1, 2, 3}, 1))
+	assert.Equal(t, 2, slicex.IndexOf([]int{1, 2, 3}, 3))
+
+	// returns first match on duplicates
+	assert.Equal(t, 1, slicex.IndexOf([]int{0, 5, 5, 5}, 5))
+}
+
+func TestSlice_IndexBy(t *testing.T) {
+	isEven := func(n int) bool { return n%2 == 0 }
+
+	assert.Equal(t, -1, slicex.IndexBy([]int{}, isEven))
+	assert.Equal(t, -1, slicex.IndexBy([]int{1, 3, 5}, isEven))
+	assert.Equal(t, 1, slicex.IndexBy([]int{1, 2, 4, 6}, isEven))
 }

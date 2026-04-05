@@ -52,15 +52,22 @@ Prefer a direct `if err != nil` when:
 
 ### Check against multiple targets
 
-| Function | Purpose                                                                        |
-|----------|--------------------------------------------------------------------------------|
-| `IsAny`  | Reports whether an error matches any of the provided targets using `errors.Is` |
+| Function   | Purpose                                                                        |
+|------------|--------------------------------------------------------------------------------|
+| `IsAny`    | Reports whether an error matches any of the provided targets using `errors.Is` |
+
+### Reduce multiple errors
+
+| Function   | Purpose                                                                  |
+|------------|--------------------------------------------------------------------------|
+| `FirstErr` | Returns the first non-nil error from a list, or nil if all are nil       |
 
 ## Notes
 
 - `Ignore` is a named alternative to `_ = someFunc()`. It signals to readers that the error is intentionally discarded, not overlooked.
 - `Must` is intended for use at program initialization time. Avoid it in request or business logic paths where errors should be handled gracefully.
 - `IsAny` uses `errors.Is` semantics for each comparison, so wrapped errors are matched correctly.
+- `FirstErr` is useful for collapsing a set of validation or initialization errors into a single result without chaining multiple `if` statements.
 
 ## Examples
 

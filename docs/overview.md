@@ -26,7 +26,7 @@ throughput.
 
 ### [`mapx`](mapx.md)
 Helpers for common map operations such as extracting keys or values, filtering, partitioning, transforming keys,
-counting entries by a classifier, and combining maps.
+counting entries by a classifier, combining maps, and merging maps with conflict resolution.
 
 ### [`httpx`](httpx.md)
 Helpers for HTTP client code that reduce boilerplate and support typed response handling.
@@ -42,7 +42,7 @@ Helpers for common string operations such as blank checks, fallback selection, t
 
 ### [`errorx`](errorx.md)
 Helpers for common error handling patterns such as intentional error suppression, initialization-time panics, and
-matching an error against multiple targets.
+matching an error against multiple targets, and reducing a list of errors to the first non-nil result.
 
 ### [`containers`](containers/README.md)
 Reusable collection types including lists, sets, stacks, and queues.

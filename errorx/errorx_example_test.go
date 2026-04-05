@@ -48,3 +48,41 @@ func ExampleIsAny() {
 	// client error
 	// false
 }
+
+func ExampleFirstErr() {
+	validate := func(name string, age int) error {
+		return errorx.FirstErr(
+			validateName(name),
+			validateAge(age),
+		)
+	}
+
+	fmt.Println(validate("alice", 30))
+	fmt.Println(validate("", 30))
+	// Output:
+	// <nil>
+	// name is required
+}
+
+func ExampleFirstErr_allNil() {
+	err := errorx.FirstErr(nil, nil, nil)
+
+	fmt.Println(err)
+	// Output: <nil>
+}
+
+func validateName(name string) error {
+	if name == "" {
+		return errors.New("name is required")
+	}
+
+	return nil
+}
+
+func validateAge(age int) error {
+	if age < 0 {
+		return errors.New("age must be non-negative")
+	}
+
+	return nil
+}

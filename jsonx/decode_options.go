@@ -2,8 +2,8 @@ package jsonx
 
 import "github.com/SharkByteSoftware/go-snk/slicex"
 
-// Option is a function that configures DecodeOptions.
-type Option func(options *DecodeOptions)
+// DecodeOption is a function that configures DecodeOptions.
+type DecodeOption func(options *DecodeOptions)
 
 // DecodeOptions contains the configuration options for JSON decoding.
 type DecodeOptions struct {
@@ -11,19 +11,19 @@ type DecodeOptions struct {
 	useNumber      bool
 }
 
-func newDecodeOptions(options []Option) *DecodeOptions {
+func newDecodeOptions(options []DecodeOption) *DecodeOptions {
 	cfg := &DecodeOptions{
 		strictDecoding: false,
 		useNumber:      false,
 	}
 
-	slicex.Apply(options, func(option Option) { option(cfg) })
+	slicex.Apply(options, func(option DecodeOption) { option(cfg) })
 
 	return cfg
 }
 
 // WithStrictDecoding disallows unknown fields when decoding JSON.
-func WithStrictDecoding() Option {
+func WithStrictDecoding() DecodeOption {
 	return func(options *DecodeOptions) {
 		options.strictDecoding = true
 	}
@@ -32,7 +32,7 @@ func WithStrictDecoding() Option {
 // WithUseNumber causes the decoder to unmarshal JSON numbers as [json.Number]
 // instead of float64. This is useful when precision matters or when the caller
 // wants to determine the numeric type themselves.
-func WithUseNumber() Option {
+func WithUseNumber() DecodeOption {
 	return func(options *DecodeOptions) {
 		options.useNumber = true
 	}

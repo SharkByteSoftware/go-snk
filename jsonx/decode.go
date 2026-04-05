@@ -13,7 +13,7 @@ import (
 // The caller is responsible for closing the reader if applicable.
 //
 // Returns an error if decoding fails.
-func Decode[T any](r io.Reader, options ...Option) (*T, error) {
+func Decode[T any](r io.Reader, options ...DecodeOption) (*T, error) {
 	cfg := newDecodeOptions(options)
 
 	dec := json.NewDecoder(r)
@@ -38,13 +38,13 @@ func Decode[T any](r io.Reader, options ...Option) (*T, error) {
 // DecodeBytes decodes JSON from a byte slice into T.
 //
 // Returns an error if decoding fails.
-func DecodeBytes[T any](b []byte, options ...Option) (*T, error) {
+func DecodeBytes[T any](b []byte, options ...DecodeOption) (*T, error) {
 	return Decode[T](bytes.NewReader(b), options...)
 }
 
 // DecodeString decodes JSON from a string into T.
 //
 // Returns an error if decoding fails.
-func DecodeString[T any](s string, options ...Option) (*T, error) {
+func DecodeString[T any](s string, options ...DecodeOption) (*T, error) {
 	return Decode[T](strings.NewReader(s), options...)
 }

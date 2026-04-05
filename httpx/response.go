@@ -31,7 +31,7 @@ func DecodeResponse[T any](resp *http.Response, config *ConfigOptions) (*Respons
 		return nil, NewResponseError(resp)
 	}
 
-	var opts []jsonx.Option
+	var opts []jsonx.DecodeOption
 	if config.strictDecoding {
 		opts = append(opts, jsonx.WithStrictDecoding())
 	}

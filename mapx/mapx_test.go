@@ -127,6 +127,55 @@ func TestMap_Combine(t *testing.T) {
 	}
 }
 
+func TestMap_Merge(t *testing.T) {
+	keepLeft := func(_ int, left, _ string) string { return left }
+	keepRight := func(_ int, _, right string) string { return right }
+	concat := func(_ int, left, right string) string { return left + right }
+
+	// no overlap — all keys from both maps appear in result
+	left := map[int]string{0: "zero", 1: "one"}
+	right := map[int]string{2: "two", 3: "three"}
+
+	result := mapx.Merge(left, right, keepLeft)
+	assert.Len(t, result, 4)
+	assert.Equal(t, "zero", result[0])
+	assert.Equal(t, "two", result[2])
+
+	// conflict — resolver receives both values
+	left = map[int]string{0: "zero", 1: "one"}
+	right = map[int]string{1: "ONE", 2: "two"}
+
+	result = mapx.Merge(left, right, keepLeft)
+	assert.Len(t, result, 3)
+	assert.Equal(t, "one", result[1]) // left wins
+
+	result = mapx.Merge(left, right, keepRight)
+	assert.Len(t, result, 3)
+	assert.Equal(t, "ONE", result[1]) // right wins
+
+	result = mapx.Merge(left, right, concat)
+	assert.Len(t, result, 3)
+	assert.Equal(t, "oneONE", result[1]) // combined
+
+	// resolver receives the correct key
+	var seenKey int
+	mapx.Merge(
+		map[int]string{5: "five"},
+		map[int]string{5: "FIVE"},
+		func(key int, left, _ string) string { seenKey = key; return left },
+	)
+	assert.Equal(t, 5, seenKey)
+
+	// empty maps
+	assert.Empty(t, mapx.Merge(map[int]string{}, map[int]string{}, keepLeft))
+
+	result = mapx.Merge(map[int]string{}, right, keepLeft)
+	assert.Equal(t, right, result)
+
+	result = mapx.Merge(left, map[int]string{}, keepLeft)
+	assert.Equal(t, left, result)
+}
+
 func TestMap_ToSlice(t *testing.T) {
 	stringResult := mapx.ToSlice(numberMap, func(_ int, value string) string { return value })
 

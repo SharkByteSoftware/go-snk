@@ -239,3 +239,38 @@ func ExampleCountBy() {
 	fmt.Println(result)
 	// Output: map[low:2 ok:3]
 }
+
+func ExampleMerge_keepLeft() {
+	defaults := map[string]int{"timeout": 30, "retries": 3, "workers": 5}
+	overrides := map[string]int{"timeout": 60, "debug": 1}
+
+	// caller-supplied values win; defaults fill in the rest
+	result := mapx.Merge(overrides, defaults, func(_ string, left, _ int) int {
+		return left
+	})
+
+	fmt.Println(result["timeout"]) // from overrides
+	fmt.Println(result["retries"]) // from defaults, no conflict
+	fmt.Println(result["debug"])   // from overrides, no conflict
+	// Output:
+	// 60
+	// 3
+	// 1
+}
+
+func ExampleMerge_sum() {
+	pageViews := map[string]int{"home": 100, "about": 40}
+	moreViews := map[string]int{"home": 50, "contact": 20}
+
+	result := mapx.Merge(pageViews, moreViews, func(_ string, left, right int) int {
+		return left + right
+	})
+
+	fmt.Println(result["home"])    // combined
+	fmt.Println(result["about"])   // no conflict
+	fmt.Println(result["contact"]) // no conflict
+	// Output:
+	// 150
+	// 40
+	// 20
+}

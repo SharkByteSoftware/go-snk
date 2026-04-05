@@ -7,6 +7,7 @@ import (
 
 	"github.com/SharkByteSoftware/go-snk/errorx"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -60,4 +61,28 @@ func Test_IsAny(t *testing.T) {
 
 	// no targets always returns false
 	assert.False(t, errorx.IsAny(errOne))
+}
+
+func Test_FirstErr(t *testing.T) {
+	// all nil returns nil
+	assert.NoError(t, errorx.FirstErr())
+	assert.NoError(t, errorx.FirstErr(nil))
+	assert.NoError(t, errorx.FirstErr(nil, nil, nil))
+
+	// single non-nil error
+	require.ErrorIs(t, errorx.FirstErr(errOne), errOne)
+
+	// returns first non-nil, ignores the rest
+	require.ErrorIs(t, errorx.FirstErr(errOne, errTwo, errThree), errOne)
+	require.ErrorIs(t, errorx.FirstErr(nil, errTwo, errThree), errTwo)
+	require.ErrorIs(t, errorx.FirstErr(nil, nil, errThree), errThree)
+
+	// nil after non-nil — still returns the first non-nil
+	require.ErrorIs(t, errorx.FirstErr(errOne, nil), errOne)
+
+	// wrapped errors are returned as-is, not unwrapped
+	wrapped := fmt.Errorf("wrapped: %w", errOne)
+	result := errorx.FirstErr(nil, wrapped, errTwo)
+	require.ErrorIs(t, result, errOne) // unwraps correctly via errors.Is
+	assert.NotErrorIs(t, result, errTwo)
 }

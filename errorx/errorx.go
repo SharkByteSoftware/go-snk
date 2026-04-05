@@ -1,7 +1,11 @@
 // Package errorx provides small helpers for common error handling patterns.
 package errorx
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/SharkByteSoftware/go-snk/slicex"
+)
 
 // Ignore explicitly discards an error. It is intended to document
 // intentional error suppression rather than silently assigning to _.
@@ -21,11 +25,18 @@ func Must[T any](v T, err error) T {
 // IsAny reports whether err matches any of the provided targets,
 // using errors.Is semantics for each comparison.
 func IsAny(err error, targets ...error) bool {
-	for _, target := range targets {
-		if errors.Is(err, target) {
-			return true
-		}
-	}
+	return slicex.AnyBy(targets, func(target error) bool {
+		return errors.Is(err, target)
+	})
+}
 
-	return false
+// FirstErr returns the first non-nil error from the provided errors,
+// or nil if all errors are nil.
+// It is useful for reducing a set of validation or initialization errors
+// to a single result without chaining multiple if statements.
+func FirstErr(errs ...error) error {
+	err, _ := slicex.FindBy(errs, func(err error) bool { return err != nil })
+
+	//nolint:wrapcheck
+	return err
 }

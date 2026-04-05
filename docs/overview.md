@@ -32,7 +32,7 @@ counting entries by a classifier, combining maps, and merging maps with conflict
 Helpers for HTTP client code that reduce boilerplate and support typed response handling.
 
 ### [`jsonx`](jsonx.md)
-Helpers for decoding JSON from common sources such as readers, byte slices, and strings, with consistent option handling.
+Helpers for encoding and decoding JSON to and from common sources such as readers, byte slices, and strings, with consistent option handling.
 
 ### [`conditional`](conditional.md)
 Helpers for concise conditional expressions and callback-style branching.

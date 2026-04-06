@@ -2,7 +2,6 @@ package jsonx_test
 
 import (
 	"encoding/json"
-	"os"
 	"strings"
 	"testing"
 
@@ -160,10 +159,7 @@ func TestDecodeFile(t *testing.T) {
 		result, err := jsonx.DecodeFile[namedFields]("does_not_exist.json")
 		assert.Nil(t, result)
 		require.Error(t, err)
-
-		var pathErr *os.PathError
-		require.ErrorAs(t, err, &pathErr)
-		assert.Contains(t, err.Error(), "open file:")
+		require.ErrorContains(t, err, "open file: open does_not_exist.json: no such file or directory")
 	})
 
 	t.Run("invalid json", func(t *testing.T) {

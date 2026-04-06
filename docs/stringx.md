@@ -48,9 +48,10 @@ Prefer standard library calls when:
 
 ### Fallback selection
 
-| Function   | Purpose                                                              |
-|------------|----------------------------------------------------------------------|
-| `Coalesce` | Returns the first non-empty string from the provided values          |
+| Function        | Purpose                                                              |
+|-----------------|----------------------------------------------------------------------|
+| `Coalesce`      | Returns the first non-empty string from the provided values          |
+| `CoalesceFunc`  | Returns the first string satisfying a caller-provided predicate      |
 
 ### Length limiting
 
@@ -71,6 +72,7 @@ Prefer standard library calls when:
 - `Truncate` operates on runes, not bytes, so it is safe for multi-byte Unicode characters.
 - `PadLeft` and `PadRight` also operate on runes, so padding counts by character rather than byte.
 - `Coalesce` returns an empty string if all provided values are empty.
+- `CoalesceFunc` is useful when the definition of "non-empty" is caller-defined — for example, skipping blank strings rather than just empty ones.
 
 ## Examples
 

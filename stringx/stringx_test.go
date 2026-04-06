@@ -32,6 +32,35 @@ func Test_Coalesce(t *testing.T) {
 	assert.Equal(t, "only", stringx.Coalesce("only"))
 }
 
+func Test_CoalesceFunc(t *testing.T) {
+	notBlank := func(s string) bool { return !stringx.IsBlank(s) }
+	nonEmpty := func(s string) bool { return s != "" }
+
+	// returns first value satisfying the predicate
+	assert.Equal(t, "first", stringx.CoalesceFunc(nonEmpty, "first", "second"))
+	assert.Equal(t, "second", stringx.CoalesceFunc(nonEmpty, "", "second"))
+	assert.Equal(t, "third", stringx.CoalesceFunc(nonEmpty, "", "", "third"))
+
+	// whitespace-aware — skips blank strings that Coalesce would accept
+	assert.Equal(t, "real", stringx.CoalesceFunc(notBlank, "   ", "\t", "real"))
+	assert.Empty(t, stringx.CoalesceFunc(notBlank, "   ", "\t"))
+
+	// all values fail predicate — returns empty string
+	assert.Empty(t, stringx.CoalesceFunc(nonEmpty, "", "", ""))
+
+	// no values — returns empty string
+	assert.Empty(t, stringx.CoalesceFunc(nonEmpty))
+
+	// single matching value
+	assert.Equal(t, "only", stringx.CoalesceFunc(nonEmpty, "only"))
+
+	// predicate always false
+	assert.Empty(t, stringx.CoalesceFunc(func(_ string) bool { return false }, "a", "b", "c"))
+
+	// predicate always true — returns first
+	assert.Equal(t, "a", stringx.CoalesceFunc(func(_ string) bool { return true }, "a", "b", "c"))
+}
+
 func Test_Truncate(t *testing.T) {
 	// shorter than max — returned unchanged
 	assert.Equal(t, "hello", stringx.Truncate("hello", 10))

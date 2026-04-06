@@ -157,11 +157,18 @@ func TestDecodeFile(t *testing.T) {
 	})
 
 	t.Run("file does not exist", func(t *testing.T) {
-		_, err := jsonx.DecodeFile[namedFields]("does_not_exist.json")
+		result, err := jsonx.DecodeFile[namedFields]("does_not_exist.json")
+		assert.Nil(t, result)
 		require.Error(t, err)
 
 		var pathErr *os.PathError
 		assert.ErrorAs(t, err, &pathErr)
 		assert.Contains(t, err.Error(), "open file:")
+	})
+
+	t.Run("invalid json", func(t *testing.T) {
+		result, err := jsonx.DecodeFile[namedFields]("../testdata/jsonx/invalid_json.json")
+		assert.Nil(t, result)
+		require.Error(t, err)
 	})
 }

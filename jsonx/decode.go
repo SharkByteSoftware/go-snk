@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -47,4 +49,18 @@ func DecodeBytes[T any](b []byte, options ...DecodeOption) (*T, error) {
 // Returns an error if decoding fails.
 func DecodeString[T any](s string, options ...DecodeOption) (*T, error) {
 	return Decode[T](strings.NewReader(s), options...)
+}
+
+// DecodeFile decodes JSON from a file path into T.
+//
+// Returns an error if decoding fails.
+func DecodeFile[T any](name string, options ...DecodeOption) (*T, error) {
+	f, err := os.Open(filepath.Clean(name))
+	if err != nil {
+		return nil, fmt.Errorf("open file: %w", err)
+	}
+
+	defer func() { _ = f.Close() }()
+
+	return Decode[T](f, options...)
 }

@@ -10,8 +10,8 @@
 
 It is designed to replace repetitive encoder and decoder setup with small typed functions for:
 
-- decoding from a reader, byte slice, or string
-- encoding to a writer, byte slice, or string
+- decoding from a reader, byte slice, string, or file
+- encoding to a writer, byte slice, string, or file
 - configuring encoding and decoding behaviour consistently across sources
 
 ## Overview
@@ -28,8 +28,8 @@ It is especially useful when:
 
 Use `jsonx` when:
 
-- you are decoding JSON from an `io.Reader`, `[]byte`, or `string`
-- you are encoding a value to JSON and want the result as a writer output, `[]byte`, or `string`
+- you are decoding JSON from an `io.Reader`, `[]byte`, `string`, or file path
+- you are encoding a value to JSON and want the result as a writer output, `[]byte`, `string`, or file
 - you want a consistent pattern for common encode and decode cases
 - you want to configure behaviour such as strict field checking, number handling, HTML escaping, or indentation
 
@@ -43,11 +43,12 @@ Prefer a direct `encoding/json` implementation when:
 
 ### Decode
 
-| Function        | Purpose                                        |
-|-----------------|------------------------------------------------|
-| `Decode`        | Decodes JSON from an `io.Reader` into T        |
-| `DecodeBytes`   | Decodes JSON from a `[]byte` into T            |
-| `DecodeString`  | Decodes JSON from a `string` into T            |
+| Function          | Purpose                                        |
+|-------------------|------------------------------------------------|
+| `Decode`          | Decodes JSON from an `io.Reader` into T        |
+| `DecodeBytes`     | Decodes JSON from a `[]byte` into T            |
+| `DecodeString`    | Decodes JSON from a `string` into T            |
+| `DecodeFromFile`  | Decodes JSON from a file path into T           |
 
 ### Encode
 
@@ -56,6 +57,7 @@ Prefer a direct `encoding/json` implementation when:
 | `Encode`        | Encodes a value as JSON into an `io.Writer`           |
 | `EncodeBytes`   | Encodes a value as JSON and returns a `[]byte`        |
 | `EncodeString`  | Encodes a value as JSON and returns a `string`        |
+| `EncodeToFile`  | Encodes a value as JSON into a file at a given path   |
 
 ### Configure decoding
 
@@ -73,8 +75,8 @@ Prefer a direct `encoding/json` implementation when:
 
 ## Notes
 
-- `Decode` is the base case — `DecodeBytes` and `DecodeString` delegate to it, so all decode options apply consistently across all three.
-- `Encode` is the base case — `EncodeBytes` and `EncodeString` delegate to it, so all encode options apply consistently across all three.
+- `Decode` is the base case — `DecodeBytes`, `DecodeString`, and `DecodeFromFile` delegate to it, so all decode options apply consistently across all four.
+- `Encode` is the base case — `EncodeBytes`, `EncodeString`, and `EncodeToFile` delegate to it, so all encode options apply consistently across all four.
 - `WithUseNumber` only has a visible effect when the target type contains `any` or `interface{}` fields. Concrete typed fields such as `int` or `float64` are unaffected.
 - `WithEscapeHTML` is disabled by default, unlike the standard library which enables it. Enable it when output may be embedded in HTML.
 - The caller is responsible for closing the reader passed to `Decode` if applicable.

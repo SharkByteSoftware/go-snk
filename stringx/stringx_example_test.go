@@ -36,3 +36,25 @@ func ExampleWrap() {
 	// (hello)
 	// <b>world</b>
 }
+
+func ExampleCoalesceFunc() {
+	notBlank := func(s string) bool { return !stringx.IsBlank(s) }
+
+	// Unlike Coalesce, CoalesceFunc skips whitespace-only strings
+	fmt.Println(stringx.CoalesceFunc(notBlank, "   ", "\t", "fallback"))
+	fmt.Println(stringx.CoalesceFunc(notBlank, "hello", "world"))
+	// Output:
+	// fallback
+	// hello
+}
+
+func ExampleCoalesceFunc_customPredicate() {
+	// Only accept strings longer than 3 characters
+	longEnough := func(s string) bool { return len(s) > 3 }
+
+	fmt.Println(stringx.CoalesceFunc(longEnough, "hi", "hey", "hello"))
+	fmt.Println(stringx.CoalesceFunc(longEnough, "hi", "hey"))
+	// Output:
+	// hello
+	//
+}

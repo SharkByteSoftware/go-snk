@@ -15,7 +15,15 @@ func IsBlank(s string) bool {
 // Coalesce returns the first non-empty string from the provided values.
 // If all values are empty, an empty string is returned.
 func Coalesce(values ...string) string {
-	return slicex.FindOrBy(values, func(value string) bool { return value != "" }, "")
+	return CoalesceFunc(func(s string) bool { return s != "" }, values...)
+}
+
+// CoalesceFunc returns the first string from values that satisfies the predicate.
+// If no value satisfies the predicate, an empty string is returned.
+// It is useful when the definition of "non-empty" is caller-defined — for example,
+// skipping blank strings rather than just empty ones.
+func CoalesceFunc(predicate func(string) bool, values ...string) string {
+	return slicex.FindOrBy(values, predicate, "")
 }
 
 // Truncate returns the string trimmed to a maximum length.
@@ -43,11 +51,20 @@ func Wrap(s, prefix, suffix string) string {
 // If the string is already at or longer than length, it is returned unchanged.
 func PadLeft(s string, length int, char rune) string {
 	runes := []rune(s)
-	for len(runes) < length {
-		runes = append([]rune{char}, runes...)
+	if len(runes) >= length {
+		return s
 	}
 
-	return string(runes)
+	padded := make([]rune, length)
+
+	pad := length - len(runes)
+	for i := range pad {
+		padded[i] = char
+	}
+
+	copy(padded[pad:], runes)
+
+	return string(padded)
 }
 
 // PadRight returns the string right-padded with char to the specified length.

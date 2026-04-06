@@ -162,7 +162,7 @@ func TestDecodeFile(t *testing.T) {
 		require.Error(t, err)
 
 		var pathErr *os.PathError
-		assert.ErrorAs(t, err, &pathErr)
+		require.ErrorAs(t, err, &pathErr)
 		assert.Contains(t, err.Error(), "open file:")
 	})
 

@@ -4,6 +4,7 @@ package jsonx
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -54,12 +55,18 @@ func DecodeString[T any](s string, options ...DecodeOption) (*T, error) {
 // DecodeFile decodes JSON from a file path into T.
 //
 // Returns an error if decoding fails.
-func DecodeFile[T any](name string, options ...DecodeOption) (*T, error) {
+func DecodeFile[T any](name string, options ...DecodeOption) (_ *T, err error) {
 	f, err := os.Open(filepath.Clean(name))
 	if err != nil {
 		return nil, fmt.Errorf("open file: %w", err)
 	}
-	defer f.Close()
+
+	defer func() {
+		cErr := f.Close()
+		if cErr != nil {
+			err = errors.Join(err, cErr)
+		}
+	}()
 
 	return Decode[T](f, options...)
 }

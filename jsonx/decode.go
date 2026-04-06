@@ -51,11 +51,11 @@ func DecodeString[T any](s string, options ...DecodeOption) (*T, error) {
 	return Decode[T](strings.NewReader(s), options...)
 }
 
-// DecodeFile decodes JSON from a file path into T.
+// DecodeFromFile decodes JSON from a file path into T.
 //
 // Returns an error if decoding fails.
-func DecodeFile[T any](name string, options ...DecodeOption) (*T, error) {
-	f, err := os.Open(filepath.Clean(name))
+func DecodeFromFile[T any](path string, options ...DecodeOption) (*T, error) {
+	f, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return nil, fmt.Errorf("open file: %w", err)
 	}

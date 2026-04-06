@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
 )
 
 // Encode encodes value as JSON into the provided [io.Writer].
@@ -56,4 +58,23 @@ func EncodeString[T any](value T, options ...EncodeOption) (string, error) {
 	}
 
 	return string(b), nil
+}
+
+// EncodeToFile encodes value as JSON into the file at the given path.
+//
+// Returns an error if encoding fails.
+func EncodeToFile[T any](path string, value T, options ...EncodeOption) error {
+	file, err := os.Create(filepath.Clean(path))
+	if err != nil {
+		return fmt.Errorf("create file: %w", err)
+	}
+
+	defer func() { _ = file.Close() }()
+
+	err = Encode(file, value, options...)
+	if err != nil {
+		return fmt.Errorf("encode: %w", err)
+	}
+
+	return nil
 }

@@ -1,6 +1,8 @@
 package jsonx_test
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -113,5 +115,64 @@ func TestEncodeString(t *testing.T) {
 		result, err := jsonx.EncodeString(v, jsonx.WithIndent("\t"))
 		require.NoError(t, err)
 		assert.Contains(t, result, "\t")
+	})
+}
+
+func TestEncodeToFile(t *testing.T) {
+	t.Run("happy path", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "output.json")
+		value := namedFields{Name: "Alice", Age: 30}
+
+		err := jsonx.EncodeToFile(path, value)
+		require.NoError(t, err)
+
+		// Round-trip: decode what was written and verify
+		result, err := jsonx.DecodeFromFile[namedFields](path)
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		assert.Equal(t, "Alice", result.Name)
+		assert.Equal(t, 30, result.Age)
+	})
+
+	t.Run("directory does not exist", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "nonexistent", "output.json")
+		value := namedFields{Name: "Alice", Age: 30}
+
+		err := jsonx.EncodeToFile(path, value)
+		require.Error(t, err)
+		require.ErrorContains(t, err, "create file:")
+	})
+
+	t.Run("path is a directory", func(t *testing.T) {
+		path := t.TempDir()
+		value := namedFields{Name: "Alice", Age: 30}
+
+		err := jsonx.EncodeToFile(path, value)
+		require.Error(t, err)
+	})
+
+	t.Run("empty struct", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "output.json")
+
+		err := jsonx.EncodeToFile(path, namedFields{})
+		require.NoError(t, err)
+
+		result, err := jsonx.DecodeFromFile[namedFields](path)
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		assert.Empty(t, result.Name)
+		assert.Equal(t, 0, result.Age)
+	})
+
+	t.Run("options forwarded", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "output.json")
+		value := namedFields{Name: "Alice", Age: 30}
+
+		err := jsonx.EncodeToFile(path, value, jsonx.WithIndent("  "))
+		require.NoError(t, err)
+
+		data, err := os.ReadFile(path)
+		require.NoError(t, err)
+		assert.JSONEq(t, encodedJSONPretty, string(data))
 	})
 }

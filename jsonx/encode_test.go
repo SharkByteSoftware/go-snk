@@ -1,6 +1,7 @@
 package jsonx_test
 
 import (
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -161,5 +162,17 @@ func TestEncodeToFile(t *testing.T) {
 		require.NotNil(t, result)
 		assert.Empty(t, result.Name)
 		assert.Equal(t, 0, result.Age)
+	})
+
+	t.Run("options forwarded", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "output.json")
+		value := namedFields{Name: "Alice", Age: 30}
+
+		err := jsonx.EncodeToFile(path, value, jsonx.WithIndent("  "))
+		require.NoError(t, err)
+
+		data, err := os.ReadFile(path)
+		require.NoError(t, err)
+		assert.JSONEq(t, encodedJSONPretty, string(data))
 	})
 }

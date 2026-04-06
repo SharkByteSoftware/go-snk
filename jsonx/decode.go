@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -54,7 +55,7 @@ func DecodeString[T any](s string, options ...DecodeOption) (*T, error) {
 //
 // Returns an error if decoding fails.
 func DecodeFile[T any](name string, options ...DecodeOption) (*T, error) {
-	f, err := os.Open(name)
+	f, err := os.Open(filepath.Clean(name))
 	if err != nil {
 		return nil, fmt.Errorf("open file: %w", err)
 	}

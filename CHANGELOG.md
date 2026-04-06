@@ -6,6 +6,55 @@
 
 # Changelog
 
+## v1.2.0
+
+### New Functions
+
+#### `slicex`
+- `LastOr` — returns the last element of a slice or a fallback value
+- `LastOrEmpty` — returns the last element of a slice or the zero value
+- `LastBy` — returns the last item satisfying a predicate, and a found boolean
+- `LastOrBy` — returns the last item satisfying a predicate, or a fallback value
+- `FirstBy` — returns the first item satisfying a predicate, and a found boolean (naming symmetry with `LastBy`)
+- `FirstOrBy` — returns the first item satisfying a predicate, or a fallback value (naming symmetry with `LastOrBy`)
+- `Chunk` — splits a slice into sub-slices of at most size n; the final chunk may be smaller
+- `Flatten` — collapses a slice of slices into a single flat slice; nil inner slices are skipped
+- `IndexOf` — returns the index of the first element equal to a given value, or -1
+- `IndexBy` — returns the index of the first element satisfying a predicate, or -1
+
+#### `mapx`
+- `Merge` — combines two maps using a caller-provided resolver function to control conflict resolution; unlike `Combine`, which uses last-write-wins
+
+#### `errorx`
+- `FirstErr` — returns the first non-nil error from a list of errors, or nil if all are nil
+
+#### `stringx`
+- `CoalesceFunc` — returns the first string satisfying a caller-provided predicate; useful when the definition of non-empty is caller-defined (e.g. skipping blank strings rather than just empty ones)
+
+### New Packages
+
+#### `jsonx` — encoding support
+- `Encode` — encodes a value as JSON into an `io.Writer`
+- `EncodeBytes` — encodes a value as JSON and returns a `[]byte`
+- `EncodeString` — encodes a value as JSON and returns a `string`
+- `WithEscapeHTML` — enables escaping of HTML characters in output; disabled by default
+- `WithIndent` — enables pretty-printing with a given indent string per level
+
+### Bug Fixes
+- **`containers/sets.Intersect`** — fixed subtle bug where pointer semantics were not correctly preserved, which could produce incorrect intersection results
+- **`stringx.PadLeft`** — fixed a performance issue
+
+### Improvements
+- **`errorx.IsAny`** — refactored to use `slicex` internally
+- **`mapx.Combine`** — refactored to use `Apply` internally
+- **`errorx`** — added documentation note for `IsNil`
+- **`httpx`** — removed unused element from config options
+- Updated GitHub Actions to use stable Go version
+- Removed placeholder `pipeline` directory
+- Documentation corrections and grammar fixes across multiple packages
+
+---
+
 ## v1.1.1
 
 ### Bug Fixes

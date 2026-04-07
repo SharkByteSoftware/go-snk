@@ -6,6 +6,16 @@
 
 # Changelog
 
+## v1.2.1
+
+### New Functions
+
+#### `jsonx`
+- `DecodeFromFile` — decodes JSON from a file path into T; manages file open and close internally; all decode options apply consistently
+- `EncodeToFile` — encodes a value as JSON into a file at a given path; manages file create and close internally; all encode options apply consistently
+
+---
+
 ## v1.2.0
 
 ### New Functions

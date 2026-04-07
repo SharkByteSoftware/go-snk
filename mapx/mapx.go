@@ -88,10 +88,6 @@ func Merge[M ~map[K]V, K comparable, V any](left M, right M, resolver func(key K
 		result[key] = value
 	})
 
-	Apply(left, func(key K, value V) {
-		result[key] = value
-	})
-
 	Apply(right, func(key K, value V) {
 		if existing, ok := result[key]; ok {
 			result[key] = resolver(key, existing, value)

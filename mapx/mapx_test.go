@@ -313,3 +313,42 @@ func TestMap_CountBy(t *testing.T) {
 
 	assert.Empty(t, emptyCounts)
 }
+
+func TestMap_Merge_ResolverCalledOnce(t *testing.T) {
+	left := map[int]string{1: "one", 2: "two"}
+	right := map[int]string{1: "ONE", 3: "three"}
+
+	callCount := 0
+
+	var seenLeft, seenRight string
+
+	mapx.Merge(left, right, func(_ int, lv, rv string) string {
+		callCount++
+		seenLeft = lv
+		seenRight = rv
+
+		return lv
+	})
+
+	// key 1 conflicts — resolver must be called exactly once
+	assert.Equal(t, 1, callCount)
+
+	// resolver must receive left value first, right value second
+	assert.Equal(t, "one", seenLeft)
+	assert.Equal(t, "ONE", seenRight)
+}
+
+func TestMap_Merge_ResolverCalledOncePerConflict(t *testing.T) {
+	left := map[int]string{1: "a", 2: "b", 3: "c"}
+	right := map[int]string{1: "A", 2: "B", 3: "C"}
+
+	callCount := 0
+
+	mapx.Merge(left, right, func(_ int, lv, _ string) string {
+		callCount++
+		return lv
+	})
+
+	// three conflicting keys — resolver must be called exactly three times
+	assert.Equal(t, 3, callCount)
+}

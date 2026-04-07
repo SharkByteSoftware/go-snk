@@ -24,8 +24,7 @@ func newEncodeOptions(options []EncodeOption) *EncodeOptions {
 
 // WithEscapeHTML enables escaping of HTML characters (<, >, &) in the output.
 // By default HTML escaping is disabled, unlike the standard library which
-// enables it. Disable only when you are certain the output will not be
-// embedded in HTML.
+// enables it. Enable only when the output may be embedded in HTML.
 func WithEscapeHTML() EncodeOption {
 	return func(options *EncodeOptions) {
 		options.escapeHTML = true

@@ -71,10 +71,5 @@ func EncodeToFile[T any](path string, value T, options ...EncodeOption) error {
 
 	defer func() { _ = file.Close() }()
 
-	err = Encode(file, value, options...)
-	if err != nil {
-		return fmt.Errorf("encode: %w", err)
-	}
-
-	return nil
+	return Encode(file, value, options...)
 }

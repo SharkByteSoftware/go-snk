@@ -129,7 +129,6 @@ func TestEncodeToFile(t *testing.T) {
 		// Round-trip: decode what was written and verify
 		result, err := jsonx.DecodeFromFile[namedFields](path)
 		require.NoError(t, err)
-		require.NotNil(t, result)
 		assert.Equal(t, "Alice", result.Name)
 		assert.Equal(t, 30, result.Age)
 	})
@@ -159,7 +158,6 @@ func TestEncodeToFile(t *testing.T) {
 
 		result, err := jsonx.DecodeFromFile[namedFields](path)
 		require.NoError(t, err)
-		require.NotNil(t, result)
 		assert.Empty(t, result.Name)
 		assert.Equal(t, 0, result.Age)
 	})

@@ -41,7 +41,7 @@ func DecodeResponse[T any](resp *http.Response, config *ConfigOptions) (*Respons
 		return nil, NewDecodingError(resp, err)
 	}
 
-	response.Result = result
+	response.Result = &result
 
 	return &response, nil
 }

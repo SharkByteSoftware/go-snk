@@ -60,7 +60,7 @@ func TestEncode(t *testing.T) {
 
 		err := jsonx.Encode(&buf, urlField{URL: "https://example.com/search?a=1&b=2"}, jsonx.WithEscapeHTML())
 		require.NoError(t, err)
-		assert.JSONEq(t, htmlStringEscaped, buf.String())
+		assert.Equal(t, htmlStringEscaped, buf.String()) //nolint:testifylint
 	})
 
 	t.Run("pretty printed with WithIndent", func(t *testing.T) {

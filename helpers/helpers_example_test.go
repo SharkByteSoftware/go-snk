@@ -72,9 +72,19 @@ func ExampleIsEmpty() {
 	fmt.Println(helpers.IsEmpty(""))
 	fmt.Println(helpers.IsEmpty(42))
 	fmt.Println(helpers.IsEmpty("hello"))
+
+	type empty struct {
+		Name string
+	}
+
+	fmt.Println(helpers.IsEmpty(empty{}))
+	fmt.Println(helpers.IsEmpty(&empty{}))
+
 	// Output:
 	// true
 	// true
 	// false
+	// false
+	// true
 	// false
 }

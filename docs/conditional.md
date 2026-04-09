@@ -14,6 +14,7 @@ It is designed to help you replace repetitive conditional patterns with small fu
 - calling a function only when a pointer is non-nil
 - executing one of two callbacks based on a condition
 - returning a result from one of two branches
+- looking up a value by key with a fallback
 
 ## Overview
 
@@ -46,6 +47,7 @@ Prefer a simpler inline expression when:
 | Function | Purpose                                        |
 |----------|------------------------------------------------|
 | `If`     | Returns one of two values based on a condition |
+| `Switch` | Returns a value from a map by key, with a fallback |
 
 ### Call a function conditionally
 
@@ -54,6 +56,24 @@ Prefer a simpler inline expression when:
 | `IfNotNil`     | Calls a function only when a pointer is not nil   |
 | `IfCall`       | Calls one of two functions based on a condition   |
 | `IfCallReturn` | Calls one of two functions and returns the result |
+
+### `Switch`
+
+`Switch` returns the value associated with `key` in the `cases` map. If the key is not present, `fallback` is returned.
+
+```go
+label := conditional.Switch(status, map[int]string{
+    1: "active",
+    2: "inactive",
+    3: "pending",
+}, "unknown")
+```
+
+Use `Switch` when:
+
+- you are selecting a value from a fixed set of keys
+- a `switch` statement would otherwise be used purely for value lookup
+- you want a concise, readable alternative to repeated `if/else` chains
 
 ## Notes
 

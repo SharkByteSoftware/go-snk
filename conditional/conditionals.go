@@ -33,3 +33,15 @@ func IfCall(cond bool, trueFunc func(), falseFunc func()) {
 func IfCallReturn[T any](cond bool, trueFunc func() T, falseFunc func() T) T {
 	return If(cond, trueFunc, falseFunc)()
 }
+
+// Switch returns the value associated with key in the cases map.
+// If the key is not present, fallback is returned.
+// It is useful for concise value lookup that would otherwise
+// require a switch statement or repeated if/else chains.
+func Switch[K comparable, V any](key K, cases map[K]V, fallback V) V {
+	if value, ok := cases[key]; ok {
+		return value
+	}
+
+	return fallback
+}

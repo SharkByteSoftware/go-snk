@@ -4,8 +4,6 @@ linters:
   default: all
   disable:
     - wsl
-    - ginkgolinter
-    - arangolint
   settings:
     varnamelen:
       max-distance: 12

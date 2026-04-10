@@ -1,3 +1,4 @@
+//nolint:bodyclose
 package httpx_test
 
 import (

@@ -11,9 +11,7 @@ linters:
     - gochecknoglobals
     - staticcheck
     - exhaustruct
-    - err113
     - dupl
-    - bodyclose
   settings:
     funlen:
       lines: 65

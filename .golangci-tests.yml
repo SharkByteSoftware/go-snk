@@ -4,8 +4,6 @@ linters:
   default: all
   disable:
     - wsl
-    - ginkgolinter
-    - arangolint
     - varnamelen
     - paralleltest
     - testpackage

@@ -6,6 +6,18 @@
 
 # Changelog
 
+## v1.2.2
+
+### New Functions
+
+#### `conditional`
+- `Switch` — returns a value from a map by key, with a fallback; useful as a concise alternative to a `switch` statement or repeated `if/else` chains used purely for value lookup
+
+### Improvements
+- Re-enabled additional linters across the codebase
+
+---
+
 ## v1.2.1
 
 ### New Functions

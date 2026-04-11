@@ -201,6 +201,8 @@ func ExampleHead() {
 		panic(err)
 	}
 
+	defer func() { _ = result.Body.Close() }()
+
 	fmt.Println(result.StatusCode, err)
 
 	// Example with custom HTTP client, timeout, headers, and query parameters
@@ -213,6 +215,8 @@ func ExampleHead() {
 	if err != nil {
 		panic(err)
 	}
+
+	defer func() { _ = result.Body.Close() }()
 
 	fmt.Println(result.StatusCode, err)
 
@@ -234,6 +238,8 @@ func ExampleOptions() {
 		panic(err)
 	}
 
+	defer func() { _ = result.Body.Close() }()
+
 	fmt.Println(result.StatusCode, err)
 
 	// Example with custom HTTP client, timeout, headers, and query parameters
@@ -246,6 +252,8 @@ func ExampleOptions() {
 	if err != nil {
 		panic(err)
 	}
+
+	defer func() { _ = result.Body.Close() }()
 
 	fmt.Println(result.StatusCode, err)
 

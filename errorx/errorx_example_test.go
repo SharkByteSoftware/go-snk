@@ -1,3 +1,4 @@
+//nolint:err113
 package errorx_test
 
 import (

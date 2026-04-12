@@ -204,7 +204,7 @@
 ## v0.9.0
 
 ### New Packages
-- **`containers/queues`** — double-ended queue (`DQueue`) with `Enqueue`, `EnqueueFront`, `Dequeue`, `DequeueBack`, `Peek`, `PeekBack`, `IsEmpty`, `Size`, `Clear`, `Values`
+- **`containers/queues`** — double-ended queue (`Queue`) with `Enqueue`, `EnqueueFront`, `Dequeue`, `DequeueBack`, `Peek`, `PeekBack`, `IsEmpty`, `Size`, `Clear`, `Values`
 
 ### New Functions
 - **`slicex`** — `Compact`

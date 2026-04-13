@@ -150,12 +150,13 @@ Prefer a slice when:
 
 #### Inspect or reset the queue
 
-| Method    | Purpose                                   |
-|-----------|-------------------------------------------|
-| `IsEmpty` | Reports whether the priority queue is empty |
-| `Size`    | Returns the number of elements              |
-| `Clear`   | Removes all elements                        |
-| `Values`  | Returns a snapshot of all elements (unordered) |
+| Method    | Purpose                                         |
+|-----------|-------------------------------------------------|
+| `IsEmpty` | Reports whether the priority queue is empty     |
+| `Len`     | Returns the number of elements                  |
+| `Size`    | Returns the number of elements (alias for `Len`) |
+| `Clear`   | Removes all elements                            |
+| `Values`  | Returns a snapshot of all elements (unordered)  |
 
 ### Notes
 

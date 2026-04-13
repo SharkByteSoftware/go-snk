@@ -42,8 +42,8 @@ Prefer standard library calls when:
 
 ### Blank checks
 
-| Function  | Purpose                                                      |
-|-----------|--------------------------------------------------------------|
+| Function  | Purpose                                                         |
+|-----------|-----------------------------------------------------------------|
 | `IsBlank` | Returns true if the string is empty or contains only whitespace |
 
 ### Fallback selection

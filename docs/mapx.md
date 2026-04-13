@@ -59,12 +59,12 @@ Prefer a simpler local loop when:
 
 ### Transform or reshape data
 
-| Function  | Purpose                                                                  |
-|-----------|--------------------------------------------------------------------------|
-| `ToSlice` | Converts a map into a slice using a mapper function                      |
-| `MapKeys` | Returns a new map with each key transformed by a mapper function         |
-| `Invert`  | Swaps map keys and values                                                |
-| `Combine` | Merges multiple maps into one; last writer wins on key conflict          |
+| Function  | Purpose                                                                    |
+|-----------|----------------------------------------------------------------------------|
+| `ToSlice` | Converts a map into a slice using a mapper function                        |
+| `MapKeys` | Returns a new map with each key transformed by a mapper function           |
+| `Invert`  | Swaps map keys and values                                                  |
+| `Combine` | Merges multiple maps into one; last writer wins on key conflict            |
 | `Merge`   | Merges two maps into one using a resolver function to handle key conflicts |
 
 ### Filter, partition, or visit entries

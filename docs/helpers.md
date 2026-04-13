@@ -51,9 +51,9 @@ Prefer a direct expression when:
 
 ### Zero value utilities
 
-| Function  | Purpose                                              |
-|-----------|------------------------------------------------------|
-| `Empty`   | Returns the zero value of a type                     |
+| Function  | Purpose                                                |
+|-----------|--------------------------------------------------------|
+| `Empty`   | Returns the zero value of a type                       |
 | `IsEmpty` | Returns true if the value equals the type's zero value |
 
 ## Notes

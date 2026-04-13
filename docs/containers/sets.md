@@ -56,30 +56,30 @@ Prefer a slice when:
 
 ### Check membership
 
-| Method     | Purpose                                        |
-|------------|------------------------------------------------|
-| `Contains` | Returns true if the item exists in the set     |
+| Method     | Purpose                                          |
+|------------|--------------------------------------------------|
+| `Contains` | Returns true if the item exists in the set       |
 | `Equals`   | Returns true if both sets contain the same items |
-| `Subset`   | Returns true if the set is a subset of another |
+| `Subset`   | Returns true if the set is a subset of another   |
 
 ### Set algebra
 
-| Method                | Purpose                                                  |
-|-----------------------|----------------------------------------------------------|
-| `Intersect`           | Returns a new set with items common to both sets         |
-| `Union`               | Returns a new set with all items from both sets          |
+| Method                | Purpose                                                    |
+|-----------------------|------------------------------------------------------------|
+| `Intersect`           | Returns a new set with items common to both sets           |
+| `Union`               | Returns a new set with all items from both sets            |
 | `Difference`          | Returns a new set with items in this set but not the other |
-| `SymmetricDifference` | Returns a new set with items in either set but not both  |
+| `SymmetricDifference` | Returns a new set with items in either set but not both    |
 
 ### Inspect the set
 
-| Method    | Purpose                               |
-|-----------|---------------------------------------|
-| `IsEmpty` | Returns true if the set has no items  |
+| Method    | Purpose                                |
+|-----------|----------------------------------------|
+| `IsEmpty` | Returns true if the set has no items   |
 | `Size`    | Returns the number of items in the set |
-| `Values`  | Returns all items as a slice          |
-| `Clone`   | Returns a shallow copy of the set     |
-| `Clear`   | Removes all items from the set        |
+| `Values`  | Returns all items as a slice           |
+| `Clone`   | Returns a shallow copy of the set      |
+| `Clear`   | Removes all items from the set         |
 
 ### Iterate
 
@@ -89,11 +89,11 @@ Prefer a slice when:
 
 ### Serialization
 
-| Method          | Purpose                                                                 |
-|-----------------|-------------------------------------------------------------------------|
-| `ToJSON`        | Returns the set as a JSON array (`[]byte, error`)                       |
-| `FromJSON`      | Replaces the set contents from a JSON array; clears existing items first |
-| `MarshalJSON`   | Implements `json.Marshaler`; allows sets to be used in `json.Marshal`   |
+| Method          | Purpose                                                                   |
+|-----------------|---------------------------------------------------------------------------|
+| `ToJSON`        | Returns the set as a JSON array (`[]byte, error`)                         |
+| `FromJSON`      | Replaces the set contents from a JSON array; clears existing items first  |
+| `MarshalJSON`   | Implements `json.Marshaler`; allows sets to be used in `json.Marshal`     |
 | `UnmarshalJSON` | Implements `json.Unmarshaler`; allows sets to be used in `json.Unmarshal` |
 
 ## Notes

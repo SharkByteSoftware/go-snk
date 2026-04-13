@@ -61,17 +61,17 @@ Prefer a direct `encoding/json` implementation when:
 
 ### Configure decoding
 
-| Option               | Purpose                                                                            |
-|----------------------|------------------------------------------------------------------------------------|
-| `WithStrictDecoding` | Returns an error if the JSON contains fields not present in the target type        |
+| Option               | Purpose                                                                           |
+|----------------------|-----------------------------------------------------------------------------------|
+| `WithStrictDecoding` | Returns an error if the JSON contains fields not present in the target type       |
 | `WithUseNumber`      | Decodes JSON numbers as `json.Number` instead of `float64` for `any` typed fields |
 
 ### Configure encoding
 
-| Option            | Purpose                                                                                    |
-|-------------------|--------------------------------------------------------------------------------------------|
-| `WithEscapeHTML`  | Enables escaping of HTML characters (`<`, `>`, `&`) in the output; disabled by default    |
-| `WithIndent`      | Enables pretty-printing with a given indent string per level (e.g. `"\t"` or `"  "`)      |
+| Option           | Purpose                                                                                |
+|------------------|----------------------------------------------------------------------------------------|
+| `WithEscapeHTML` | Enables escaping of HTML characters (`<`, `>`, `&`) in the output; disabled by default |
+| `WithIndent`     | Enables pretty-printing with a given indent string per level (e.g. `"\t"` or `"  "`)   |
 
 ## Notes
 

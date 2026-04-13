@@ -20,7 +20,7 @@ func (q *Queue[T]) Enqueue(value T) {
 	q.members.PushBack(value)
 }
 
-// EnqueueFront Enqueue adds a value to the front of the queue.
+// EnqueueFront adds a value to the front of the queue.
 func (q *Queue[T]) EnqueueFront(value T) {
 	q.members.PushFront(value)
 }

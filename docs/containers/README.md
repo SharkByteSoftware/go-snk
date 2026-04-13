@@ -12,9 +12,10 @@
 
 Each container type is documented on its own page with the relevant API summary, behavior notes, and examples.
 
-| Container | Best for                                    | Documentation          |
-|-----------|---------------------------------------------|------------------------|
-| List      | Ordered insertion and removal at either end | [lists.md](lists.md)   |
-| Set       | Unique items and set algebra                | [sets.md](sets.md)     |
-| Stack     | Last-in, first-out workflows                | [stacks.md](stacks.md) |
-| Queue     | First-in, first-out and double-ended access | [queues.md](queues.md) |
+| Container      | Best for                                    | Documentation          |
+|----------------|---------------------------------------------|------------------------|
+| List           | Ordered insertion and removal at either end | [lists.md](lists.md)   |
+| Set            | Unique items and set algebra                | [sets.md](sets.md)     |
+| Stack          | Last-in, first-out workflows                | [stacks.md](stacks.md) |
+| Queue          | First-in, first-out and double-ended access | [queues.md](queues.md) |
+| PriorityQueue  | Priority-ordered processing via comparator  | [queues.md](queues.md) |

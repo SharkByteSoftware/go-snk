@@ -53,14 +53,14 @@ Prefer a simpler local implementation when:
 
 ### Access raw responses
 
-| Function            | Purpose                                              |
-|---------------------|------------------------------------------------------|
-| `GetRawResponse`    | Sends a GET request and returns the raw response     |
-| `PostRawResponse`   | Sends a POST request and returns the raw response    |
-| `PutRawResponse`    | Sends a PUT request and returns the raw response     |
-| `PatchRawResponse`  | Sends a PATCH request and returns the raw response   |
-| `DeleteRawResponse` | Sends a DELETE request and returns the raw response  |
-| `Head`              | Sends a HEAD request and returns the raw response    |
+| Function            | Purpose                                               |
+|---------------------|-------------------------------------------------------|
+| `GetRawResponse`    | Sends a GET request and returns the raw response      |
+| `PostRawResponse`   | Sends a POST request and returns the raw response     |
+| `PutRawResponse`    | Sends a PUT request and returns the raw response      |
+| `PatchRawResponse`  | Sends a PATCH request and returns the raw response    |
+| `DeleteRawResponse` | Sends a DELETE request and returns the raw response   |
+| `Head`              | Sends a HEAD request and returns the raw response     |
 | `Options`           | Sends an OPTIONS request and returns the raw response |
 
 ### Configure

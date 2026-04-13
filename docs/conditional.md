@@ -44,9 +44,9 @@ Prefer a simpler inline expression when:
 
 ### Select a value
 
-| Function | Purpose                                        |
-|----------|------------------------------------------------|
-| `If`     | Returns one of two values based on a condition |
+| Function | Purpose                                            |
+|----------|----------------------------------------------------|
+| `If`     | Returns one of two values based on a condition     |
 | `Switch` | Returns a value from a map by key, with a fallback |
 
 ### Call a function conditionally

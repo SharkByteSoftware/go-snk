@@ -138,25 +138,25 @@ Prefer a slice when:
 
 #### Remove values
 
-| Method    | Purpose                                                        |
-|-----------|----------------------------------------------------------------|
-| `Dequeue` | Removes and returns the highest-priority element in O(log n)  |
+| Method    | Purpose                                                      |
+|-----------|--------------------------------------------------------------|
+| `Dequeue` | Removes and returns the highest-priority element in O(log n) |
 
 #### Inspect without removing
 
-| Method  | Purpose                                                      |
-|---------|--------------------------------------------------------------|
-| `Peek`  | Returns the highest-priority element without removing it in O(1) |
+| Method | Purpose                                                          |
+|--------|------------------------------------------------------------------|
+| `Peek` | Returns the highest-priority element without removing it in O(1) |
 
 #### Inspect or reset the queue
 
-| Method    | Purpose                                         |
-|-----------|-------------------------------------------------|
-| `IsEmpty` | Reports whether the priority queue is empty     |
-| `Len`     | Returns the number of elements                  |
+| Method    | Purpose                                          |
+|-----------|--------------------------------------------------|
+| `IsEmpty` | Reports whether the priority queue is empty      |
+| `Len`     | Returns the number of elements                   |
 | `Size`    | Returns the number of elements (alias for `Len`) |
-| `Clear`   | Removes all elements                            |
-| `Values`  | Returns a snapshot of all elements (unordered)  |
+| `Clear`   | Removes all elements                             |
+| `Values`  | Returns a snapshot of all elements (unordered)   |
 
 ### Notes
 

@@ -151,3 +151,35 @@ func TestPackagePriorityQueue(t *testing.T) {
 	assert.Len(t, v, 3)
 	assert.Equal(t, 2, packageQueue.Len())
 }
+
+func TestPriorityQueue_Clear(t *testing.T) {
+	pq := queues.NewPriorityQueueWithDefault[int](compareInt)
+
+	pq.Enqueue(3)
+	pq.Enqueue(1)
+	pq.Enqueue(2)
+	assert.Equal(t, 3, pq.Len())
+
+	pq.Clear()
+
+	assert.True(t, pq.IsEmpty())
+	assert.Equal(t, 0, pq.Len())
+	assert.Equal(t, []int{}, pq.Values()) // must not be nil
+}
+
+func TestPriorityQueue_ValuesEmpty(t *testing.T) {
+	// freshly created queue
+	pq := queues.NewPriorityQueueWithDefault[int](compareInt)
+	assert.Equal(t, []int{}, pq.Values()) // must not be nil
+
+	// after clear
+	pq.Enqueue(1)
+	pq.Clear()
+	assert.Equal(t, []int{}, pq.Values()) // must not be nil
+
+	// after dequeuing everything
+	pq2 := queues.NewPriorityQueueWithDefault[int](compareInt)
+	pq2.Enqueue(1)
+	_, _ = pq2.Dequeue()
+	assert.Equal(t, []int{}, pq2.Values()) // must not be nil
+}

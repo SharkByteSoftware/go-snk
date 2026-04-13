@@ -150,12 +150,16 @@ func (pq *PriorityQueue[T]) Size() int {
 
 // Clear removes all elements from the priority queue.
 func (pq *PriorityQueue[T]) Clear() {
-	pq.h.items = nil
+	pq.h.items = []T{}
 }
 
 // Values returns a clone of the elements currently in the priority queue.
 // The order of elements is not guaranteed; use repeated Dequeue calls
 // to retrieve elements in priority order.
 func (pq *PriorityQueue[T]) Values() []T {
+	if len(pq.h.items) == 0 {
+		return []T{}
+	}
+
 	return slices.Clone(pq.h.items)
 }

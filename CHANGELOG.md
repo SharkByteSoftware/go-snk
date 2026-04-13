@@ -6,6 +6,30 @@
 
 # Changelog
 
+## v1.2.3
+
+### New Packages
+
+#### `containers/queues` — `PriorityQueue`
+- `NewPriorityQueue` — creates a priority queue pre-populated with a copy of the provided slice; heapified in O(n) time, slice does not need to be sorted
+- `NewPriorityQueueWithDefault` — creates an empty priority queue with a given comparator
+- `Enqueue` — inserts an element in O(log n) time
+- `Dequeue` — removes and returns the highest-priority element in O(log n) time
+- `Peek` — returns the highest-priority element without removing it in O(1) time
+- `IsEmpty` — reports whether the queue is empty
+- `Len` — returns the number of elements
+- `Size` — returns the number of elements
+- `Clear` — removes all elements
+- `Values` — returns a snapshot of all elements in heap order; use repeated `Dequeue` calls to retrieve in priority order
+
+### Breaking Changes
+- **`containers/queues.DQueue`** — renamed to `Queue`; callers using `DQueue` must update references
+
+### Bug Fixes
+- **`containers/queues.PriorityQueue.Values`** — now returns an empty non-nil slice (`[]T{}`) after `Clear` or when the queue is empty, consistent with other container types
+
+---
+
 ## v1.2.2
 
 ### New Functions

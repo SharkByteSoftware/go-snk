@@ -1,7 +1,6 @@
 package queues
 
 import (
-	_ "sort"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

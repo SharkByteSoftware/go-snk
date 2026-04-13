@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDQueue_NewQueue(t *testing.T) {
+func TestQueue_NewQueue(t *testing.T) {
 	q := queues.NewQueue[int]()
 	assert.NotNil(t, q)
 	assert.True(t, q.IsEmpty())
@@ -19,7 +19,7 @@ func TestDQueue_NewQueue(t *testing.T) {
 	assert.Equal(t, 3, q.Size())
 }
 
-func TestDQueue_Enqueue(t *testing.T) {
+func TestQueue_Enqueue(t *testing.T) {
 	q := queues.NewQueue[int]()
 
 	q.Enqueue(1)
@@ -34,7 +34,7 @@ func TestDQueue_Enqueue(t *testing.T) {
 	assert.Equal(t, 1, v)
 }
 
-func TestDQueue_EnqueueFront(t *testing.T) {
+func TestQueue_EnqueueFront(t *testing.T) {
 	q := queues.NewQueue[int]()
 
 	q.EnqueueFront(1)
@@ -49,7 +49,7 @@ func TestDQueue_EnqueueFront(t *testing.T) {
 	assert.Equal(t, 3, v)
 }
 
-func TestDQueue_Dequeue(t *testing.T) {
+func TestQueue_Dequeue(t *testing.T) {
 	q := queues.NewQueue(1, 2, 4)
 
 	v, ok := q.Dequeue()
@@ -72,7 +72,7 @@ func TestDQueue_Dequeue(t *testing.T) {
 	assert.Equal(t, 0, q.Size())
 }
 
-func TestDQueue_DequeueBack(t *testing.T) {
+func TestQueue_DequeueBack(t *testing.T) {
 	q := queues.NewQueue(1, 2, 4)
 
 	v, ok := q.DequeueBack()
@@ -95,7 +95,7 @@ func TestDQueue_DequeueBack(t *testing.T) {
 	assert.Equal(t, 0, q.Size())
 }
 
-func TestDQueue_Peek(t *testing.T) {
+func TestQueue_Peek(t *testing.T) {
 	q := queues.NewQueue[int]()
 
 	v, ok := q.Peek()
@@ -115,7 +115,7 @@ func TestDQueue_Peek(t *testing.T) {
 	assert.Equal(t, 1, v)
 }
 
-func TestDQueue_PeekBack(t *testing.T) {
+func TestQueue_PeekBack(t *testing.T) {
 	q := queues.NewQueue[int]()
 
 	v, ok := q.PeekBack()
@@ -135,7 +135,7 @@ func TestDQueue_PeekBack(t *testing.T) {
 	assert.Equal(t, 2, v)
 }
 
-func TestDQueue_Clear(t *testing.T) {
+func TestQueue_Clear(t *testing.T) {
 	q := queues.NewQueue[int]()
 	assert.Equal(t, 0, q.Size())
 
@@ -152,7 +152,7 @@ func TestDQueue_Clear(t *testing.T) {
 	assert.Equal(t, 0, q.Size())
 }
 
-func TestDQueue_Values(t *testing.T) {
+func TestQueue_Values(t *testing.T) {
 	q := queues.NewQueue[int]()
 
 	values := q.Values()

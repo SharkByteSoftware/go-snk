@@ -1,19 +1,21 @@
-package queues
+package queues_test
 
 import (
 	"fmt"
 	"testing"
+
+	"github.com/SharkByteSoftware/go-snk/containers/queues"
 )
 
 var startingSize = []int{0, 1, 100, 1000, 10000}
 
-func generateIntSlice(size int) *[]int {
+func generateIntSlice(size int) []int {
 	result := make([]int, size)
 	for i := range result {
 		result[i] = i
 	}
 
-	return &result
+	return result
 }
 
 func compareInt(prev int, curr int) int {
@@ -34,7 +36,7 @@ func BenchmarkPush(b *testing.B) {
 	for _, size := range startingSize {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			for b.Loop() {
-				pq := NewPriorityQueueWithDefault(compareInt)
+				pq := queues.NewPriorityQueueWithDefault(compareInt)
 				for i := range size {
 					pq.Enqueue(i)
 				}
@@ -50,7 +52,7 @@ func BenchmarkPop(b *testing.B) {
 		b.Run(fmt.Sprintf("slice size: %d", size), func(b *testing.B) {
 			ints := generateIntSlice(size)
 			for b.Loop() {
-				pq := NewPriorityQueue(ints, compareInt)
+				pq := queues.NewPriorityQueue(ints, compareInt)
 				for range size {
 					pq.Dequeue()
 				}

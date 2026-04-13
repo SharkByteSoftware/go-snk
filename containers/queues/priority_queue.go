@@ -91,19 +91,19 @@ type PriorityQueue[T any] struct {
 // NewPriorityQueue creates a PriorityQueue pre-populated with a copy of the
 // provided slice. The initial elements are heapified immediately, so the slice
 // does not need to be sorted beforehand. The original slice is not modified.
-func NewPriorityQueue[T any](items *[]T, comparator func(a, b T) int) PriorityQueue[T] {
+func NewPriorityQueue[T any](items []T, comparator func(a, b T) int) *PriorityQueue[T] {
 	h := &heapAdapter[T]{
-		items:      slices.Clone(*items),
+		items:      slices.Clone(items),
 		comparator: comparator,
 	}
 	h.init()
 
-	return PriorityQueue[T]{h: h}
+	return &PriorityQueue[T]{h: h}
 }
 
 // NewPriorityQueueWithDefault initializes a new empty PriorityQueue with the given comparator.
-func NewPriorityQueueWithDefault[T any](comparator func(a, b T) int) PriorityQueue[T] {
-	return PriorityQueue[T]{
+func NewPriorityQueueWithDefault[T any](comparator func(a, b T) int) *PriorityQueue[T] {
+	return &PriorityQueue[T]{
 		h: &heapAdapter[T]{comparator: comparator},
 	}
 }
@@ -153,8 +153,9 @@ func (pq *PriorityQueue[T]) Clear() {
 	pq.h.items = nil
 }
 
-// Values returns a sorted clone of all elements in the priority queue.
-// The original heap is not modified.
+// Values returns a clone of the elements currently in the priority queue.
+// The order of elements is not guaranteed; use repeated Dequeue calls
+// to retrieve elements in priority order.
 func (pq *PriorityQueue[T]) Values() []T {
-	return slices.SortedFunc(slices.Values(pq.h.items), pq.h.comparator)
+	return slices.Clone(pq.h.items)
 }

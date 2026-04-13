@@ -1,8 +1,9 @@
-package queues
+package queues_test
 
 import (
 	"testing"
 
+	"github.com/SharkByteSoftware/go-snk/containers/queues"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -11,7 +12,7 @@ type Package struct {
 }
 
 func TestIntPriorityQueueAscending(t *testing.T) {
-	intQueue := NewPriorityQueueWithDefault[int](func(prev int, curr int) int {
+	intQueue := queues.NewPriorityQueueWithDefault[int](func(prev int, curr int) int {
 		if prev < curr {
 			return -1
 		}
@@ -56,7 +57,7 @@ func TestIntPriorityQueueAscending(t *testing.T) {
 }
 
 func TestIntPriorityQueueDescending(t *testing.T) {
-	intQueue := NewPriorityQueueWithDefault[int](func(prev int, curr int) int {
+	intQueue := queues.NewPriorityQueueWithDefault[int](func(prev int, curr int) int {
 		if prev > curr {
 			return -1
 		}
@@ -101,7 +102,7 @@ func TestIntPriorityQueueDescending(t *testing.T) {
 }
 
 func TestPackagePriorityQueue(t *testing.T) {
-	packageQueue := NewPriorityQueueWithDefault[Package](func(prev Package, curr Package) int {
+	packageQueue := queues.NewPriorityQueueWithDefault[Package](func(prev Package, curr Package) int {
 		if prev.Weight < curr.Weight {
 			return -1
 		}

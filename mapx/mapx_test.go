@@ -1,7 +1,9 @@
 package mapx_test
 
 import (
+	"cmp"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/SharkByteSoftware/go-snk/mapx"
@@ -351,4 +353,68 @@ func TestMap_Merge_ResolverCalledOncePerConflict(t *testing.T) {
 
 	// three conflicting keys — resolver must be called exactly three times
 	assert.Equal(t, 3, callCount)
+}
+
+func Test_MapValues(t *testing.T) {
+	m := map[string]int{"a": 1, "b": 2, "c": 3}
+	got := mapx.MapValues(m, func(v int) int { return v * 2 })
+
+	assert.Equal(t, map[string]int{"a": 2, "b": 4, "c": 6}, got)
+	// original must not be modified
+	assert.Equal(t, map[string]int{"a": 1, "b": 2, "c": 3}, m)
+
+	// type-changing mapper
+	labels := mapx.MapValues(m, func(v int) string {
+		if v > 1 {
+			return "big"
+		}
+
+		return "small"
+	})
+	assert.Equal(t, map[string]string{"a": "small", "b": "big", "c": "big"}, labels)
+
+	// empty map
+	assert.Equal(t, map[string]int{}, mapx.MapValues(map[string]int{}, func(v int) int { return v }))
+}
+
+func Test_MapAny(t *testing.T) {
+	m := map[string]int{"a": 1, "b": 2, "c": 3}
+	hasEven := func(_ string, v int) bool { return v%2 == 0 }
+	allNeg := func(_ string, v int) bool { return v < 0 }
+
+	assert.True(t, mapx.Any(m, hasEven))
+	assert.False(t, mapx.Any(m, allNeg))
+	assert.False(t, mapx.Any(map[string]int{}, hasEven))
+}
+
+func Test_MapAll(t *testing.T) {
+	m := map[string]int{"a": 2, "b": 4, "c": 6}
+	allEven := func(_ string, v int) bool { return v%2 == 0 }
+	hasOdd := func(_ string, v int) bool { return v%2 != 0 }
+
+	assert.True(t, mapx.All(m, allEven))
+	assert.False(t, mapx.All(m, hasOdd))
+	// empty map always returns true
+	assert.True(t, mapx.All(map[string]int{}, allEven))
+}
+
+func Test_SortedKeys(t *testing.T) {
+	m := map[string]int{"c": 3, "a": 1, "b": 2}
+	assert.Equal(t, []string{"a", "b", "c"}, mapx.SortedKeys(m))
+	assert.Equal(t, []string{}, mapx.SortedKeys(map[string]int{}))
+}
+
+func Test_SortedKeysByFunc(t *testing.T) {
+	m := map[string]int{"banana": 2, "apple": 1, "cherry": 3}
+	// sort keys by length, then lexicographically
+	byLen := func(a, b string) int {
+		if n := cmp.Compare(len(a), len(b)); n != 0 {
+			return n
+		}
+
+		return strings.Compare(a, b)
+	}
+
+	got := mapx.SortedKeysByFunc(m, byLen)
+	assert.Equal(t, []string{"apple", "banana", "cherry"}, got)
 }

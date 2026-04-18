@@ -2,6 +2,7 @@
 package slicex
 
 import (
+	"cmp"
 	"slices"
 
 	"github.com/SharkByteSoftware/go-snk/conditional"
@@ -452,4 +453,54 @@ func IndexBy[S ~[]T, T any](slice S, predicate func(item T) bool) int {
 	}
 
 	return -1
+}
+
+// None returns true if no item in the slice is equal to the given value.
+func None[T comparable](s []T, value T) bool {
+	return !Any(s, value)
+}
+
+// NoneBy returns true if no item in the slice satisfies the predicate.
+func NoneBy[T any](s []T, predicate func(T) bool) bool {
+	return !AnyBy(s, predicate)
+}
+
+// Count returns the number of elements in the slice equal to the given value.
+func Count[T comparable](s []T, value T) int {
+	return CountBy(s, func(item T) bool { return item == value })
+}
+
+// CountBy returns the number of elements in the slice satisfying the predicate.
+func CountBy[T any](s []T, predicate func(T) bool) int {
+	n := 0
+
+	Apply(s, func(item T) {
+		if predicate(item) {
+			n++
+		}
+	})
+
+	return n
+}
+
+// SortBy returns a sorted copy of the slice using the provided comparison function.
+// The original slice is not modified.
+// cmp should return a negative number when a < b, zero when a == b,
+// and a positive number when a > b.
+func SortBy[T any](s []T, cmp func(a, b T) int) []T {
+	out := make([]T, len(s))
+	copy(out, s)
+	slices.SortFunc(out, cmp)
+
+	return out
+}
+
+// Sort returns a sorted copy of the slice using the natural ordering of the elements.
+// The original slice is not modified.
+func Sort[T cmp.Ordered](s []T) []T {
+	out := make([]T, len(s))
+	copy(out, s)
+	slices.Sort(out)
+
+	return out
 }

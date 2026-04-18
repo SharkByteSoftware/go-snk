@@ -2,6 +2,9 @@
 package mapx
 
 import (
+	"cmp"
+	"slices"
+
 	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
@@ -174,4 +177,56 @@ func CountBy[M ~map[K]V, K comparable, V any, R comparable](collection M, classi
 	})
 
 	return result
+}
+
+// MapValues returns a new map with each value transformed by the mapper function.
+// Keys are preserved unchanged.
+func MapValues[K comparable, V, W any](m map[K]V, mapper func(V) W) map[K]W {
+	out := make(map[K]W, len(m))
+
+	for k, v := range m {
+		out[k] = mapper(v)
+	}
+
+	return out
+}
+
+// Any returns true if any entry in the map satisfies the predicate.
+func Any[K comparable, V any](m map[K]V, predicate func(K, V) bool) bool {
+	for k, v := range m {
+		if predicate(k, v) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// All returns true if every entry in the map satisfies the predicate.
+// Returns true for an empty map.
+func All[K comparable, V any](m map[K]V, predicate func(K, V) bool) bool {
+	for k, v := range m {
+		if !predicate(k, v) {
+			return false
+		}
+	}
+
+	return true
+}
+
+// SortedKeys returns the keys of the map in ascending sorted order.
+func SortedKeys[K cmp.Ordered, V any](m map[K]V) []K {
+	keys := Keys(m)
+	slices.Sort(keys)
+
+	return keys
+}
+
+// SortedKeysByFunc returns the keys of the map sorted using the provided comparison function.
+// cmpFn should return a negative number when a < b, zero when a == b, and a positive number when a > b.
+func SortedKeysByFunc[K comparable, V any](m map[K]V, cmpFn func(a, b K) int) []K {
+	keys := Keys(m)
+	slices.SortFunc(keys, cmpFn)
+
+	return keys
 }

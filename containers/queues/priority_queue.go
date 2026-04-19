@@ -1,7 +1,11 @@
 //nolint:mnd,varnamelen,exhaustruct
 package queues
 
-import "slices"
+import (
+	"slices"
+
+	"github.com/SharkByteSoftware/go-snk/helpers"
+)
 
 // heapAdapter is an unexported type that manages the binary min-heap invariant
 // entirely in terms of T, with no use of any or type assertions.
@@ -117,7 +121,7 @@ func (pq *PriorityQueue[T]) Enqueue(value T) {
 // The boolean indicates whether the queue was non-empty.
 func (pq *PriorityQueue[T]) Dequeue() (T, bool) {
 	if pq.h.len() == 0 {
-		return *new(T), false
+		return helpers.Empty[T](), false
 	}
 
 	return pq.h.pop(), true

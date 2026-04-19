@@ -4,7 +4,7 @@ package conditional
 
 // If is a ternary function for returning a value if a condition is true
 // and another if false.
-func If[T any](cond bool, ifTrue T, ifFalse T) T {
+func If[T any](cond bool, ifTrue, ifFalse T) T {
 	if cond {
 		return ifTrue
 	}
@@ -23,14 +23,14 @@ func IfNotNil[T any](x *T, callee func()) {
 
 // IfCall is a ternary function for calling a function if a condition is true
 // and calling another if false.
-func IfCall(cond bool, trueFunc func(), falseFunc func()) {
+func IfCall(cond bool, trueFunc, falseFunc func()) {
 	callee := If(cond, trueFunc, falseFunc)
 	callee()
 }
 
 // IfCallReturn is a ternary function for calling a function if a condition is true
 // and calling another if false and returns the result.
-func IfCallReturn[T any](cond bool, trueFunc func() T, falseFunc func() T) T {
+func IfCallReturn[T any](cond bool, trueFunc, falseFunc func() T) T {
 	return If(cond, trueFunc, falseFunc)()
 }
 

@@ -310,7 +310,7 @@ func ExampleDecodeResponse() {
 
 	defer func() { _ = raw.Body.Close() }()
 
-	resp, err := httpx.DecodeResponse[testResponse](raw, httpx.NewHTTPXOptions())
+	resp, err := httpx.DecodeResponse[testResponse](raw, httpx.NewOptions())
 	if err != nil {
 		panic(err)
 	}

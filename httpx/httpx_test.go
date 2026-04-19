@@ -679,7 +679,7 @@ func TestWithOptions(t *testing.T) {
 		require.Error(t, err)
 		require.Nil(t, resp)
 		require.ErrorIs(t, err, httpx.ErrOptions)
-		assert.ErrorContains(t, err, "apply options: invalid options: WithTimeout: invalid timeout, must be positive: <nil>")
+		assert.ErrorContains(t, err, "apply options: invalid options: WithTimeout: invalid timeout, must be positive")
 	})
 
 	t.Run("fail with timeout", func(t *testing.T) {

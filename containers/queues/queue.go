@@ -1,15 +1,18 @@
 // Package queues provides queue implementations.
 package queues
 
-import "github.com/SharkByteSoftware/go-snk/containers/lists"
+import (
+	"github.com/SharkByteSoftware/go-snk/containers/lists"
+	"github.com/SharkByteSoftware/go-snk/helpers"
+)
 
 // Queue implements a double-ended queue based on a linked list.
 type Queue[T any] struct {
 	members *lists.List[T]
 }
 
-// NewQueue creates a new double-ended queue with optional initial values.
-func NewQueue[T any](values ...T) *Queue[T] {
+// New creates a new double-ended queue with optional initial values.
+func New[T any](values ...T) *Queue[T] {
 	return &Queue[T]{
 		members: lists.New[T](values...),
 	}
@@ -29,7 +32,7 @@ func (q *Queue[T]) EnqueueFront(value T) {
 // returns default and false if empty.
 func (q *Queue[T]) Dequeue() (T, bool) {
 	if q.members.IsEmpty() {
-		return *new(T), false
+		return helpers.Empty[T](), false
 	}
 
 	return q.members.Remove(q.members.Front()), true
@@ -39,7 +42,7 @@ func (q *Queue[T]) Dequeue() (T, bool) {
 // returns default and false if empty.
 func (q *Queue[T]) DequeueBack() (T, bool) {
 	if q.members.IsEmpty() {
-		return *new(T), false
+		return helpers.Empty[T](), false
 	}
 
 	return q.members.Remove(q.members.Back()), true
@@ -49,7 +52,7 @@ func (q *Queue[T]) DequeueBack() (T, bool) {
 // returns default and false if empty.
 func (q *Queue[T]) Peek() (T, bool) {
 	if q.members.IsEmpty() {
-		return *new(T), false
+		return helpers.Empty[T](), false
 	}
 
 	return q.members.Front().Value, true
@@ -59,7 +62,7 @@ func (q *Queue[T]) Peek() (T, bool) {
 // returns default and false if empty.
 func (q *Queue[T]) PeekBack() (T, bool) {
 	if q.members.IsEmpty() {
-		return *new(T), false
+		return helpers.Empty[T](), false
 	}
 
 	return q.members.Back().Value, true

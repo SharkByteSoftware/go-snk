@@ -77,7 +77,7 @@ func LastOrBy[S ~[]T, T any](slice S, predicate func(item T) bool, fallback T) T
 }
 
 // Filter filters a slice using a predicate function.
-func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) []T {
+func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) S {
 	result := make(S, 0, len(slice))
 
 	Apply(slice, func(item T) {
@@ -90,7 +90,7 @@ func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) []T {
 }
 
 // FilterWithIndex is like Filter, but it accepts a predicate function that takes an index as well.
-func FilterWithIndex[S ~[]T, T any](slice S, predicate func(item T, index int) bool) []T {
+func FilterWithIndex[S ~[]T, T any](slice S, predicate func(item T, index int) bool) S {
 	result := make(S, 0, len(slice))
 
 	ApplyWithIndex(slice, func(item T, index int) {
@@ -103,13 +103,13 @@ func FilterWithIndex[S ~[]T, T any](slice S, predicate func(item T, index int) b
 }
 
 // Map transforms a slice to a slice of another type using a mapper function.
-func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
+func Map[S ~[]T, T any, RS []R, R any](slice S, mapper func(item T) R) RS {
 	return MapWithIndex(slice, func(item T, _ int) R { return mapper(item) })
 }
 
 // MapWithIndex is like Map, but it accepts a mapper function that takes an index as well.
-func MapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, idx int) R) []R {
-	result := make([]R, len(slice))
+func MapWithIndex[S ~[]T, T any, RS []R, R any](slice S, mapper func(item T, idx int) R) RS {
+	result := make(RS, len(slice))
 
 	ApplyWithIndex(slice, func(item T, idx int) {
 		result[idx] = mapper(item, idx)
@@ -119,15 +119,15 @@ func MapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, idx int) R)
 }
 
 // FilterMap filters and transforms a slice to a slice of another type using a mapper function.
-func FilterMap[S ~[]T, T any, R any](slice S, mapper func(item T) (R, bool)) []R {
+func FilterMap[S ~[]T, T any, RS []R, R any](slice S, mapper func(item T) (R, bool)) RS {
 	return FilterMapWithIndex(slice, func(item T, _ int) (R, bool) {
 		return mapper(item)
 	})
 }
 
 // FilterMapWithIndex filters and transforms a slice to a slice of another type using a mapper function.
-func FilterMapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, index int) (R, bool)) []R {
-	result := make([]R, 0, len(slice))
+func FilterMapWithIndex[S ~[]T, T any, RS []R, R any](slice S, mapper func(item T, index int) (R, bool)) RS {
+	result := make(RS, 0, len(slice))
 
 	ApplyWithIndex(slice, func(item T, idx int) {
 		if value, ok := mapper(item, idx); ok {
@@ -139,14 +139,14 @@ func FilterMapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, index
 }
 
 // UniqueMap maps a slice to a slice of another type using a mapper function and removes duplicate values.
-func UniqueMap[S ~[]T, T any, R comparable](slice S, mapper func(item T) R) []R {
+func UniqueMap[S ~[]T, T any, RS []R, R comparable](slice S, mapper func(item T) R) RS {
 	return Unique(Map(slice, mapper))
 }
 
 // Bind transforms and flattens a slice from one type to another using a mapper
 // function. Function should return a slice or `nil`, if `nil` is returned, then no
 // value is added to the final result.
-func Bind[S ~[]T, T any, R any, RS ~[]R](slice S, mapper func(item T) RS) RS {
+func Bind[S ~[]T, T any, RS ~[]R, R any](slice S, mapper func(item T) RS) RS {
 	result := make([]R, 0, len(slice))
 
 	Apply(slice, func(item T) {
@@ -230,8 +230,8 @@ func AllBy[S ~[]T, T any](slice S, predicate func(item T) bool) bool {
 }
 
 // Unique returns a slice with all duplicate values removed.
-func Unique[S ~[]T, T comparable](slice S) []T {
-	result := make([]T, 0, len(slice))
+func Unique[S ~[]T, T comparable](slice S) S {
+	result := make(S, 0, len(slice))
 	set := sets.New[T]()
 
 	Apply(slice, func(item T) {
@@ -245,8 +245,8 @@ func Unique[S ~[]T, T comparable](slice S) []T {
 }
 
 // UniqueBy returns a slice with unique values determined by a predicate function.
-func UniqueBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) []T {
-	result := make([]T, 0, len(slice))
+func UniqueBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) S {
+	result := make(S, 0, len(slice))
 	set := sets.New[R]()
 
 	Apply(slice, func(item T) {
@@ -289,8 +289,8 @@ func Compact[S ~[]T, T comparable](slice S) S {
 }
 
 // ToMap converts a slice to a map using the predicate to determine the map key.
-func ToMap[S ~[]T, T any, K comparable](slice S, predicate func(item T) K) map[K]T {
-	result := make(map[K]T, len(slice))
+func ToMap[S ~[]T, T any, K comparable, RM map[K]T](slice S, predicate func(item T) K) RM {
+	result := make(RM, len(slice))
 
 	Apply(slice, func(item T) {
 		result[predicate(item)] = item
@@ -320,9 +320,12 @@ func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
 	part2 := make(S, 0, half)
 
 	Apply(slice, func(item T) {
-		conditional.IfCall(predicate(item),
-			func() { part1 = append(part1, item) },
-			func() { part2 = append(part2, item) })
+		if predicate(item) {
+			part1 = append(part1, item)
+			return
+		}
+
+		part2 = append(part2, item)
 	})
 
 	return part1, part2

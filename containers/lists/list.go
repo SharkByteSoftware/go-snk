@@ -2,7 +2,6 @@
 package lists
 
 import (
-	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/helpers"
 )
 
@@ -50,13 +49,21 @@ func (l *List[T]) Len() int {
 // Front returns the first element in the lists. If the list is empty,
 // it will return nil.
 func (l *List[T]) Front() *Element[T] {
-	return conditional.If(l.IsEmpty(), nil, l.root.next)
+	if l.IsEmpty() {
+		return nil
+	}
+
+	return l.root.next
 }
 
 // Back returns the last element in the lists. If the list is empty,
 // it will return nil.
 func (l *List[T]) Back() *Element[T] {
-	return conditional.If(l.IsEmpty(), nil, l.root.prev)
+	if l.IsEmpty() {
+		return nil
+	}
+
+	return l.root.prev
 }
 
 // Remove deletes the element from the list and returns the value. If the element is not

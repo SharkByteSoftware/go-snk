@@ -45,9 +45,9 @@ Prefer a slice when:
 
 #### Create a queue
 
-| Method     | Purpose                          |
-|------------|----------------------------------|
-| `NewQueue` | Creates a new double-ended queue |
+| Method | Purpose                          |
+|--------|----------------------------------|
+| `New`  | Creates a new double-ended queue |
 
 #### Add values
 

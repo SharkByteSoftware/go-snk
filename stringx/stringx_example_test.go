@@ -58,3 +58,19 @@ func ExampleCoalesceFunc_customPredicate() {
 	// hello
 	//
 }
+
+func ExamplePadLeft() {
+	fmt.Println(stringx.PadLeft("42", 5, '0'))
+	fmt.Println(stringx.PadLeft("hello", 3, ' '))
+	// Output:
+	// 00042
+	// hello
+}
+
+func ExamplePadRight() {
+	fmt.Println(stringx.PadRight("hi", 5, '.'))
+	fmt.Println(stringx.PadRight("hello", 3, '.'))
+	// Output:
+	// hi...
+	// hello
+}

@@ -491,3 +491,62 @@ func ExampleIndexBy() {
 	fmt.Println(idx)
 	// Output: 3
 }
+
+func ExampleNone() {
+	numbers := []int{1, 3, 5, 7}
+
+	fmt.Println(slicex.None(numbers, 2))
+	fmt.Println(slicex.None(numbers, 3))
+	// Output:
+	// true
+	// false
+}
+
+func ExampleNoneBy() {
+	numbers := []int{1, 3, 5, 7}
+
+	fmt.Println(slicex.NoneBy(numbers, func(n int) bool { return n%2 == 0 }))
+	fmt.Println(slicex.NoneBy(numbers, func(n int) bool { return n > 4 }))
+	// Output:
+	// true
+	// false
+}
+
+func ExampleCount() {
+	numbers := []int{1, 2, 2, 3, 2, 4}
+
+	fmt.Println(slicex.Count(numbers, 2))
+	fmt.Println(slicex.Count(numbers, 5))
+	// Output:
+	// 3
+	// 0
+}
+
+func ExampleCountBy() {
+	numbers := []int{1, 2, 3, 4, 5, 6}
+
+	fmt.Println(slicex.CountBy(numbers, func(n int) bool { return n%2 == 0 }))
+	// Output: 3
+}
+
+func ExampleSort() {
+	numbers := []int{5, 2, 8, 1, 9, 3}
+
+	fmt.Println(slicex.Sort(numbers))
+	fmt.Println(numbers) // original unchanged
+	// Output:
+	// [1 2 3 5 8 9]
+	// [5 2 8 1 9 3]
+}
+
+func ExampleSortBy() {
+	words := []string{"banana", "apple", "cherry", "date"}
+
+	byLength := slicex.SortBy(words, func(a, b string) int { return len(a) - len(b) })
+
+	fmt.Println(byLength)
+	fmt.Println(words) // original unchanged
+	// Output:
+	// [date apple banana cherry]
+	// [banana apple cherry date]
+}

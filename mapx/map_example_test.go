@@ -274,3 +274,67 @@ func ExampleMerge_sum() {
 	// 40
 	// 20
 }
+
+func ExampleMapValues() {
+	scores := map[string]int{
+		"alice": 90,
+		"bob":   75,
+		"carol": 88,
+	}
+
+	grades := mapx.MapValues(scores, func(score int) string {
+		if score >= 90 {
+			return "A"
+		}
+
+		return "B"
+	})
+
+	fmt.Println(grades["alice"])
+	fmt.Println(grades["bob"])
+	fmt.Println(grades["carol"])
+	// Output:
+	// A
+	// B
+	// B
+}
+
+func ExampleAny() {
+	inventory := map[string]int{"apples": 5, "bananas": 0, "cherries": 12}
+
+	hasEmpty := mapx.Any(inventory, func(_ string, qty int) bool { return qty == 0 })
+	hasHuge := mapx.Any(inventory, func(_ string, qty int) bool { return qty > 100 })
+
+	fmt.Println(hasEmpty, hasHuge)
+	// Output: true false
+}
+
+func ExampleAll() {
+	inventory := map[string]int{"apples": 5, "bananas": 3, "cherries": 12}
+
+	allInStock := mapx.All(inventory, func(_ string, qty int) bool { return qty > 0 })
+	allAboveTen := mapx.All(inventory, func(_ string, qty int) bool { return qty > 10 })
+
+	fmt.Println(allInStock, allAboveTen)
+	// Output: true false
+}
+
+func ExampleSortedKeys() {
+	scores := map[int]string{3: "three", 1: "one", 2: "two"}
+
+	keys := mapx.SortedKeys(scores)
+
+	fmt.Println(keys)
+	// Output: [1 2 3]
+}
+
+func ExampleSortedKeysByFunc() {
+	scores := map[string]int{"alice": 90, "bob": 75, "carol": 88}
+
+	keys := mapx.SortedKeysByFunc(scores, func(a, b string) int {
+		return scores[b] - scores[a] // descending by score
+	})
+
+	fmt.Println(keys)
+	// Output: [alice carol bob]
+}

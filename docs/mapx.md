@@ -44,11 +44,13 @@ Prefer a simpler local loop when:
 
 ### Extract keys or values
 
-| Function       | Purpose                                  |
-|----------------|------------------------------------------|
-| `Keys`         | Returns all keys from a map              |
-| `Values`       | Returns all values from a map            |
-| `UniqueValues` | Returns only unique values from a map    |
+| Function            | Purpose                                                          |
+|---------------------|------------------------------------------------------------------|
+| `Keys`              | Returns all keys from a map                                      |
+| `Values`            | Returns all values from a map                                    |
+| `UniqueValues`      | Returns only unique values from a map                            |
+| `SortedKeys`        | Returns keys in ascending sorted order (ordered types only)      |
+| `SortedKeysByFunc`  | Returns keys sorted by a custom comparison function              |
 
 ### Look up or check entries
 
@@ -59,19 +61,22 @@ Prefer a simpler local loop when:
 
 ### Transform or reshape data
 
-| Function  | Purpose                                                                    |
-|-----------|----------------------------------------------------------------------------|
-| `ToSlice` | Converts a map into a slice using a mapper function                        |
-| `MapKeys` | Returns a new map with each key transformed by a mapper function           |
-| `Invert`  | Swaps map keys and values                                                  |
-| `Combine` | Merges multiple maps into one; last writer wins on key conflict            |
-| `Merge`   | Merges two maps into one using a resolver function to handle key conflicts |
+| Function    | Purpose                                                                    |
+|-------------|----------------------------------------------------------------------------|
+| `ToSlice`   | Converts a map into a slice using a mapper function                        |
+| `MapKeys`   | Returns a new map with each key transformed by a mapper function           |
+| `MapValues` | Returns a new map with each value transformed by a mapper function         |
+| `Invert`    | Swaps map keys and values                                                  |
+| `Combine`   | Merges multiple maps into one; last writer wins on key conflict            |
+| `Merge`     | Merges two maps into one using a resolver function to handle key conflicts |
 
 ### Filter, partition, or visit entries
 
 | Function    | Purpose                                                              |
 |-------------|----------------------------------------------------------------------|
 | `Filter`    | Returns a map containing only entries that satisfy a predicate       |
+| `Any`       | Returns true if any entry satisfies a predicate                      |
+| `All`       | Returns true if every entry satisfies a predicate; true for empty    |
 | `Partition` | Splits a map into two based on a predicate                           |
 | `CountBy`   | Returns a map of counts grouped by the result of a classifier        |
 | `Apply`     | Runs a function on each map entry for side effects                   |

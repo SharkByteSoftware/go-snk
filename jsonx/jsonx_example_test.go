@@ -3,6 +3,7 @@ package jsonx_test
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/SharkByteSoftware/go-snk/jsonx"
@@ -112,4 +113,32 @@ func ExampleWithUseNumber() {
 
 	fmt.Println(ok, num)
 	// Output: true 12345
+}
+
+func ExampleEncodeToFile() {
+	f, _ := os.CreateTemp("", "snk-*.json")
+
+	defer func() { _ = os.Remove(f.Name()) }()
+
+	_ = f.Close()
+
+	_ = jsonx.EncodeToFile(f.Name(), person{Name: "Alice", Age: 30})
+
+	p, _ := jsonx.DecodeFromFile[person](f.Name())
+
+	fmt.Println(p.Name, p.Age)
+	// Output: Alice 30
+}
+
+func ExampleDecodeFromFile() {
+	f, _ := os.CreateTemp("", "snk-*.json")
+
+	defer func() { _ = os.Remove(f.Name()) }()
+
+	_ = os.WriteFile(f.Name(), []byte(`{"name":"Alice","age":30}`), 0o600)
+
+	p, _ := jsonx.DecodeFromFile[person](f.Name())
+
+	fmt.Println(p.Name, p.Age)
+	// Output: Alice 30
 }

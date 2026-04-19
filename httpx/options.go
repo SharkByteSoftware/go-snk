@@ -114,6 +114,51 @@ func WithParseURLFunc(fn func(url string) (*url.URL, error)) Option {
 	}
 }
 
+// WithBearerToken sets the Authorization header to "Bearer <token>".
+// It is a named convenience wrapper around WithHeader to reduce the chance of
+// misformatting the Authorization header.
+func WithBearerToken(token string) Option {
+	return func(options *ConfigOptions) error {
+		if token == "" {
+			return NewOptionsError("WithBearerToken", "token must not be empty", nil)
+		}
+
+		options.headers.Set("Authorization", "Bearer "+token)
+
+		return nil
+	}
+}
+
+// WithBasicAuth sets the Authorization header using HTTP Basic authentication.
+// username and password are encoded per RFC 7617.
+func WithBasicAuth(username string, password string) Option {
+	return func(options *ConfigOptions) error {
+		if username == "" {
+			return NewOptionsError("WithBasicAuth", "username must not be empty", nil)
+		}
+
+		//nolint:exhaustruct
+		req := &http.Request{Header: make(http.Header)}
+		req.SetBasicAuth(username, password)
+		options.headers.Set("Authorization", req.Header.Get("Authorization"))
+
+		return nil
+	}
+}
+
+// WithUserAgent sets the User-Agent request header.
+func WithUserAgent(ua string) Option {
+	return func(options *ConfigOptions) error {
+		if ua == "" {
+			return NewOptionsError("WithUserAgent", "user agent must not be empty", nil)
+		}
+
+		options.headers.Set("User-Agent", ua)
+
+		return nil
+	}
+}
+
 func applyOptions(options []Option) (*ConfigOptions, error) {
 	cfg := NewHTTPXOptions()
 

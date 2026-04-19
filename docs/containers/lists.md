@@ -91,6 +91,12 @@ Prefer a slice when:
 | `MoveBefore`  | Moves an element before another element  |
 | `MoveAfter`   | Moves an element after another element   |
 
+### Visit elements
+
+| Method     | Purpose                                    |
+|------------|--------------------------------------------|
+| `ForEach`  | Calls a function on each element in order  |
+
 ### Navigate elements
 
 | Method | Purpose                                                          |

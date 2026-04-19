@@ -1,8 +1,11 @@
 package httpx
 
 import (
+	"context"
 	"net/http"
+	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
 	"time"
 
@@ -122,4 +125,69 @@ func Test_applyOptions(t *testing.T) {
 	config, err = applyOptions(options)
 	require.Error(t, err)
 	assert.Nil(t, config)
+}
+
+func TestWithBearerToken(t *testing.T) {
+	t.Run("sets Authorization header", func(t *testing.T) {
+		var got string
+
+		ts := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+			got = r.Header.Get("Authorization")
+		}))
+		defer ts.Close()
+
+		_, _ = Get[any](context.Background(), ts.URL, WithBearerToken("my-secret"))
+
+		assert.Equal(t, "Bearer my-secret", got)
+	})
+
+	t.Run("empty token returns error", func(t *testing.T) {
+		_, err := Get[any](context.Background(), "http://example.com", WithBearerToken(""))
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrOptions)
+	})
+}
+
+func TestWithBasicAuth(t *testing.T) {
+	t.Run("sets Authorization header", func(t *testing.T) {
+		var got string
+
+		ts := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+			got = r.Header.Get("Authorization")
+		}))
+		defer ts.Close()
+
+		_, _ = Get[any](context.Background(), ts.URL, WithBasicAuth("alice", "s3cret"))
+
+		assert.True(t, strings.HasPrefix(got, "Basic "), "expected Basic auth prefix, got: %s", got)
+	})
+
+	t.Run("empty username returns error", func(t *testing.T) {
+		_, err := Get[any](context.Background(), "http://example.com", WithBasicAuth("", "pass"))
+
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrOptions)
+	})
+}
+
+func TestWithUserAgent(t *testing.T) {
+	t.Run("sets User-Agent header", func(t *testing.T) {
+		var got string
+
+		ts := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+			got = r.Header.Get("User-Agent")
+		}))
+		defer ts.Close()
+
+		_, _ = Get[any](context.Background(), ts.URL, WithUserAgent("my-agent/1.0"))
+
+		assert.Equal(t, "my-agent/1.0", got)
+	})
+
+	t.Run("empty user agent returns error", func(t *testing.T) {
+		_, err := Get[any](context.Background(), "http://example.com", WithUserAgent(""))
+
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrOptions)
+	})
 }

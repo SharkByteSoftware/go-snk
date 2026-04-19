@@ -1,6 +1,7 @@
 package slicex_test
 
 import (
+	"cmp"
 	"slices"
 	"strconv"
 	"testing"
@@ -567,4 +568,49 @@ func TestSlice_IndexBy(t *testing.T) {
 	assert.Equal(t, -1, slicex.IndexBy([]int{}, isEven))
 	assert.Equal(t, -1, slicex.IndexBy([]int{1, 3, 5}, isEven))
 	assert.Equal(t, 1, slicex.IndexBy([]int{1, 2, 4, 6}, isEven))
+}
+
+func Test_None(t *testing.T) {
+	assert.True(t, slicex.None([]int{1, 3, 5}, 2))
+	assert.False(t, slicex.None([]int{1, 2, 3}, 2))
+	assert.True(t, slicex.None([]int{}, 1))
+}
+
+func Test_NoneBy(t *testing.T) {
+	isEven := func(n int) bool { return n%2 == 0 }
+
+	assert.True(t, slicex.NoneBy([]int{1, 3, 5}, isEven))
+	assert.False(t, slicex.NoneBy([]int{1, 2, 3}, isEven))
+	assert.True(t, slicex.NoneBy([]int{}, isEven))
+}
+
+func Test_Count(t *testing.T) {
+	assert.Equal(t, 3, slicex.Count([]int{1, 2, 2, 3, 2}, 2))
+	assert.Equal(t, 0, slicex.Count([]int{1, 3, 5}, 2))
+	assert.Equal(t, 0, slicex.Count([]int{}, 1))
+}
+
+func Test_CountBy(t *testing.T) {
+	isEven := func(n int) bool { return n%2 == 0 }
+
+	assert.Equal(t, 3, slicex.CountBy([]int{1, 2, 4, 3, 6}, isEven))
+	assert.Equal(t, 0, slicex.CountBy([]int{1, 3, 5}, isEven))
+	assert.Equal(t, 0, slicex.CountBy([]int{}, isEven))
+}
+
+func Test_SortBy(t *testing.T) {
+	nums := []int{3, 1, 4, 1, 5, 9, 2}
+	sorted := slicex.SortBy(nums, cmp.Compare)
+
+	assert.Equal(t, []int{1, 1, 2, 3, 4, 5, 9}, sorted)
+	// original must not be modified
+	assert.Equal(t, []int{3, 1, 4, 1, 5, 9, 2}, nums)
+}
+
+func Test_Sort(t *testing.T) {
+	nums := []int{3, 1, 4, 1, 5}
+	sorted := slicex.Sort(nums)
+
+	assert.Equal(t, []int{1, 1, 3, 4, 5}, sorted)
+	assert.Equal(t, []int{3, 1, 4, 1, 5}, nums)
 }

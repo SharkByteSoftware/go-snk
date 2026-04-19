@@ -181,7 +181,7 @@ func CountBy[M ~map[K]V, K comparable, V any, R comparable](collection M, classi
 
 // MapValues returns a new map with each value transformed by the mapper function.
 // Keys are preserved unchanged.
-func MapValues[K comparable, V, W any](m map[K]V, mapper func(V) W) map[K]W {
+func MapValues[M ~map[K]V, K comparable, V, W any](m M, mapper func(V) W) map[K]W {
 	out := make(map[K]W, len(m))
 
 	for k, v := range m {
@@ -192,7 +192,7 @@ func MapValues[K comparable, V, W any](m map[K]V, mapper func(V) W) map[K]W {
 }
 
 // Any returns true if any entry in the map satisfies the predicate.
-func Any[K comparable, V any](m map[K]V, predicate func(K, V) bool) bool {
+func Any[M ~map[K]V, K comparable, V any](m M, predicate func(K, V) bool) bool {
 	for k, v := range m {
 		if predicate(k, v) {
 			return true
@@ -204,7 +204,7 @@ func Any[K comparable, V any](m map[K]V, predicate func(K, V) bool) bool {
 
 // All returns true if every entry in the map satisfies the predicate.
 // Returns true for an empty map.
-func All[K comparable, V any](m map[K]V, predicate func(K, V) bool) bool {
+func All[M ~map[K]V, K comparable, V any](m M, predicate func(K, V) bool) bool {
 	for k, v := range m {
 		if !predicate(k, v) {
 			return false
@@ -215,7 +215,7 @@ func All[K comparable, V any](m map[K]V, predicate func(K, V) bool) bool {
 }
 
 // SortedKeys returns the keys of the map in ascending sorted order.
-func SortedKeys[K cmp.Ordered, V any](m map[K]V) []K {
+func SortedKeys[M ~map[K]V, K cmp.Ordered, V any](m M) []K {
 	keys := Keys(m)
 	slices.Sort(keys)
 
@@ -224,7 +224,7 @@ func SortedKeys[K cmp.Ordered, V any](m map[K]V) []K {
 
 // SortedKeysByFunc returns the keys of the map sorted using the provided comparison function.
 // cmpFn should return a negative number when a < b, zero when a == b, and a positive number when a > b.
-func SortedKeysByFunc[K comparable, V any](m map[K]V, cmpFn func(a, b K) int) []K {
+func SortedKeysByFunc[M ~map[K]V, K comparable, V any](m M, cmpFn func(a, b K) int) []K {
 	keys := Keys(m)
 	slices.SortFunc(keys, cmpFn)
 

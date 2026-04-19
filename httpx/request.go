@@ -8,7 +8,7 @@ import (
 )
 
 // DoRawRequest sends an HTTP request with the given method and body, without any shared request logic.
-func DoRawRequest(ctx context.Context, method string, url string, body io.Reader, options ...Option) (*http.Response, error) {
+func DoRawRequest(ctx context.Context, method, url string, body io.Reader, options ...Option) (*http.Response, error) {
 	config, err := applyOptions(options)
 	if err != nil {
 		return nil, fmt.Errorf("DoRawRequest: %w", err)
@@ -18,7 +18,7 @@ func DoRawRequest(ctx context.Context, method string, url string, body io.Reader
 }
 
 // DoRequest sends an HTTP request with the given method and body, applying shared request logic.
-func DoRequest[T any](ctx context.Context, method string, url string, body io.Reader, options ...Option) (*Response[T], error) {
+func DoRequest[T any](ctx context.Context, method, url string, body io.Reader, options ...Option) (*Response[T], error) {
 	config, err := applyOptions(options)
 	if err != nil {
 		return nil, fmt.Errorf("DoRequest: %w", err)
@@ -34,7 +34,7 @@ func DoRequest[T any](ctx context.Context, method string, url string, body io.Re
 	return DecodeResponse[T](resp, config)
 }
 
-func doRawRequest(ctx context.Context, method string, url string, body io.Reader, config *ConfigOptions) (*http.Response, error) {
+func doRawRequest(ctx context.Context, method, url string, body io.Reader, config *ConfigOptions) (*http.Response, error) {
 	if ctx == nil {
 		return nil, NewTransportError(fmt.Errorf("%w: nil context", ErrOptions))
 	}

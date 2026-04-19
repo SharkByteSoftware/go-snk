@@ -77,6 +77,8 @@ Prefer a simpler local loop when:
 | `AnyBy`    | Returns true if any item matches a predicate       |
 | `All`      | Returns true if all items match a given value      |
 | `AllBy`    | Returns true if all items satisfy a predicate      |
+| `None`     | Returns true if no item equals a given value       |
+| `NoneBy`   | Returns true if no item satisfies a predicate      |
 
 ### Filter and select items
 
@@ -109,12 +111,21 @@ Prefer a simpler local loop when:
 | `UniqueBy`  | Removes duplicates by a derived key              |
 | `UniqueMap` | Transforms items and returns only unique results |
 
+### Count elements
+
+| Function  | Purpose                                                    |
+|-----------|------------------------------------------------------------|
+| `Count`   | Returns the number of elements equal to a given value      |
+| `CountBy` | Returns the number of elements satisfying a predicate      |
+
 ### Reorder slices
 
 | Function  | Purpose                                                                           |
 |-----------|-----------------------------------------------------------------------------------|
 | `Reverse` | Returns a reversed copy of the slice                                              |
 | `Rotate`  | Returns a copy with elements shifted left by n positions; negative n shifts right |
+| `Sort`    | Returns a sorted copy of the slice using natural ordering                         |
+| `SortBy`  | Returns a sorted copy of the slice using a comparison function                    |
 
 ### Group, split, or combine collections
 

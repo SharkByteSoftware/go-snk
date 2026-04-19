@@ -63,6 +63,14 @@ Prefer a simpler local implementation when:
 | `Head`              | Sends a HEAD request and returns the raw response     |
 | `Options`           | Sends an OPTIONS request and returns the raw response |
 
+### Low-level access
+
+| Function          | Purpose                                                                          |
+|-------------------|----------------------------------------------------------------------------------|
+| `DoRawRequest`    | Sends an HTTP request with a given method and body; returns the raw response     |
+| `DoRequest`       | Sends an HTTP request with a given method and body; returns a decoded response   |
+| `DecodeResponse`  | Decodes a raw `*http.Response` into a typed `Response[T]`                        |
+
 ### Configure
 
 | Type            | Purpose                                           |

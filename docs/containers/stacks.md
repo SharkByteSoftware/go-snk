@@ -30,14 +30,15 @@ It is useful when you need:
 
 ### `Stack`
 
-| Method   | Purpose                                   |
-|----------|-------------------------------------------|
-| `New`    | Creates a new stack                       |
-| `Push`   | Pushes a value onto the stack             |
-| `Pop`    | Removes and returns the top value         |
-| `Peek`   | Returns the top value without removing it |
-| `Size`   | Returns the number of elements            |
-| `Values` | Returns all values as a slice             |
+| Method    | Purpose                                   |
+|-----------|-------------------------------------------|
+| `New`     | Creates a new stack                       |
+| `Push`    | Pushes a value onto the stack             |
+| `Pop`     | Removes and returns the top value         |
+| `Peek`    | Returns the top value without removing it |
+| `IsEmpty` | Reports whether the stack is empty        |
+| `Size`    | Returns the number of elements            |
+| `Values`  | Returns all values as a slice             |
 
 ## Notes
 

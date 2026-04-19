@@ -6,6 +6,31 @@
 
 # Changelog
 
+## v1.2.4
+
+### New Functions
+
+#### `mapx`
+- `MapValues` — returns a new map with each value transformed by a mapper function; keys are preserved unchanged
+- `Any` — returns true if any entry in the map satisfies a predicate
+- `All` — returns true if every entry in the map satisfies a predicate; returns true for an empty map
+- `SortedKeys` — returns the keys of the map in ascending sorted order; requires an ordered key type
+- `SortedKeysByFunc` — returns the keys of the map sorted by a caller-provided comparison function
+
+#### `httpx`
+- `WithBearerToken` — sets the `Authorization` header to `Bearer <token>`; token must not be empty
+- `WithBasicAuth` — sets the `Authorization` header using HTTP Basic authentication per RFC 7617; username must not be empty
+- `WithUserAgent` — sets the `User-Agent` header; value must not be empty
+
+### Improvements
+- **`mapx`** — simplified generic type parameter signatures across functions for improved readability
+- **`httpx`** — simplified generic type parameter signatures across functions
+- **`conditional`** — simplified generic type parameter signatures
+- General idiomatic Go improvements and minor style cleanup across the codebase
+- Expanded examples and documentation across `mapx` and `httpx`
+
+---
+
 ## v1.2.3
 
 ### New Packages

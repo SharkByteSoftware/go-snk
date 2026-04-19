@@ -614,3 +614,35 @@ func Test_Sort(t *testing.T) {
 	assert.Equal(t, []int{1, 1, 3, 4, 5}, sorted)
 	assert.Equal(t, []int{3, 1, 4, 1, 5}, nums)
 }
+
+func Test_FirstOr_NamedType(t *testing.T) {
+	type Scores []int
+
+	s := Scores{10, 20, 30}
+	got := slicex.FirstOr(s, -1)
+	assert.Equal(t, 10, got)
+}
+
+func Test_Zip_NamedType(t *testing.T) {
+	type Names []string
+
+	type Scores []int
+
+	names := Names{"alice", "bob"}
+	scores := Scores{92, 85}
+
+	pairs := slicex.Zip(names, scores)
+	assert.Len(t, pairs, 2)
+	assert.Equal(t, "alice", pairs[0].Left)
+	assert.Equal(t, 92, pairs[0].Right)
+}
+
+func Test_Flatten_NamedType(t *testing.T) {
+	type Row []int
+
+	type Matrix []Row
+
+	m := Matrix{{1, 2}, {3, 4}, {5}}
+	got := slicex.Flatten(m)
+	assert.Equal(t, []int{1, 2, 3, 4, 5}, got)
+}

@@ -1,10 +1,6 @@
 // Package sets provides a set data structure.
 package sets
 
-import (
-	"github.com/SharkByteSoftware/go-snk/conditional"
-)
-
 // Set implements a set data structure.
 type Set[T comparable] struct {
 	items map[T]struct{}
@@ -62,10 +58,13 @@ func (s *Set[T]) Intersect(other *Set[T]) *Set[T] {
 
 // Union returns the union of the set with the given set.
 func (s *Set[T]) Union(other *Set[T]) *Set[T] {
-	size1 := s.Size()
-	size2 := other.Size()
-	smallSet := conditional.If(size1 < size2, s, other)
-	largerSet := conditional.If(size1 < size2, other, s)
+	smallSet := s
+	largerSet := other
+
+	if s.Size() > other.Size() {
+		smallSet = other
+		largerSet = s
+	}
 
 	result := largerSet.Clone()
 	for item := range smallSet.items {

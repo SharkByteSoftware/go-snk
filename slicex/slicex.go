@@ -11,7 +11,7 @@ import (
 
 // FirstOr returns the first item in the slice or a fallback value
 // if the slice is empty.
-func FirstOr[T any](slice []T, fallback T) T {
+func FirstOr[S ~[]T, T any](slice S, fallback T) T {
 	if len(slice) == 0 {
 		return fallback
 	}
@@ -21,7 +21,7 @@ func FirstOr[T any](slice []T, fallback T) T {
 
 // FirstOrEmpty returns the first item in the slice or the empty value if
 // the slice is empty.
-func FirstOrEmpty[T any](slice []T) T {
+func FirstOrEmpty[S ~[]T, T any](slice S) T {
 	return FirstOr(slice, helpers.Empty[T]())
 }
 
@@ -41,7 +41,7 @@ func FirstOrBy[S ~[]T, T any](slice S, predicate func(item T) bool, fallback T) 
 
 // LastOr returns the last element of the slice or a fallback
 // value if the slice is empty.
-func LastOr[T any](slice []T, fallback T) T {
+func LastOr[S ~[]T, T any](slice S, fallback T) T {
 	if len(slice) == 0 {
 		return fallback
 	}
@@ -51,7 +51,7 @@ func LastOr[T any](slice []T, fallback T) T {
 
 // LastOrEmpty returns the last element of the slice or the
 // zero value if the slice is empty.
-func LastOrEmpty[T any](slice []T) T {
+func LastOrEmpty[S ~[]T, T any](slice S) T {
 	return LastOr(slice, helpers.Empty[T]())
 }
 
@@ -342,28 +342,28 @@ func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
 
 // Intersect returns a slice with the intersection of the two slices.
 func Intersect[S ~[]T, T comparable](slice, other S) S {
-	return sets.New[T](slice...).
+	return S(sets.New[T](slice...).
 		Intersect(sets.New[T](other...)).
-		Values()
+		Values())
 }
 
 // Union returns a slice with the union of the two slices.
 func Union[S ~[]T, T comparable](slice, other S) S {
-	return sets.New[T](slice...).
+	return S(sets.New[T](slice...).
 		Union(sets.New[T](other...)).
-		Values()
+		Values())
 }
 
 // Difference returns a slice with the difference of the two slices.
 func Difference[S ~[]T, T comparable](slice, other S) S {
-	return sets.New[T](slice...).
+	return S(sets.New[T](slice...).
 		Difference(sets.New[T](other...)).
-		Values()
+		Values())
 }
 
 // Zip combines two slices into a slice of Pairs, pairing elements by position.
 // The result length is equal to the shorter of the two input slices.
-func Zip[A any, B any](left []A, right []B) []Pair[A, B] {
+func Zip[SA ~[]A, A any, SB ~[]B, B any](left SA, right SB) []Pair[A, B] {
 	size := min(len(left), len(right))
 	result := make([]Pair[A, B], size)
 
@@ -439,7 +439,7 @@ func Chunk[S ~[]T, T any](slice S, size int) []S {
 // Nil inner slices are skipped.
 // This is equivalent to Bind with an identity mapper but
 // expresses intent more clearly when no transformation is needed.
-func Flatten[S ~[]T, T any](slice []S) []T {
+func Flatten[OS ~[]S, S ~[]T, T any](slice OS) []T {
 	result := make([]T, 0, len(slice))
 
 	for _, inner := range slice {

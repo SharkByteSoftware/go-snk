@@ -23,8 +23,8 @@ type ConfigOptions struct {
 	parseURLFunc   func(url string) (*url.URL, error)
 }
 
-// NewHTTPXOptions creates a new ConfigOptions instance.
-func NewHTTPXOptions() *ConfigOptions {
+// NewOptions creates a new ConfigOptions instance.
+func NewOptions() *ConfigOptions {
 	return &ConfigOptions{
 		httpClient:     nil,
 		headers:        make(http.Header),
@@ -160,7 +160,7 @@ func WithUserAgent(ua string) Option {
 }
 
 func applyOptions(options []Option) (*ConfigOptions, error) {
-	cfg := NewHTTPXOptions()
+	cfg := NewOptions()
 
 	err := errors.Join(slicex.Map(options, func(option Option) error { return option(cfg) })...)
 	if err != nil {

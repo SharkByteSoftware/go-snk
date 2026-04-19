@@ -40,8 +40,14 @@ func (s *Set[T]) Remove(item T) {
 func (s *Set[T]) Intersect(other *Set[T]) *Set[T] {
 	size1 := s.Size()
 	size2 := other.Size()
-	smallSet := conditional.If(size1 < size2, s, other)
-	largerSet := conditional.If(size1 < size2, other, s)
+
+	smallSet := s
+	largerSet := other
+
+	if size1 > size2 {
+		smallSet = other
+		largerSet = s
+	}
 
 	result := &Set[T]{items: make(map[T]struct{}, max(size1, size2))}
 

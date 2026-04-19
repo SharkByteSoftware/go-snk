@@ -8,19 +8,19 @@ import (
 )
 
 func TestQueue_NewQueue(t *testing.T) {
-	q := queues.NewQueue[int]()
+	q := queues.New[int]()
 	assert.NotNil(t, q)
 	assert.True(t, q.IsEmpty())
 	assert.Equal(t, 0, q.Size())
 
-	q = queues.NewQueue[int](1, 2, 3)
+	q = queues.New[int](1, 2, 3)
 	assert.NotNil(t, q)
 	assert.False(t, q.IsEmpty())
 	assert.Equal(t, 3, q.Size())
 }
 
 func TestQueue_Enqueue(t *testing.T) {
-	q := queues.NewQueue[int]()
+	q := queues.New[int]()
 
 	q.Enqueue(1)
 	q.Enqueue(2)
@@ -35,7 +35,7 @@ func TestQueue_Enqueue(t *testing.T) {
 }
 
 func TestQueue_EnqueueFront(t *testing.T) {
-	q := queues.NewQueue[int]()
+	q := queues.New[int]()
 
 	q.EnqueueFront(1)
 	q.EnqueueFront(2)
@@ -50,7 +50,7 @@ func TestQueue_EnqueueFront(t *testing.T) {
 }
 
 func TestQueue_Dequeue(t *testing.T) {
-	q := queues.NewQueue(1, 2, 4)
+	q := queues.New(1, 2, 4)
 
 	v, ok := q.Dequeue()
 	assert.True(t, ok)
@@ -73,7 +73,7 @@ func TestQueue_Dequeue(t *testing.T) {
 }
 
 func TestQueue_DequeueBack(t *testing.T) {
-	q := queues.NewQueue(1, 2, 4)
+	q := queues.New(1, 2, 4)
 
 	v, ok := q.DequeueBack()
 	assert.True(t, ok)
@@ -96,7 +96,7 @@ func TestQueue_DequeueBack(t *testing.T) {
 }
 
 func TestQueue_Peek(t *testing.T) {
-	q := queues.NewQueue[int]()
+	q := queues.New[int]()
 
 	v, ok := q.Peek()
 	assert.False(t, ok)
@@ -116,7 +116,7 @@ func TestQueue_Peek(t *testing.T) {
 }
 
 func TestQueue_PeekBack(t *testing.T) {
-	q := queues.NewQueue[int]()
+	q := queues.New[int]()
 
 	v, ok := q.PeekBack()
 	assert.False(t, ok)
@@ -136,7 +136,7 @@ func TestQueue_PeekBack(t *testing.T) {
 }
 
 func TestQueue_Clear(t *testing.T) {
-	q := queues.NewQueue[int]()
+	q := queues.New[int]()
 	assert.Equal(t, 0, q.Size())
 
 	q.Clear()
@@ -153,12 +153,12 @@ func TestQueue_Clear(t *testing.T) {
 }
 
 func TestQueue_Values(t *testing.T) {
-	q := queues.NewQueue[int]()
+	q := queues.New[int]()
 
 	values := q.Values()
 	assert.Empty(t, values, 0)
 
-	q = queues.NewQueue(1, 2, 5)
+	q = queues.New(1, 2, 5)
 	values = q.Values()
 	assert.Len(t, values, 3)
 	assert.Equal(t, []int{1, 2, 5}, values)

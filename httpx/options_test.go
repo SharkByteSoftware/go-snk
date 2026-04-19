@@ -14,12 +14,12 @@ import (
 )
 
 func Test_newHttpConfig(t *testing.T) {
-	config := NewHTTPXOptions()
+	config := NewOptions()
 	require.NotNil(t, config)
 }
 
 func TestWithHttpClient(t *testing.T) {
-	config := NewHTTPXOptions()
+	config := NewOptions()
 
 	err := WithHTTPClient(http.DefaultClient)(config)
 	require.NoError(t, err)
@@ -27,11 +27,11 @@ func TestWithHttpClient(t *testing.T) {
 	err = WithHTTPClient(nil)(config)
 	require.Error(t, err)
 	require.ErrorIs(t, err, ErrOptions)
-	require.ErrorContains(t, err, "invalid options: WithHTTPClient: http client is nil: <nil>")
+	require.ErrorContains(t, err, "invalid options: WithHTTPClient: http client is nil")
 }
 
 func TestWithHeader(t *testing.T) {
-	config := NewHTTPXOptions()
+	config := NewOptions()
 
 	err := WithHeader("Content-Type", "application/json")(config)
 	require.NoError(t, err)
@@ -45,7 +45,7 @@ func TestWithHeader(t *testing.T) {
 }
 
 func TestWithHeaders(t *testing.T) {
-	config := NewHTTPXOptions()
+	config := NewOptions()
 
 	err := WithHeaders(http.Header{})(config)
 	require.NoError(t, err)
@@ -57,7 +57,7 @@ func TestWithHeaders(t *testing.T) {
 }
 
 func TestWithParam(t *testing.T) {
-	config := NewHTTPXOptions()
+	config := NewOptions()
 
 	err := WithParam("key", "value")(config)
 
@@ -66,7 +66,7 @@ func TestWithParam(t *testing.T) {
 }
 
 func TestWithParams(t *testing.T) {
-	config := NewHTTPXOptions()
+	config := NewOptions()
 
 	err := WithParams(url.Values{
 		"key":  []string{"value"},
@@ -78,7 +78,7 @@ func TestWithParams(t *testing.T) {
 }
 
 func TestWithTimeout(t *testing.T) {
-	config := NewHTTPXOptions()
+	config := NewOptions()
 
 	err := WithTimeout(100)(config)
 	require.NoError(t, err)
@@ -87,12 +87,12 @@ func TestWithTimeout(t *testing.T) {
 	err = WithTimeout(0)(config)
 	require.Error(t, err)
 	require.ErrorIs(t, err, ErrOptions)
-	require.ErrorContains(t, err, "invalid options: WithTimeout: invalid timeout, must be positive: <nil>")
+	require.ErrorContains(t, err, "invalid options: WithTimeout: invalid timeout, must be positive")
 
 	err = WithTimeout(-1)(config)
 	require.Error(t, err)
 	require.ErrorIs(t, err, ErrOptions)
-	require.ErrorContains(t, err, "invalid options: WithTimeout: invalid timeout, must be positive: <nil>")
+	require.ErrorContains(t, err, "invalid options: WithTimeout: invalid timeout, must be positive")
 }
 
 func Test_applyOptions(t *testing.T) {

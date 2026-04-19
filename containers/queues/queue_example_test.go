@@ -9,15 +9,15 @@ import (
 
 // Queue examples
 
-func ExampleNewQueue() {
-	q := queues.NewQueue(1, 2, 3)
+func ExampleNew() {
+	q := queues.New(1, 2, 3)
 
 	fmt.Println(q.Values())
 	// Output: [1 2 3]
 }
 
 func ExampleQueue_Enqueue() {
-	q := queues.NewQueue[int]()
+	q := queues.New[int]()
 
 	q.Enqueue(1)
 	q.Enqueue(2)
@@ -28,7 +28,7 @@ func ExampleQueue_Enqueue() {
 }
 
 func ExampleQueue_EnqueueFront() {
-	q := queues.NewQueue(2, 3)
+	q := queues.New(2, 3)
 
 	q.EnqueueFront(1)
 
@@ -37,7 +37,7 @@ func ExampleQueue_EnqueueFront() {
 }
 
 func ExampleQueue_Dequeue() {
-	q := queues.NewQueue(1, 2, 3)
+	q := queues.New(1, 2, 3)
 
 	val, ok := q.Dequeue()
 
@@ -49,7 +49,7 @@ func ExampleQueue_Dequeue() {
 }
 
 func ExampleQueue_DequeueBack() {
-	q := queues.NewQueue(1, 2, 3)
+	q := queues.New(1, 2, 3)
 
 	val, ok := q.DequeueBack()
 
@@ -61,7 +61,7 @@ func ExampleQueue_DequeueBack() {
 }
 
 func ExampleQueue_Peek() {
-	q := queues.NewQueue(1, 2, 3)
+	q := queues.New(1, 2, 3)
 
 	val, ok := q.Peek()
 
@@ -73,7 +73,7 @@ func ExampleQueue_Peek() {
 }
 
 func ExampleQueue_PeekBack() {
-	q := queues.NewQueue(1, 2, 3)
+	q := queues.New(1, 2, 3)
 
 	val, ok := q.PeekBack()
 
@@ -85,7 +85,7 @@ func ExampleQueue_PeekBack() {
 }
 
 func ExampleQueue_IsEmpty() {
-	q := queues.NewQueue[int]()
+	q := queues.New[int]()
 
 	fmt.Println(q.IsEmpty())
 	q.Enqueue(1)
@@ -96,14 +96,14 @@ func ExampleQueue_IsEmpty() {
 }
 
 func ExampleQueue_Size() {
-	q := queues.NewQueue(10, 20, 30)
+	q := queues.New(10, 20, 30)
 
 	fmt.Println(q.Size())
 	// Output: 3
 }
 
 func ExampleQueue_Clear() {
-	q := queues.NewQueue(1, 2, 3)
+	q := queues.New(1, 2, 3)
 
 	q.Clear()
 
@@ -112,7 +112,7 @@ func ExampleQueue_Clear() {
 }
 
 func ExampleQueue_Values() {
-	q := queues.NewQueue(10, 20, 30)
+	q := queues.New(10, 20, 30)
 
 	fmt.Println(q.Values())
 	// Output: [10 20 30]

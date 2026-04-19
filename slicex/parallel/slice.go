@@ -8,26 +8,13 @@ import (
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
+const defaultMaxConcurrency = 1000
+
 // Map transforms a slice to a slice of another type using a mapper function.
 // The mapper function is called in parallel, and results are returned in order
 // they appear in the slice.
 func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
-	result := make([]R, len(slice))
-
-	var waitGroup sync.WaitGroup
-	waitGroup.Add(len(slice))
-
-	slicex.ApplyWithIndex(slice, func(item T, idx int) {
-		go func() {
-			result[idx] = mapper(item)
-
-			waitGroup.Done()
-		}()
-	})
-
-	waitGroup.Wait()
-
-	return result
+	return MapWithLimit(slice, mapper, defaultMaxConcurrency)
 }
 
 // MapWithLimit transforms a slice to a slice of another type using a mapper function

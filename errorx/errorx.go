@@ -35,8 +35,11 @@ func IsAny(err error, targets ...error) bool {
 // It is useful for reducing a set of validation or initialization errors
 // to a single result without chaining multiple if statements.
 func FirstErr(errs ...error) error {
-	err, _ := slicex.FindBy(errs, func(err error) bool { return err != nil })
+	for _, err := range errs {
+		if err != nil {
+			return err
+		}
+	}
 
-	//nolint:wrapcheck
-	return err
+	return nil
 }

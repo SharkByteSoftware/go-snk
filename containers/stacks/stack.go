@@ -3,6 +3,7 @@ package stacks
 
 import (
 	"github.com/SharkByteSoftware/go-snk/containers/lists"
+	"github.com/SharkByteSoftware/go-snk/helpers"
 )
 
 // Stack provides a stack implementation based on a linked list.
@@ -26,7 +27,7 @@ func (s *Stack[T]) Push(value T) {
 // it returns a default value and false.
 func (s *Stack[T]) Pop() (T, bool) {
 	if s.members.IsEmpty() {
-		return *new(T), false
+		return helpers.Empty[T](), false
 	}
 
 	return s.members.Remove(s.members.Front()), true
@@ -36,7 +37,7 @@ func (s *Stack[T]) Pop() (T, bool) {
 // it returns a default value and false.
 func (s *Stack[T]) Peek() (T, bool) {
 	if s.members.IsEmpty() {
-		return *new(T), false
+		return helpers.Empty[T](), false
 	}
 
 	return s.members.Front().Value, true

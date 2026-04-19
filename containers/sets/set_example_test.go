@@ -125,3 +125,84 @@ func ExampleSet_Equals() {
 	fmt.Println(set1.Equals(set2), set1.Equals(set3))
 	// Output: false true
 }
+
+func ExampleSet_Clone() {
+	original := sets.New(1, 2, 3)
+	clone := original.Clone()
+
+	clone.Remove(1)
+
+	originalValues := original.Values()
+	slices.Sort(originalValues)
+
+	cloneValues := clone.Values()
+	slices.Sort(cloneValues)
+
+	fmt.Println(originalValues)
+	fmt.Println(cloneValues)
+	// Output:
+	// [1 2 3]
+	// [2 3]
+}
+
+func ExampleSet_IsEmpty() {
+	set := sets.New[int]()
+
+	fmt.Println(set.IsEmpty())
+	set.Add(1)
+	fmt.Println(set.IsEmpty())
+	// Output:
+	// true
+	// false
+}
+
+func ExampleSet_Clear() {
+	set := sets.New(1, 2, 3)
+
+	set.Clear()
+
+	fmt.Println(set.IsEmpty())
+	// Output: true
+}
+
+func ExampleSet_ToJSON() {
+	set := sets.New(42)
+
+	b, _ := set.ToJSON()
+
+	fmt.Println(string(b))
+	// Output: [42]
+}
+
+func ExampleSet_FromJSON() {
+	set := sets.New[int]()
+
+	_ = set.FromJSON([]byte(`[1,2,3]`))
+
+	values := set.Values()
+	slices.Sort(values)
+
+	fmt.Println(values)
+	// Output: [1 2 3]
+}
+
+func ExampleSet_MarshalJSON() {
+	set := sets.New(99)
+
+	b, _ := set.MarshalJSON()
+
+	fmt.Println(string(b))
+	// Output: [99]
+}
+
+func ExampleSet_UnmarshalJSON() {
+	set := sets.New[string]()
+
+	_ = set.UnmarshalJSON([]byte(`["a","b","c"]`))
+
+	values := set.Values()
+	slices.Sort(values)
+
+	fmt.Println(values)
+	// Output: [a b c]
+}

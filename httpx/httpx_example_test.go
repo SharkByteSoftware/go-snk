@@ -261,3 +261,60 @@ func ExampleOptions() {
 	// 200 <nil>
 	// 200 <nil>
 }
+
+func ExampleDoRawRequest() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	ts := setupTestServer(http.StatusOK, goodResponse)
+	defer ts.Close()
+
+	resp, err := httpx.DoRawRequest(ctx, http.MethodGet, ts.URL, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	fmt.Println(resp.StatusCode, err)
+	// Output: 200 <nil>
+}
+
+func ExampleDoRequest() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	ts := setupTestServer(http.StatusOK, goodResponse)
+	defer ts.Close()
+
+	resp, err := httpx.DoRequest[testResponse](ctx, http.MethodGet, ts.URL, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(resp.Result, resp.StatusCode, err)
+	// Output: &{Test 18} 200 <nil>
+}
+
+func ExampleDecodeResponse() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	ts := setupTestServer(http.StatusOK, goodResponse)
+	defer ts.Close()
+
+	raw, err := httpx.GetRawResponse(ctx, ts.URL)
+	if err != nil {
+		panic(err)
+	}
+
+	defer func() { _ = raw.Body.Close() }()
+
+	resp, err := httpx.DecodeResponse[testResponse](raw, httpx.NewHTTPXOptions())
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(resp.Result, resp.StatusCode, err)
+	// Output: &{Test 18} 200 <nil>
+}

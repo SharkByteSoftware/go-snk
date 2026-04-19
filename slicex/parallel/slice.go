@@ -148,13 +148,16 @@ func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
 	part1 := make(S, 0, half)
 	part2 := make(S, 0, half)
 
-	part := Map(slice, func(item T) *S {
-		return conditional.If(predicate(item), &part1, &part2)
-	})
+	results := Map(slice, predicate) // parallelism stays here — the expensive part
 
-	slicex.ApplyWithIndex(slice, func(item T, idx int) {
-		*part[idx] = append(*part[idx], item)
-	})
+	for i, item := range slice {
+		if results[i] {
+			part1 = append(part1, item)
+			continue
+		}
+
+		part2 = append(part2, item)
+	}
 
 	return part1, part2
 }

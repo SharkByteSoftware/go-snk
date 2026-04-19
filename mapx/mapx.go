@@ -156,12 +156,14 @@ func Partition[M ~map[K]V, K comparable, V any](collection M, predicate func(key
 	trueMap := make(M, half)
 	falseMap := make(M, half)
 
-	Apply(collection, func(key K, value V) {
-		conditional.IfCall(predicate(key, value),
-			func() { trueMap[key] = value },
-			func() { falseMap[key] = value },
-		)
-	})
+	for key, value := range collection {
+		if predicate(key, value) {
+			trueMap[key] = value
+			continue
+		}
+
+		falseMap[key] = value
+	}
 
 	return trueMap, falseMap
 }

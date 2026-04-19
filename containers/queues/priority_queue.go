@@ -131,7 +131,7 @@ func (pq *PriorityQueue[T]) Dequeue() (T, bool) {
 // The boolean indicates whether the queue was non-empty.
 func (pq *PriorityQueue[T]) Peek() (T, bool) {
 	if pq.h.len() == 0 {
-		return *new(T), false
+		return helpers.Empty[T](), false
 	}
 
 	return pq.h.items[0], true

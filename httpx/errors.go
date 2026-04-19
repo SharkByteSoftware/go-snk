@@ -33,7 +33,7 @@ type OptionsError struct {
 }
 
 // NewOptionsError returns a new OptionsError.
-func NewOptionsError(option string, msg string, err error) *OptionsError {
+func NewOptionsError(option, msg string, err error) *OptionsError {
 	return &OptionsError{
 		Option:  option,
 		Message: msg,

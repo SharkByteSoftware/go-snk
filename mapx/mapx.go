@@ -84,7 +84,7 @@ func Combine[M ~map[K]V, K comparable, V any](maps ...M) M {
 // the value when a key exists in both maps.
 // Unlike Combine, which uses last-write-wins, Merge gives the caller explicit
 // control over how conflicts are resolved.
-func Merge[M ~map[K]V, K comparable, V any](left M, right M, resolver func(key K, left V, right V) V) M {
+func Merge[M ~map[K]V, K comparable, V any](left, right M, resolver func(key K, left, right V) V) M {
 	result := make(M, len(left)+len(right))
 
 	Apply(left, func(key K, value V) {

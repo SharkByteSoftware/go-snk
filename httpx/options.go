@@ -53,7 +53,7 @@ func WithHTTPClient(client *http.Client) Option {
 }
 
 // WithHeader adds a single header to the request.
-func WithHeader(key string, value string) Option {
+func WithHeader(key, value string) Option {
 	return func(options *ConfigOptions) error {
 		options.headers.Add(key, value)
 		return nil
@@ -83,7 +83,7 @@ func WithTimeout(timeout time.Duration) Option {
 }
 
 // WithParam adds a single param to the request.
-func WithParam(key string, value string) Option {
+func WithParam(key, value string) Option {
 	return func(options *ConfigOptions) error {
 		options.params[key] = []string{value}
 		return nil
@@ -131,7 +131,7 @@ func WithBearerToken(token string) Option {
 
 // WithBasicAuth sets the Authorization header using HTTP Basic authentication.
 // username and password are encoded per RFC 7617.
-func WithBasicAuth(username string, password string) Option {
+func WithBasicAuth(username, password string) Option {
 	return func(options *ConfigOptions) error {
 		if username == "" {
 			return NewOptionsError("WithBasicAuth", "username must not be empty", nil)

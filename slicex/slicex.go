@@ -309,8 +309,8 @@ func ToMap[S ~[]T, T any, K comparable](slice S, predicate func(item T) K) map[K
 }
 
 // GroupBy returns a map of slices grouped by a key produced by a key selector function.
-func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map[R][]T {
-	result := make(map[R][]T, len(slice))
+func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map[R]S {
+	result := make(map[R]S, len(slice))
 
 	Apply(slice, func(item T) {
 		key := predicate(item)

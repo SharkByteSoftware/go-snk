@@ -84,7 +84,7 @@ func newRequestWithAppliedConfig(
 		return nil, fmt.Errorf("new request: %w", err)
 	}
 
-	req.Header = config.headers
+	req.Header = config.headers.Clone()
 
 	return req, nil
 }

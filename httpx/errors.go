@@ -49,7 +49,12 @@ func (e *OptionsError) Error() string {
 	return fmt.Sprintf("%s: %s: %s: %v", ErrOptions, e.Option, e.Message, e.Err)
 }
 
-func (e *OptionsError) Unwrap() error { return errors.Join(ErrOptions, e.Err) }
+// Is reports whether this error matches ErrOptions. Standard sentinel matching.
+func (e *OptionsError) Is(target error) bool {
+	return target == ErrOptions
+}
+
+func (e *OptionsError) Unwrap() error { return e.Err }
 
 // NewTransportError returns a new TransportError.
 func NewTransportError(err error) error {

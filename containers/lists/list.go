@@ -231,7 +231,7 @@ func (l *List[T]) remove(element *Element[T]) *Element[T] {
 	return element
 }
 
-func (l *List[T]) move(element *Element[T], mark *Element[T]) {
+func (l *List[T]) move(element, mark *Element[T]) {
 	if element == mark {
 		return
 	}

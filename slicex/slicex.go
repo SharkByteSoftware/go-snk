@@ -329,21 +329,21 @@ func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
 }
 
 // Intersect returns a slice with the intersection of the two slices.
-func Intersect[S ~[]T, T comparable](slice S, other S) S {
+func Intersect[S ~[]T, T comparable](slice, other S) S {
 	return sets.New[T](slice...).
 		Intersect(sets.New[T](other...)).
 		Values()
 }
 
 // Union returns a slice with the union of the two slices.
-func Union[S ~[]T, T comparable](slice S, other S) S {
+func Union[S ~[]T, T comparable](slice, other S) S {
 	return sets.New[T](slice...).
 		Union(sets.New[T](other...)).
 		Values()
 }
 
 // Difference returns a slice with the difference of the two slices.
-func Difference[S ~[]T, T comparable](slice S, other S) S {
+func Difference[S ~[]T, T comparable](slice, other S) S {
 	return sets.New[T](slice...).
 		Difference(sets.New[T](other...)).
 		Values()

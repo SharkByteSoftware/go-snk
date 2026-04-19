@@ -65,7 +65,7 @@ func Max[S ~[]T, T cmp.Ordered](slice S) T {
 }
 
 // MaxBy returns the maximum value of the slice as determined by the provided maximum function.
-func MaxBy[S ~[]T, T any](slice S, maxFunc func(a T, b T) bool) T {
+func MaxBy[S ~[]T, T any](slice S, maxFunc func(a, b T) bool) T {
 	if len(slice) == 0 {
 		return helpers.Empty[T]()
 	}
@@ -82,7 +82,7 @@ func MaxBy[S ~[]T, T any](slice S, maxFunc func(a T, b T) bool) T {
 
 // Min returns the minimum value of the slice.
 func Min[S ~[]T, T cmp.Ordered](slice S) T {
-	return MinBy(slice, func(a T, b T) bool { return a > b })
+	return MinBy(slice, func(a, b T) bool { return a > b })
 }
 
 // MinBy returns the minimum value of the slice as determined by the provided minimum function.

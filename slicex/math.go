@@ -8,7 +8,7 @@ import (
 )
 
 // Sum returns the sum of all the values of the slice.
-func Sum[T constraint.Numeric](slice []T) T {
+func Sum[S ~[]T, T constraint.Numeric](slice S) T {
 	return SumBy(slice, func(item T) T { return item })
 }
 

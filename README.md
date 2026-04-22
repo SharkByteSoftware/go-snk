@@ -12,6 +12,7 @@
 [![Build Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml)
 [![Lint Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/lint.yml/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/lint.yml)
 [![Go report](https://goreportcard.com/badge/github.com/SharkByteSoftware/go-snk)](https://goreportcard.com/report/SharkByteSoftware/go-snk)
+[![CodeQL](https://github.com/SharkByteSoftware/go-snk/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/github-code-scanning/codeql)
 [![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/graphs/contributors)
 

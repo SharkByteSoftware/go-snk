@@ -1,12 +1,13 @@
 name: Lint
+
+permissions:
+  contents: read
+
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
-permissions:
-  contents: read
 
 jobs:
   golangci:

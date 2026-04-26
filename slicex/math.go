@@ -4,16 +4,16 @@ import (
 	"cmp"
 
 	"github.com/SharkByteSoftware/go-snk/helpers"
-	"github.com/SharkByteSoftware/go-snk/internal/constraint"
+	"github.com/SharkByteSoftware/go-snk/internal/constraints"
 )
 
 // Sum returns the sum of all the values of the slice.
-func Sum[S ~[]T, T constraint.Numeric](slice S) T {
+func Sum[S ~[]T, T constraints.Numeric](slice S) T {
 	return SumBy(slice, func(item T) T { return item })
 }
 
 // SumBy returns the sum of all the values of the slice as determined by the provided sum function.
-func SumBy[S ~[]T, T any, R constraint.Numeric](slice S, sumFunc func(item T) R) R {
+func SumBy[S ~[]T, T any, R constraints.Numeric](slice S, sumFunc func(item T) R) R {
 	var sum R
 
 	Apply(slice, func(item T) {
@@ -24,12 +24,12 @@ func SumBy[S ~[]T, T any, R constraint.Numeric](slice S, sumFunc func(item T) R)
 }
 
 // Product returns the product of the values of the slice.
-func Product[S ~[]T, T constraint.Numeric](slice S) T {
+func Product[S ~[]T, T constraints.Numeric](slice S) T {
 	return ProductBy(slice, func(item T) T { return item })
 }
 
 // ProductBy returns the product of the values in the slice as determined by the provided product function.
-func ProductBy[S ~[]T, T any, R constraint.Numeric](slice S, productFunc func(item T) R) R {
+func ProductBy[S ~[]T, T any, R constraints.Numeric](slice S, productFunc func(item T) R) R {
 	var product R = 1
 
 	if len(slice) == 0 {
@@ -44,12 +44,12 @@ func ProductBy[S ~[]T, T any, R constraint.Numeric](slice S, productFunc func(it
 }
 
 // Mean returns the mean of the values of the slice.
-func Mean[S ~[]T, T constraint.Numeric](slice S) T {
+func Mean[S ~[]T, T constraints.Numeric](slice S) T {
 	return MeanBy(slice, func(item T) T { return item })
 }
 
 // MeanBy returns the mean of the values of the slice as determined by the provided value function.
-func MeanBy[S ~[]T, T any, R constraint.Numeric](slice S, valueFunc func(item T) R) R {
+func MeanBy[S ~[]T, T any, R constraints.Numeric](slice S, valueFunc func(item T) R) R {
 	count := R(len(slice))
 
 	if count == 0 {

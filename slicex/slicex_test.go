@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"testing"
 
+	"golang.org/x/exp/constraints"
+
 	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 	"github.com/stretchr/testify/assert"
@@ -37,8 +39,6 @@ func TestSlice_FirstOrEmpty(t *testing.T) {
 }
 
 func TestSlice_FirstBy(t *testing.T) {
-	isEven := func(n int) bool { return n%2 == 0 }
-
 	result, found := slicex.FirstBy([]int{}, isEven)
 	assert.False(t, found)
 	assert.Equal(t, 0, result)
@@ -53,8 +53,6 @@ func TestSlice_FirstBy(t *testing.T) {
 }
 
 func TestSlice_FirstOrBy(t *testing.T) {
-	isEven := func(n int) bool { return n%2 == 0 }
-
 	assert.Equal(t, -1, slicex.FirstOrBy([]int{1, 3, 5}, isEven, -1))
 	assert.Equal(t, 2, slicex.FirstOrBy([]int{1, 2, 4}, isEven, -1))
 }
@@ -70,8 +68,6 @@ func TestSlice_LastOrEmpty(t *testing.T) {
 }
 
 func TestSlice_LastBy(t *testing.T) {
-	isEven := func(n int) bool { return n%2 == 0 }
-
 	result, found := slicex.LastBy([]int{}, isEven)
 	assert.False(t, found)
 	assert.Equal(t, 0, result)
@@ -86,8 +82,6 @@ func TestSlice_LastBy(t *testing.T) {
 }
 
 func TestSlice_LastOrBy(t *testing.T) {
-	isEven := func(n int) bool { return n%2 == 0 }
-
 	assert.Equal(t, -1, slicex.LastOrBy([]int{1, 3, 5}, isEven, -1))
 	assert.Equal(t, 6, slicex.LastOrBy([]int{2, 4, 6, 7}, isEven, -1))
 }
@@ -496,7 +490,7 @@ func TestSlice_Rotate(t *testing.T) {
 	result = slicex.Rotate(input, len(input))
 	assert.Equal(t, input, result)
 
-	// n larger than slice length — normalised correctly
+	// n larger than slice length — normalized correctly
 	result = slicex.Rotate(input, len(input)+2)
 	assert.Equal(t, slicex.Rotate(input, 2), result)
 
@@ -628,12 +622,12 @@ func Test_Zip_NamedType(t *testing.T) {
 
 	type Scores []int
 
-	names := Names{"alice", "bob"}
+	names := Names{"Alice", "Bob"}
 	scores := Scores{92, 85}
 
 	pairs := slicex.Zip(names, scores)
 	assert.Len(t, pairs, 2)
-	assert.Equal(t, "alice", pairs[0].Left)
+	assert.Equal(t, "Alice", pairs[0].Left)
 	assert.Equal(t, 92, pairs[0].Right)
 }
 
@@ -645,4 +639,8 @@ func Test_Flatten_NamedType(t *testing.T) {
 	m := Matrix{{1, 2}, {3, 4}, {5}}
 	got := slicex.Flatten(m)
 	assert.Equal(t, []int{1, 2, 3, 4, 5}, got)
+}
+
+func isEven[T constraints.Integer](n T) bool {
+	return n%2 == 0
 }

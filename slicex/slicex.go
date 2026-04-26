@@ -501,6 +501,7 @@ func CountBy[S ~[]T, T any](s S, predicate func(T) bool) int {
 // and a positive number when a > b.
 func SortBy[S ~[]T, T any](s S, cmp func(a, b T) int) S {
 	out := make(S, len(s))
+
 	copy(out, s)
 	slices.SortFunc(out, cmp)
 
@@ -511,6 +512,7 @@ func SortBy[S ~[]T, T any](s S, cmp func(a, b T) int) S {
 // The original slice is not modified.
 func Sort[S ~[]T, T cmp.Ordered](s S) S {
 	out := make(S, len(s))
+
 	copy(out, s)
 	slices.Sort(out)
 

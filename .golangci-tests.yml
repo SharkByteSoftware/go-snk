@@ -35,6 +35,7 @@ linters:
             - "$gostd"
             - "github.com/SharkByteSoftware/go-snk"
             - "github.com/stretchr/testify"
+            - "golang.org/x/exp/constraints"
 
 issues:
   max-issues-per-linter: 0

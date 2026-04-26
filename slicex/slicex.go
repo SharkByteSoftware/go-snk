@@ -80,7 +80,8 @@ func LastOrBy[S ~[]T, T any](slice S, predicate func(item T) bool, fallback T) T
 	return fallback
 }
 
-// Filter filters a slice using a predicate function.
+// Filter returns a new slice containing only the items for which the predicate returns true.
+// The original slice is not modified.
 func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) S {
 	result := make(S, 0, len(slice))
 
@@ -93,7 +94,7 @@ func Filter[S ~[]T, T any](slice S, predicate func(item T) bool) S {
 	return result
 }
 
-// FilterWithIndex is like Filter, but it accepts a predicate function that takes an index as well.
+// FilterWithIndex is like Filter, but the predicate also receives the index of each element.
 func FilterWithIndex[S ~[]T, T any](slice S, predicate func(item T, index int) bool) S {
 	result := make(S, 0, len(slice))
 
@@ -106,12 +107,13 @@ func FilterWithIndex[S ~[]T, T any](slice S, predicate func(item T, index int) b
 	return result
 }
 
-// Map transforms a slice to a slice of another type using a mapper function.
+// Map transforms each element of a slice using the mapper function, returning a new slice of the same length.
+// The original slice is not modified.
 func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
 	return MapWithIndex(slice, func(item T, _ int) R { return mapper(item) })
 }
 
-// MapWithIndex is like Map, but it accepts a mapper function that takes an index as well.
+// MapWithIndex is like Map, but the mapper also receives the index of each element.
 func MapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, idx int) R) []R {
 	result := make([]R, len(slice))
 
@@ -122,14 +124,15 @@ func MapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, idx int) R)
 	return result
 }
 
-// FilterMap filters and transforms a slice to a slice of another type using a mapper function.
+// FilterMap filters and transforms a slice in a single pass.
+// The mapper returns a value and a boolean; only values where the boolean is true are included in the result.
 func FilterMap[S ~[]T, T any, R any](slice S, mapper func(item T) (R, bool)) []R {
 	return FilterMapWithIndex(slice, func(item T, _ int) (R, bool) {
 		return mapper(item)
 	})
 }
 
-// FilterMapWithIndex filters and transforms a slice to a slice of another type using a mapper function.
+// FilterMapWithIndex is like FilterMap, but the mapper also receives the index of each element.
 func FilterMapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, index int) (R, bool)) []R {
 	result := make([]R, 0, len(slice))
 
@@ -142,14 +145,14 @@ func FilterMapWithIndex[S ~[]T, T any, R any](slice S, mapper func(item T, index
 	return result
 }
 
-// UniqueMap maps a slice to a slice of another type using a mapper function and removes duplicate values.
+// UniqueMap transforms each element using the mapper function and returns the results with duplicates removed.
+// Uniqueness is determined on the mapped values, not the original elements.
 func UniqueMap[S ~[]T, T any, R comparable](slice S, mapper func(item T) R) []R {
 	return Unique(Map(slice, mapper))
 }
 
-// Bind transforms and flattens a slice from one type to another using a mapper
-// function. Function should return a slice or `nil`, if `nil` is returned, then no
-// value is added to the final result.
+// Bind maps each element to a slice using the mapper function and concatenates the results into a single flat slice.
+// This is equivalent to a flatMap operation. If the mapper returns nil or an empty slice, no elements are added.
 func Bind[S ~[]T, T any, RS ~[]R, R any](slice S, mapper func(item T) RS) RS {
 	result := make(RS, 0, len(slice))
 
@@ -160,7 +163,9 @@ func Bind[S ~[]T, T any, RS ~[]R, R any](slice S, mapper func(item T) RS) RS {
 	return result
 }
 
-// Reduce transforms and flattens a slice to another type.
+// Reduce folds a slice into a single value by applying the accumulator function
+// to each element in order, threading the result through each call.
+// The initial value is used as the starting accumulator.
 func Reduce[S ~[]T, T any, R any](slice S, accumulator func(agg R, item T) R, initial R) R {
 	Apply(slice, func(item T) {
 		initial = accumulator(initial, item)
@@ -238,7 +243,7 @@ func AllBy[S ~[]T, T any](slice S, predicate func(item T) bool) bool {
 	return !found
 }
 
-// Unique returns a slice with all duplicate values removed.
+// Unique returns a new slice with duplicate values removed, preserving the order of first occurrence.
 func Unique[S ~[]T, T comparable](slice S) S {
 	result := make(S, 0, len(slice))
 	set := sets.New[T]()
@@ -253,7 +258,8 @@ func Unique[S ~[]T, T comparable](slice S) S {
 	return result
 }
 
-// UniqueBy returns a slice with unique values determined by a predicate function.
+// UniqueBy returns a new slice with duplicates removed, using the key selector to determine uniqueness.
+// The original elements are returned; only the first element for each unique key is kept.
 func UniqueBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) S {
 	result := make(S, 0, len(slice))
 	set := sets.New[R]()
@@ -270,19 +276,20 @@ func UniqueBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) S 
 	return result
 }
 
-// Apply applies a function to each item in the slice.
+// Apply calls the provided function on each element of the slice for side effects. No new slice is returned.
 func Apply[S ~[]T, T any](slice S, apply func(item T)) {
 	ApplyWithIndex(slice, func(item T, _ int) { apply(item) })
 }
 
-// ApplyWithIndex applies a function to each item in the slice and provides the index of the item.
+// ApplyWithIndex is like Apply, but the function also receives the index of each element.
 func ApplyWithIndex[S ~[]T, T any](slice S, apply func(item T, index int)) {
 	for idx, value := range slice {
 		apply(value, idx)
 	}
 }
 
-// Reverse returns a slice with the reverse of the slice.
+// Reverse returns a new slice with the elements in reverse order.
+// The original slice is not modified.
 func Reverse[S ~[]T, T any](slice S) S {
 	result := slices.Clone(slice)
 	slices.Reverse(result)
@@ -290,14 +297,15 @@ func Reverse[S ~[]T, T any](slice S) S {
 	return result
 }
 
-// Compact returns a slice with all the non-zero items.
+// Compact returns a new slice with all zero-value elements removed.
 func Compact[S ~[]T, T comparable](slice S) S {
 	return Filter(slice, func(item T) bool {
 		return !helpers.IsEmpty(item)
 	})
 }
 
-// ToMap converts a slice to a map using the predicate to determine the map key.
+// ToMap converts a slice to a map using the key selector to determine each element's map key.
+// If multiple elements produce the same key, the last one wins.
 func ToMap[S ~[]T, T any, K comparable](slice S, predicate func(item T) K) map[K]T {
 	result := make(map[K]T, len(slice))
 
@@ -308,7 +316,7 @@ func ToMap[S ~[]T, T any, K comparable](slice S, predicate func(item T) K) map[K
 	return result
 }
 
-// GroupBy returns a map of slices grouped by a key produced by a key selector function.
+// GroupBy groups slice elements into a map of slices, keyed by the result of the key selector function.
 func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map[R]S {
 	result := make(map[R]S, len(slice))
 
@@ -321,6 +329,7 @@ func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map
 }
 
 // Partition splits a slice into two slices based on a predicate.
+// Elements for which the predicate returns true are placed in the first slice; all others in the second.
 func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
 	const halfDivisor = 2
 
@@ -340,21 +349,24 @@ func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
 	return part1, part2
 }
 
-// Intersect returns a slice with the intersection of the two slices.
+// Intersect returns a new slice containing elements present in both slices.
+// The order of the result is not guaranteed.
 func Intersect[S ~[]T, T comparable](slice, other S) S {
 	return S(sets.New[T](slice...).
 		Intersect(sets.New[T](other...)).
 		Values())
 }
 
-// Union returns a slice with the union of the two slices.
+// Union returns a new slice containing all unique elements from both slices.
+// The order of the result is not guaranteed.
 func Union[S ~[]T, T comparable](slice, other S) S {
 	return S(sets.New[T](slice...).
 		Union(sets.New[T](other...)).
 		Values())
 }
 
-// Difference returns a slice with the difference of the two slices.
+// Difference returns a new slice containing elements present in slice but not in other.
+// The order of the result is not guaranteed.
 func Difference[S ~[]T, T comparable](slice, other S) S {
 	return S(sets.New[T](slice...).
 		Difference(sets.New[T](other...)).

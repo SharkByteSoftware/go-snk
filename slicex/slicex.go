@@ -439,8 +439,8 @@ func Chunk[S ~[]T, T any](slice S, size int) []S {
 // Nil inner slices are skipped.
 // This is equivalent to Bind with an identity mapper but
 // expresses intent more clearly when no transformation is needed.
-func Flatten[OS ~[]S, S ~[]T, T any](slice OS) []T {
-	result := make([]T, 0, len(slice))
+func Flatten[S ~[]E, E any](slice []S) []E {
+	result := make([]E, 0, len(slice))
 
 	for _, inner := range slice {
 		result = append(result, inner...)

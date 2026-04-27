@@ -34,7 +34,7 @@ func Encode[T any](writer io.Writer, value T, options ...EncodeOption) error {
 	return nil
 }
 
-// EncodeBytes encodes value as JSON and returns the result as a byte slice.
+// EncodeBytes encodes a value as JSON and returns the result as a byte slice.
 //
 // Returns an error if encoding fails.
 func EncodeBytes[T any](value T, options ...EncodeOption) ([]byte, error) {
@@ -48,7 +48,7 @@ func EncodeBytes[T any](value T, options ...EncodeOption) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// EncodeString encodes value as JSON and returns the result as a string.
+// EncodeString encodes a value as JSON and returns the result as a string.
 //
 // Returns an error if encoding fails.
 func EncodeString[T any](value T, options ...EncodeOption) (string, error) {
@@ -60,7 +60,7 @@ func EncodeString[T any](value T, options ...EncodeOption) (string, error) {
 	return string(b), nil
 }
 
-// EncodeToFile encodes value as JSON into the file at the given path.
+// EncodeToFile encodes a value as JSON into the file at the given path.
 //
 // Returns an error if encoding fails.
 func EncodeToFile[T any](path string, value T, options ...EncodeOption) error {

@@ -74,7 +74,7 @@ func (s *Set[T]) Union(other *Set[T]) *Set[T] {
 	return result
 }
 
-// Difference returns the difference of the set with the given set.
+// Difference returns a new set with elements that are in s but not in the other.
 func (s *Set[T]) Difference(other *Set[T]) *Set[T] {
 	result := New[T]()
 
@@ -106,7 +106,7 @@ func (s *Set[T]) SymmetricDifference(other *Set[T]) *Set[T] {
 	return result
 }
 
-// Subset returns true if the set is a subset of a given set.
+// Subset returns true if every element of s is contained in the other.
 func (s *Set[T]) Subset(other *Set[T]) bool {
 	for item := range s.items {
 		if !other.Contains(item) {
@@ -155,17 +155,17 @@ func (s *Set[T]) IsEmpty() bool {
 	return len(s.items) == 0
 }
 
-// Size returns the length of the set.
+// Size returns the number of items in the set.
 func (s *Set[T]) Size() int {
 	return len(s.items)
 }
 
-// Clear clears the set.
+// Clear removes all items from the set.
 func (s *Set[T]) Clear() {
 	s.items = make(map[T]struct{})
 }
 
-// Values returns a slice of the set values.
+// Values returns a slice of all items in the set in no particular order.
 func (s *Set[T]) Values() []T {
 	items := make([]T, len(s.items))
 

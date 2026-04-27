@@ -11,7 +11,7 @@ import (
 // intentional error suppression rather than silently assigning to _.
 func Ignore(_ error) {}
 
-// Must returns the value if err is nil, and panics otherwise.
+// Must return the value if err is nil, and panics otherwise.
 // It is intended for use at program initialization time when
 // an error represents a non-recoverable misconfiguration.
 func Must[T any](v T, err error) T {

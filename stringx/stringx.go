@@ -13,6 +13,7 @@ func IsBlank(s string) bool {
 }
 
 // Coalesce returns the first non-empty string from the provided values.
+// Note: whitespace-only strings are considered non-empty; use CoalesceFunc with IsBlank to skip them.
 // If all values are empty, an empty string is returned.
 func Coalesce(values ...string) string {
 	return CoalesceFunc(func(s string) bool { return s != "" }, values...)

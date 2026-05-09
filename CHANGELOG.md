@@ -6,6 +6,19 @@
 
 # Changelog
 
+## v1.2.5
+
+### Improvements
+- **`slicex`** — improved function comments and documentation; reduced number of internally defined constraints
+- **`mapx`** — improved function comments and documentation
+- **`containers/sets`** — improved comments on `Set` type
+- Simplified type parameters and fixed a type inference failure
+- Added Codecov integration with coverage report uploads to CI
+- Added CodeQL badge to README
+- Updated GitHub Actions workflow permissions
+
+---
+
 ## v1.2.4
 
 ### New Functions

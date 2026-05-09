@@ -11,6 +11,7 @@
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/SharkByteSoftware/go-snk)](./go.mod)
 [![Build Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml)
 [![Lint Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/lint.yml/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/lint.yml)
+[![codecov](https://codecov.io/gh/SharkByteSoftware/go-snk/graph/badge.svg?token=HGGS1ESDYP)](https://codecov.io/gh/SharkByteSoftware/go-snk)
 [![Go report](https://goreportcard.com/badge/github.com/SharkByteSoftware/go-snk)](https://goreportcard.com/report/SharkByteSoftware/go-snk)
 [![CodeQL](https://github.com/SharkByteSoftware/go-snk/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/github-code-scanning/codeql)
 [![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)

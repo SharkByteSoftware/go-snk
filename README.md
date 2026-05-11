@@ -16,6 +16,7 @@
 [![CodeQL](https://github.com/SharkByteSoftware/go-snk/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/github-code-scanning/codeql)
 [![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/graphs/contributors)
+[![Mentioned in Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go)
 
 `go-snk` is the library you pull into any Go project to clean it up and keep it clean. The name is short for
 *kitchen sink* — not because it does everything, but because it collects the small, type-safe helpers you keep reaching

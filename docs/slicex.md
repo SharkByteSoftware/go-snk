@@ -87,6 +87,7 @@ Prefer a simpler local loop when:
 | `Filter`          | Returns only items that satisfy a predicate                          |
 | `FilterWithIndex` | Returns only items whose predicate receives both the index and value |
 | `Compact`         | Removes zero values from a slice                                     |
+| `CompactBy`       | Removes items for which a caller-supplied predicate returns true     |
 
 ### Transform or reshape data
 

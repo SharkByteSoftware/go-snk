@@ -38,6 +38,7 @@ It is useful when you need:
 | `Peek`    | Returns the top value without removing it |
 | `IsEmpty` | Reports whether the stack is empty        |
 | `Size`    | Returns the number of elements            |
+| `Clear`   | Removes all elements from the stack        |
 | `Values`  | Returns all values as a slice             |
 
 ## Notes

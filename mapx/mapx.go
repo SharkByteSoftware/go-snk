@@ -170,6 +170,20 @@ func Partition[M ~map[K]V, K comparable, V any](collection M, predicate func(key
 	return trueMap, falseMap
 }
 
+// Count returns the number of entries in the map whose value equals the given candidate.
+// It is the direct-equality counterpart to CountBy.
+func Count[M ~map[K]V, K comparable, V comparable](collection M, candidate V) int {
+	n := 0
+
+	Apply(collection, func(_ K, value V) {
+		if value == candidate {
+			n++
+		}
+	})
+
+	return n
+}
+
 // CountBy returns a map of counts grouped by the result of the classifier function.
 // The classifier is called for each entry; the returned map tracks how many entries produced each key.
 func CountBy[M ~map[K]V, K comparable, V any, R comparable](collection M, classifier func(key K, value V) R) map[R]int {

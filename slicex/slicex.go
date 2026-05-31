@@ -304,6 +304,16 @@ func Compact[S ~[]T, T comparable](slice S) S {
 	})
 }
 
+// CompactBy returns a new slice with all elements for which the predicate returns true removed.
+// Elements for which the predicate returns false are retained.
+// Use CompactBy when the definition of "empty" is caller-defined rather than the type's zero value.
+// The original slice is not modified.
+func CompactBy[S ~[]T, T any](slice S, predicate func(item T) bool) S {
+	return Filter(slice, func(item T) bool {
+		return !predicate(item)
+	})
+}
+
 // ToMap converts a slice to a map using the key selector to determine each element's map key.
 // If multiple elements produce the same key, the last one wins.
 func ToMap[S ~[]T, T any, K comparable](slice S, predicate func(item T) K) map[K]T {

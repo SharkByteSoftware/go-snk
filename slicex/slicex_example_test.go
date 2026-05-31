@@ -297,6 +297,25 @@ func ExampleCompact() {
 	// Output: [2 3 4 5]
 }
 
+func ExampleCompactBy() {
+	items := []string{"alice", "", "bob", "", "carol"}
+
+	result := slicex.CompactBy(items, func(s string) bool { return s == "" })
+
+	fmt.Println(result)
+	// Output: [alice bob carol]
+}
+
+func ExampleCompactBy_customPredicate() {
+	scores := []int{-1, 42, 0, -5, 7}
+
+	// strip non-positive values
+	result := slicex.CompactBy(scores, func(n int) bool { return n <= 0 })
+
+	fmt.Println(result)
+	// Output: [42 7]
+}
+
 func ExampleToMap() {
 	numbers := []int{1, 2, 3, 4, 5, 6}
 

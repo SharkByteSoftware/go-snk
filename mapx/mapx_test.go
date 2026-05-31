@@ -275,6 +275,27 @@ func TestMap_Partition(t *testing.T) {
 	assert.Empty(t, falseMap)
 }
 
+func TestMap_Count(t *testing.T) {
+	// value present once
+	assert.Equal(t, 1, mapx.Count(numberMap, "zero"))
+
+	// value present multiple times
+	assert.Equal(t, 2, mapx.Count(dupValueMap, "zero"))
+	assert.Equal(t, 4, mapx.Count(dupValueMap, "five"))
+
+	// value not present
+	assert.Equal(t, 0, mapx.Count(numberMap, "missing"))
+
+	// empty map always returns 0
+	assert.Equal(t, 0, mapx.Count(map[int]string{}, "zero"))
+
+	// integer value map
+	intMap := map[string]int{"a": 1, "b": 2, "c": 1}
+	assert.Equal(t, 2, mapx.Count(intMap, 1))
+	assert.Equal(t, 1, mapx.Count(intMap, 2))
+	assert.Equal(t, 0, mapx.Count(intMap, 99))
+}
+
 func TestMap_CountBy(t *testing.T) {
 	// count by value
 	counts := mapx.CountBy(numberMap, func(_ int, v string) string { return v })

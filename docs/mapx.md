@@ -78,6 +78,7 @@ Prefer a simpler local loop when:
 | `Any`       | Returns true if any entry satisfies a predicate                      |
 | `All`       | Returns true if every entry satisfies a predicate; true for empty    |
 | `Partition` | Splits a map into two based on a predicate                           |
+| `Count`     | Returns the number of entries whose value equals a candidate         |
 | `CountBy`   | Returns a map of counts grouped by the result of a classifier        |
 | `Apply`     | Runs a function on each map entry for side effects                   |
 

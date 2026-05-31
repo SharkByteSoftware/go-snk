@@ -76,6 +76,7 @@ Prefer a simpler local implementation when:
 | Type            | Purpose                                           |
 |-----------------|---------------------------------------------------|
 | `ConfigOptions` | Configures request behavior and response handling |
+| `NewOptions`    | Creates a new `ConfigOptions` instance            |
 
 #### Options
 
@@ -113,6 +114,16 @@ Each sentinel has a corresponding typed error that carries additional context. U
 | `*DecodingError` | `ErrDecoding` | `ContentType`, `Err`                            |
 | `*EncodingError` | `ErrEncoding` | `PayloadType`, `Err`                            |
 | `*OptionsError`  | `ErrOptions`  | `Option`, `Message`, `Err`                      |
+
+Each typed error has a constructor, useful when implementing custom options or URL parsers:
+
+| Constructor         | Purpose                                                         |
+|---------------------|-----------------------------------------------------------------|
+| `NewOptionsError`   | Returns a new `*OptionsError`                                   |
+| `NewEncodingError`  | Returns a new `*EncodingError`                                  |
+| `NewDecodingError`  | Returns a new `*DecodingError`                                  |
+| `NewResponseError`  | Returns a new `*ResponseError`                                  |
+| `NewTransportError` | Wraps an error as an `error` joined with `ErrTransport`         |
 
 Example:
 ```go

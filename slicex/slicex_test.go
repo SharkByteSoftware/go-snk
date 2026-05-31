@@ -291,6 +291,44 @@ func TestSlice_Compact(t *testing.T) {
 	assert.Equal(t, strList[1:4], strResult)
 }
 
+func TestSlice_CompactBy(t *testing.T) {
+	isZero := func(n int) bool { return n == 0 }
+	isBlank := func(s string) bool { return s == "" }
+
+	// no elements removed — predicate never matches
+	result := slicex.CompactBy([]int{1, 2, 3}, isZero)
+	assert.Equal(t, []int{1, 2, 3}, result)
+
+	// all elements removed — predicate always matches
+	result = slicex.CompactBy([]int{0, 0, 0}, isZero)
+	assert.Equal(t, []int{}, result)
+
+	// mixed — zeros stripped, non-zeros retained
+	result = slicex.CompactBy([]int{0, 1, 0, 2, 0}, isZero)
+	assert.Equal(t, []int{1, 2}, result)
+
+	// empty input returns empty slice
+	result = slicex.CompactBy([]int{}, isZero)
+	assert.Equal(t, []int{}, result)
+
+	// string slice — blank strings stripped
+	strResult := slicex.CompactBy([]string{"", "a", "", "b", ""}, isBlank)
+	assert.Equal(t, []string{"a", "b"}, strResult)
+
+	// caller-defined predicate: strip negatives
+	result = slicex.CompactBy([]int{-1, 0, 1, -2, 2}, func(n int) bool { return n < 0 })
+	assert.Equal(t, []int{0, 1, 2}, result)
+}
+
+func Test_CompactBy_NamedType(t *testing.T) {
+	type Tags []string
+
+	tags := Tags{"go", "", "generics", ""}
+	got := slicex.CompactBy(tags, func(s string) bool { return s == "" })
+	assert.Equal(t, Tags{"go", "generics"}, got)
+}
+
+
 func TestSlice_Apply(t *testing.T) {
 	var nums string
 

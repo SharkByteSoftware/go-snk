@@ -219,6 +219,17 @@ func ExamplePartition() {
 	// map[3:three]
 }
 
+func ExampleCount() {
+	inventory := map[string]string{
+		"apple":  "fruit",
+		"banana": "fruit",
+		"carrot": "vegetable",
+	}
+
+	fmt.Println(mapx.Count(inventory, "fruit"))
+	// Output: 2
+}
+
 func ExampleCountBy() {
 	inventory := map[string]int{
 		"apple":      5,

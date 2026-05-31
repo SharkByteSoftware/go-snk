@@ -2,10 +2,12 @@ package slicex_test
 
 import (
 	"cmp"
+	"errors"
 	"slices"
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/require"
 	"golang.org/x/exp/constraints"
 
 	"github.com/SharkByteSoftware/go-snk/conditional"
@@ -21,6 +23,8 @@ var nestedNumberList = [][]int{
 	numberList,
 	numberList,
 }
+
+var errTest = errors.New("test error")
 
 func TestSlice_FirstOr(t *testing.T) {
 	result := slicex.FirstOr([]int{}, 20)
@@ -327,7 +331,6 @@ func Test_CompactBy_NamedType(t *testing.T) {
 	got := slicex.CompactBy(tags, func(s string) bool { return s == "" })
 	assert.Equal(t, Tags{"go", "generics"}, got)
 }
-
 
 func TestSlice_Apply(t *testing.T) {
 	var nums string
@@ -677,6 +680,45 @@ func Test_Flatten_NamedType(t *testing.T) {
 	m := Matrix{{1, 2}, {3, 4}, {5}}
 	got := slicex.Flatten(m)
 	assert.Equal(t, []int{1, 2, 3, 4, 5}, got)
+}
+
+func TestSlice_MapErr(t *testing.T) {
+	// successful mapping — no errors
+	result, err := slicex.MapErr([]int{1, 2, 3}, func(n int) (string, error) {
+		return strconv.Itoa(n), nil
+	})
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"1", "2", "3"}, result)
+
+	// mapper fails on first element — no partial results
+	result, err = slicex.MapErr([]int{1, 2, 3}, func(_ int) (string, error) {
+		return "", errTest
+	})
+
+	require.Error(t, err)
+	assert.Empty(t, result)
+
+	// mapper fails mid-slice — partial results returned up to the failure
+	sentinelErr := errTest
+	result, err = slicex.MapErr([]int{1, 2, 3, -1, 4}, func(n int) (string, error) {
+		if n < 0 {
+			return "", errTest
+		}
+
+		return strconv.Itoa(n), nil
+	})
+
+	require.ErrorIs(t, err, sentinelErr)
+	assert.Equal(t, []string{"1", "2", "3"}, result)
+
+	// empty slice — returns empty slice and no error
+	result, err = slicex.MapErr([]int{}, func(n int) (string, error) {
+		return strconv.Itoa(n), nil
+	})
+
+	require.NoError(t, err)
+	assert.Empty(t, result)
 }
 
 func isEven[T constraints.Integer](n T) bool {

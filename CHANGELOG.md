@@ -6,6 +6,22 @@
 
 # Changelog
 
+## v1.2.6
+
+### New Functions
+
+#### `slicex`
+- `MapErr` — maps a slice using a mapper that can return an error; stops at the first error and returns the partial results alongside it, making the contract honest to callers that need to handle early exit
+- `CompactBy` — removes elements from a slice for which the predicate returns true; the complement of `Filter`
+- `Count` — returns the number of elements equal to a given value; convenience wrapper around `CountBy`
+- `CountBy` — returns the number of elements satisfying a predicate
+
+### Improvements
+- Added awesome-go badge to README
+- Expanded `slicex` documentation
+
+---
+
 ## v1.2.5
 
 ### Improvements

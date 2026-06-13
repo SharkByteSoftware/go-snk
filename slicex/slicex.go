@@ -540,3 +540,22 @@ func Sort[S ~[]T, T cmp.Ordered](s S) S {
 
 	return out
 }
+
+// MapErr transforms each element of a slice using the mapper function, returning a new slice.
+// If the mapper returns an error for any element, MapErr stops and returns the elements
+// successfully mapped so far along with the error. If no error occurs, the returned slice
+// has the same length as the input.
+func MapErr[S ~[]T, T any, R any](slice S, mapper func(item T) (R, error)) ([]R, error) {
+	result := make([]R, 0, len(slice))
+
+	for _, item := range slice {
+		r, err := mapper(item)
+		if err != nil {
+			return result, err
+		}
+
+		result = append(result, r)
+	}
+
+	return result, nil
+}

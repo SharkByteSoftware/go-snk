@@ -95,6 +95,7 @@ Prefer a simpler local loop when:
 |----------------------|----------------------------------------------------------------------------|
 | `Map`                | Transforms each element into a new slice                                   |
 | `MapWithIndex`       | Transforms each element using a function that also receives the index      |
+| `MapErr`             | Transforms each element, stopping and returning the error if one occurs    |
 | `FilterMap`          | Filters and transforms elements in one pass                                |
 | `FilterMapWithIndex` | Filters and transforms elements in one pass, with index access             |
 | `Bind`               | Maps each item to a slice and flattens the results (flatMap)               |

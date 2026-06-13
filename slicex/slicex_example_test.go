@@ -2,6 +2,7 @@ package slicex_test
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
@@ -568,4 +569,22 @@ func ExampleSortBy() {
 	// Output:
 	// [date apple banana cherry]
 	// [banana apple cherry date]
+}
+
+func ExampleMapErr() {
+	numbers := []string{"1", "2", "3", "4", "5"}
+
+	values, err := slicex.MapErr(numbers, strconv.Atoi)
+
+	fmt.Println(values, err)
+	// Output: [1 2 3 4 5] <nil>
+}
+
+func ExampleMapErr_partialResults() {
+	numbers := []string{"1", "2", "oops", "4", "5"}
+
+	values, err := slicex.MapErr(numbers, strconv.Atoi)
+
+	fmt.Println(values, err)
+	// Output: [1 2] strconv.Atoi: parsing "oops": invalid syntax
 }

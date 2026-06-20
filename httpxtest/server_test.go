@@ -18,8 +18,8 @@ type myStruct struct {
 const myStructReturn = `{"name":"test"}`
 
 func TestServerBuilder_DefaultHandler(t *testing.T) {
-	sb := httpxtest.NewServerBuilder()
-	ts := sb.Build(t)
+	sb := httpxtest.NewServerBuilder(t)
+	ts := sb.Build()
 
 	require.NotNil(t, ts)
 	require.NotEmpty(t, ts.URL)
@@ -32,13 +32,13 @@ func TestServerBuilder_DefaultHandler(t *testing.T) {
 func TestServerBuilder_WithDefaultHandler(t *testing.T) {
 	wasCalled := false
 
-	ts := httpxtest.NewServerBuilder().
-		WithDefaultHandler(func(w http.ResponseWriter, r *http.Request) {
+	ts := httpxtest.NewServerBuilder(t).
+		OnFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			_, _ = w.Write([]byte(myStructReturn))
 			wasCalled = true
 		}).
-		Build(t)
+		Build()
 
 	require.NotNil(t, ts)
 	require.NotEmpty(t, ts.URL)
@@ -51,15 +51,24 @@ func TestServerBuilder_WithDefaultHandler(t *testing.T) {
 }
 
 func TestServerBuilder_HowToUseIt(t *testing.T) {
-	ts := httpxtest.NewServerBuilder().
-		WithDefaultHandler(func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write([]byte(myStructReturn))
-		}).
-		OnGet("/v1/horton", http.StatusOK, myStruct{Name: "Horton"}).
-		OnGetStr("/v1/name", http.StatusOK, myStructReturn).
-		Build(t)
+	ts := httpxtest.NewServerBuilder(t).
+		On(http.StatusOK, myStruct{Name: "defaultHorton"}).
+		OnRoute(http.MethodGet, "/v1/horton", http.StatusOK, myStruct{Name: "Horton"}).
+		OnRoute(http.MethodPost, "/v1/horton", http.StatusOK, myStruct{Name: "Horton"}).
+		OnRoute(http.MethodGet, "/v1/name", http.StatusOK, myStructReturn).
+		OnRoute(http.MethodPost, "/v1/namne", http.StatusOK, myStruct{Name: "Horton"}).
+		Build()
 
 	require.NotNil(t, ts)
 	require.NotEmpty(t, ts.URL)
+
+	result, err := httpx.Get[myStruct](context.Background(), ts.URL+"/v1/Horton")
+	require.NoError(t, err)
+	require.NotNil(t, result)
+	assert.Equal(t, "Horton", result.Result.Name)
+
+	// req, _ := recorder.GetRequest("/v1/horton")
+	// // assert.True(t, recorder.IsRouteCalled("/v1/horton"))
+	// assert.Equal(t, http.MethodGet, req.Method)
+	// assert.Equal(t, "/v1/horton", req.URL.Path)
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/SharkByteSoftware/go-snk/httpx"
 	"github.com/SharkByteSoftware/go-snk/httpxtest"
@@ -51,10 +52,12 @@ func TestServerBuilder_WithDefaultHandler(t *testing.T) {
 }
 
 func TestServerBuilder_HowToUseIt(t *testing.T) {
-	ts := httpxtest.NewServerBuilder(t).
+	ts := httpxtest.NewServerBuilder(t, httpxtest.WithHeader("Content-Type", "application/json")).
 		On(http.StatusOK, myStruct{Name: "defaultHorton"}).
-		OnRoute(http.MethodGet, "/v1/horton", http.StatusOK, myStruct{Name: "Horton"}).
-		OnRoute(http.MethodPost, "/v1/horton", http.StatusOK, myStruct{Name: "Horton"}).
+		OnRoute(http.MethodGet, "/v1/horton", http.StatusOK, myStruct{Name: "Horton"},
+			httpxtest.WithHeader("X-Test", "test")).
+		OnRoute(http.MethodPost, "/v1/horton", http.StatusOK, myStruct{Name: "Horton"},
+			httpxtest.WithDelay(100*time.Millisecond)).
 		OnRoute(http.MethodGet, "/v1/name", http.StatusOK, myStructReturn).
 		OnRoute(http.MethodPost, "/v1/namne", http.StatusOK, myStruct{Name: "Horton"}).
 		Build()

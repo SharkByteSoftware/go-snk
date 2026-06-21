@@ -18,7 +18,7 @@ type ServerBuilder struct {
 	routes         map[string]http.HandlerFunc
 }
 
-func NewServerBuilder(t *testing.T) *ServerBuilder {
+func NewServerBuilder(t *testing.T, options ...Option) *ServerBuilder {
 	return &ServerBuilder{
 		t:              t,
 		defaultHandler: defaultHandler,
@@ -46,7 +46,27 @@ func (sb *ServerBuilder) Build() *httptest.Server {
 	return ts
 }
 
-func (sb *ServerBuilder) On(statusCode int, response any) *ServerBuilder {
+func (sb *ServerBuilder) BuildTLS() *httptest.Server {
+	sb.t.Helper()
+
+	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		key := routeKey(req.Method, req.URL.Path)
+		handler, ok := sb.routes[key]
+		if ok {
+			handler(w, req)
+
+			return
+		}
+
+		sb.defaultHandler(w, req)
+	}))
+
+	sb.t.Cleanup(ts.Close)
+
+	return ts
+}
+
+func (sb *ServerBuilder) On(statusCode int, response any, options ...Option) *ServerBuilder {
 	return sb.OnFunc(func(w http.ResponseWriter, r *http.Request) {
 		writeResponse(w, statusCode, response)
 	})
@@ -57,7 +77,7 @@ func (sb *ServerBuilder) OnFunc(handler http.HandlerFunc) *ServerBuilder {
 	return sb
 }
 
-func (sb *ServerBuilder) OnRoute(method string, route string, statusCode int, response any) *ServerBuilder {
+func (sb *ServerBuilder) OnRoute(method string, route string, statusCode int, response any, options ...Option) *ServerBuilder {
 	return sb.OnRouteFunc(method, route,
 		func(w http.ResponseWriter, r *http.Request) { writeResponse(w, statusCode, response) })
 }

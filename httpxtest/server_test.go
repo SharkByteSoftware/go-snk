@@ -66,7 +66,9 @@ func TestServerBuilder_HowToUseIt(t *testing.T) {
 	require.NotNil(t, ts)
 	require.NotEmpty(t, ts.URL)
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	result, err := httpx.Get[myStruct](ctx, ts.URL+"/v1/Horton")
 	require.NoError(t, err)
 	require.NotNil(t, result)

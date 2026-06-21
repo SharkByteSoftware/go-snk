@@ -6,7 +6,7 @@ linters:
     - wsl
   settings:
     varnamelen:
-      max-distance: 12
+      max-distance: 25
     ireturn:
       allow:
         - generic

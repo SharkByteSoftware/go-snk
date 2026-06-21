@@ -1,4 +1,4 @@
-//nolint:mnd,varnamelen,exhaustruct
+//nolint:mnd,exhaustruct
 package queues
 
 import (

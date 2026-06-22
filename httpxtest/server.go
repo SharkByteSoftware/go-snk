@@ -1,3 +1,4 @@
+// Package httpxtest provides a set of utilities for testing HTTP servers.
 package httpxtest
 
 import (
@@ -13,6 +14,7 @@ import (
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
+// ServerBuilder is a builder for HTTP servers.
 type ServerBuilder struct {
 	t              *testing.T
 	defaultHandler http.HandlerFunc
@@ -20,7 +22,10 @@ type ServerBuilder struct {
 	options        []Option
 }
 
+// NewServerBuilder creates a new ServerBuilder.
 func NewServerBuilder(t *testing.T, options ...Option) *ServerBuilder {
+	t.Helper()
+
 	return &ServerBuilder{
 		t:              t,
 		defaultHandler: defaultHandler,
@@ -29,6 +34,7 @@ func NewServerBuilder(t *testing.T, options ...Option) *ServerBuilder {
 	}
 }
 
+// Build creates a new HTTP server.
 func (sb *ServerBuilder) Build() *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(sb.handler))
 	sb.t.Cleanup(ts.Close)
@@ -36,6 +42,7 @@ func (sb *ServerBuilder) Build() *httptest.Server {
 	return ts
 }
 
+// BuildTLS creates a new HTTPS server.
 func (sb *ServerBuilder) BuildTLS() *httptest.Server {
 	ts := httptest.NewTLSServer(http.HandlerFunc(sb.handler))
 	sb.t.Cleanup(ts.Close)
@@ -43,21 +50,27 @@ func (sb *ServerBuilder) BuildTLS() *httptest.Server {
 	return ts
 }
 
+// On defines a handler for the default route.
 func (sb *ServerBuilder) On(statusCode int, response any, options ...Option) *ServerBuilder {
 	sb.t.Helper()
 
 	return sb.OnFunc(func(w http.ResponseWriter, _ *http.Request) {
 		writeResponse(w, statusCode, response)
-	})
+	}, options...)
 }
 
-func (sb *ServerBuilder) OnFunc(handler http.HandlerFunc) *ServerBuilder {
+// OnFunc defines a handler for the default route.
+func (sb *ServerBuilder) OnFunc(handler http.HandlerFunc, options ...Option) *ServerBuilder {
 	sb.t.Helper()
-	sb.defaultHandler = handler
+	sb.defaultHandler = func(w http.ResponseWriter, r *http.Request) {
+		slicex.Apply(options, func(option Option) { option(w, r) })
+		handler(w, r)
+	}
 
 	return sb
 }
 
+// OnRoute defines a handler for a specific route.
 func (sb *ServerBuilder) OnRoute(method string, route string, statusCode int, response any, options ...Option) *ServerBuilder {
 	sb.t.Helper()
 
@@ -65,6 +78,7 @@ func (sb *ServerBuilder) OnRoute(method string, route string, statusCode int, re
 		func(w http.ResponseWriter, _ *http.Request) { writeResponse(w, statusCode, response) }, options...,)
 }
 
+// OnRouteFunc defines a handler for a specific route.
 func (sb *ServerBuilder) OnRouteFunc(method string, route string, handler http.HandlerFunc, options ...Option) *ServerBuilder {
 	sb.t.Helper()
 
@@ -121,9 +135,11 @@ func writeResponse(w http.ResponseWriter, statusCode int, response any) {
 	case json.RawMessage:
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(statusCode)
+
 		_, _ = w.Write(value)
 	default:
 		w.Header().Set("Content-Type", "application/json")
+
 		bytes, err := jsonx.EncodeBytes(value)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

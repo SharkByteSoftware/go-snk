@@ -34,7 +34,7 @@ func TestServerBuilder_WithDefaultHandler(t *testing.T) {
 	wasCalled := false
 
 	ts := httpxtest.NewServerBuilder(t).
-		OnFunc(func(w http.ResponseWriter, r *http.Request) {
+		OnFunc(func(w http.ResponseWriter, _ *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			_, _ = w.Write([]byte(myStructReturn))
 			wasCalled = true
@@ -55,7 +55,7 @@ func TestServerBuilder_HowToUseIt(t *testing.T) {
 	ts := httpxtest.NewServerBuilder(t, httpxtest.WithHeader("X-SVR-LVL", "server-level")).
 		On(http.StatusOK, myStruct{Name: "defaultHorton"}).
 		OnRoute(http.MethodGet, "/v1/horton", http.StatusOK, myStruct{Name: "Horton"},
-			httpxtest.WithDelay(5*time.Second),
+			httpxtest.WithDelay(10*time.Millisecond),
 			httpxtest.WithHeader("X-SVR-LVL", "route-level"),
 			httpxtest.WithHeader("X-Test", "test")).
 		OnRoute(http.MethodPost, "/v1/horton", http.StatusOK, myStruct{Name: "Horton"}).
@@ -66,7 +66,7 @@ func TestServerBuilder_HowToUseIt(t *testing.T) {
 	require.NotNil(t, ts)
 	require.NotEmpty(t, ts.URL)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()
 
 	result, err := httpx.Get[myStruct](ctx, ts.URL+"/v1/Horton")

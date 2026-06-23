@@ -2,6 +2,7 @@ package httpx
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"io"
 	"net/http"
@@ -60,9 +61,20 @@ func clientWithAppliedConfig(config *ConfigOptions) *http.Client {
 	}
 
 	//nolint:exhaustruct
-	return &http.Client{
-		Timeout: config.timeout,
+	client :=http.Client{
+		Timeout:   config.timeout,
 	}
+
+	if config.insecureSkipVerify {
+		//nolint:exhaustruct
+		client.Transport = &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: config.insecureSkipVerify, //nolint:gosec
+			},
+		}
+	}
+
+	return &client
 }
 
 func newRequestWithAppliedConfig(

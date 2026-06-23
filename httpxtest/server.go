@@ -51,6 +51,7 @@ func (sb *ServerBuilder) BuildTLS() *httptest.Server {
 }
 
 // On defines a handler for the default route.
+// If response is nil, the server always responds with 204 No Content regardless of statusCode.
 func (sb *ServerBuilder) On(statusCode int, response any, options ...Option) *ServerBuilder {
 	return sb.OnFunc(func(w http.ResponseWriter, _ *http.Request) {
 		writeResponse(w, statusCode, response)
@@ -68,6 +69,7 @@ func (sb *ServerBuilder) OnFunc(handler http.HandlerFunc, options ...Option) *Se
 }
 
 // OnRoute defines a handler for a specific route.
+// If response is nil, the server always responds with 204 No Content regardless of statusCode.
 func (sb *ServerBuilder) OnRoute(method string, route string, statusCode int, response any, options ...Option) *ServerBuilder {
 	return sb.OnRouteFunc(method, route,
 		func(w http.ResponseWriter, _ *http.Request) { writeResponse(w, statusCode, response) }, options...)
@@ -118,7 +120,6 @@ func writeResponse(w http.ResponseWriter, statusCode int, response any) {
 	switch value := response.(type) {
 	case nil:
 		w.WriteHeader(http.StatusNoContent)
-		w.WriteHeader(statusCode)
 	case string:
 		w.WriteHeader(statusCode)
 		_, _ = io.WriteString(w, value)
@@ -127,7 +128,6 @@ func writeResponse(w http.ResponseWriter, statusCode int, response any) {
 		_, _ = w.Write(value)
 	case json.RawMessage:
 		w.WriteHeader(statusCode)
-
 		_, _ = w.Write(value)
 	default:
 		bytes, err := jsonx.EncodeBytes(value)

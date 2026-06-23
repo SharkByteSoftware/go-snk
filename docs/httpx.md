@@ -80,19 +80,20 @@ Prefer a simpler local implementation when:
 
 #### Options
 
-| Option               | Purpose                                                                  |
-|----------------------|--------------------------------------------------------------------------|
-| `WithHTTPClient`     | Sets the HTTP client used to send requests                               |
-| `WithHeader`         | Adds a single header to the request                                      |
-| `WithHeaders`        | Merges a set of headers into the request                                 |
-| `WithTimeout`        | Sets the request timeout; must be positive                               |
-| `WithParam`          | Adds a single query parameter to the request                             |
-| `WithParams`         | Merges a set of query parameters into the request                        |
-| `StrictDecoding`     | Enables strict JSON decoding; unknown fields cause an error              |
-| `WithParseURLFunc`   | Overrides the function used to parse the request URL                     |
-| `WithBearerToken`    | Sets `Authorization: Bearer <token>`; token must not be empty            |
-| `WithBasicAuth`      | Sets `Authorization` using HTTP Basic auth (RFC 7617); username required |
-| `WithUserAgent`      | Sets the `User-Agent` header; value must not be empty                    |
+| Option                   | Purpose                                                                  |
+|--------------------------|--------------------------------------------------------------------------|
+| `WithHTTPClient`         | Sets the HTTP client used to send requests                               |
+| `WithHeader`             | Adds a single header to the request                                      |
+| `WithHeaders`            | Merges a set of headers into the request                                 |
+| `WithTimeout`            | Sets the request timeout; must be positive                               |
+| `WithParam`              | Adds a single query parameter to the request                             |
+| `WithParams`             | Merges a set of query parameters into the request                        |
+| `StrictDecoding`         | Enables strict JSON decoding; unknown fields cause an error              |
+| `WithParseURLFunc`       | Overrides the function used to parse the request URL                     |
+| `WithBearerToken`        | Sets `Authorization: Bearer <token>`; token must not be empty            |
+| `WithBasicAuth`          | Sets `Authorization` using HTTP Basic auth (RFC 7617); username required |
+| `WithUserAgent`          | Sets the `User-Agent` header; value must not be empty                    |
+| `WithInsecureSkipVerify` | Disables TLS certificate verification; for testing only, not production  |
 
 ## Errors
 

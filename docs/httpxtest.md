@@ -71,13 +71,13 @@ which returns `500 Internal Server Error` unless overridden with `On` or `OnFunc
 
 `On` and `OnRoute` accept any value and write it based on its type:
 
-| Value type        | Behavior                                                        |
-|-------------------|-----------------------------------------------------------------|
-| `nil`             | Writes `204 No Content`                                         |
-| `string`          | Written verbatim as the body                                    |
-| `[]byte`          | Written verbatim as the body                                    |
-| `json.RawMessage` | Written verbatim as the body                                    |
-| any other value   | JSON-encoded into the body; encoding failure yields a `500`     |
+| Value type        | Behavior                                                             |
+|-------------------|----------------------------------------------------------------------|
+| `nil`             | Always writes `204 No Content`; the `statusCode` argument is ignored |
+| `string`          | Written verbatim as the body                                         |
+| `[]byte`          | Written verbatim as the body                                         |
+| `json.RawMessage` | Written verbatim as the body                                         |
+| any other value   | JSON-encoded into the body; encoding failure yields a `500`          |
 
 ### Options
 

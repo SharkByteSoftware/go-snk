@@ -48,20 +48,20 @@ Prefer a plain `httptest.Server` when:
 
 ### Build a server
 
-| Function           | Purpose                                          |
-|--------------------|--------------------------------------------------|
+| Function           | Purpose                                               |
+|--------------------|-------------------------------------------------------|
 | `NewServerBuilder` | Creates a new `ServerBuilder` bound to a `*testing.T` |
-| `Build`            | Starts an HTTP test server and registers cleanup |
-| `BuildTLS`         | Starts an HTTPS test server and registers cleanup |
+| `Build`            | Starts an HTTP test server and registers cleanup      |
+| `BuildTLS`         | Starts an HTTPS test server and registers cleanup     |
 
 ### Define responses
 
-| Method        | Purpose                                                                       |
-|---------------|-------------------------------------------------------------------------------|
-| `On`          | Sets the default handler to return a status code and response                 |
-| `OnFunc`      | Sets the default handler to a custom `http.HandlerFunc`                       |
+| Method        | Purpose                                                                        |
+|---------------|--------------------------------------------------------------------------------|
+| `On`          | Sets the default handler to return a status code and response                  |
+| `OnFunc`      | Sets the default handler to a custom `http.HandlerFunc`                        |
 | `OnRoute`     | Registers a handler for a method/route that returns a status code and response |
-| `OnRouteFunc` | Registers a custom `http.HandlerFunc` for a method/route                      |
+| `OnRouteFunc` | Registers a custom `http.HandlerFunc` for a method/route                       |
 
 `OnRoute` and `OnRouteFunc` panic if the method is empty or if a handler is already registered for the
 same method/route pair. Requests that do not match a registered route fall through to the default handler,
@@ -84,13 +84,13 @@ which returns `500 Internal Server Error` unless overridden with `On` or `OnFunc
 Options shape the response and can be passed at three levels: to `NewServerBuilder` (server level), to
 `On`/`OnFunc` (default handler), or to `OnRoute`/`OnRouteFunc` (route level).
 
-| Option            | Purpose                                          |
-|-------------------|--------------------------------------------------|
-| `WithHeader`      | Sets a single response header                    |
+| Option            | Purpose                                           |
+|-------------------|---------------------------------------------------|
+| `WithHeader`      | Sets a single response header                     |
 | `WithHeaders`     | Adds multiple response headers from `http.Header` |
-| `WithContentType` | Sets the `Content-Type` header                   |
-| `WithCookie`      | Sets a response cookie                           |
-| `WithDelay`       | Delays the response by a fixed duration          |
+| `WithContentType` | Sets the `Content-Type` header                    |
+| `WithCookie`      | Sets a response cookie                            |
+| `WithDelay`       | Delays the response by a fixed duration           |
 
 Server-level options run on every request before the matched handler, then the handler's own options run.
 This means route- or handler-level options take precedence over server-level options for the same header.
@@ -121,4 +121,5 @@ func TestClient(t *testing.T) {
 
 ## Examples
 
+- [Examples](../httpxtest/server_examples_test.go)
 - [Unit tests](../httpxtest/server_test.go)

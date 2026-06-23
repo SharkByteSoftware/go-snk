@@ -31,6 +31,10 @@ counting entries by a classifier, combining maps, and merging maps with conflict
 ### [`httpx`](httpx.md)
 Helpers for HTTP client code that reduce boilerplate and support typed response handling.
 
+### [`httpxtest`](httpxtest.md)
+A builder for spinning up `httptest` servers in tests, with canned responses, per-route handlers, and response
+shaping such as headers, cookies, and delays.
+
 ### [`jsonx`](jsonx.md)
 Helpers for encoding and decoding JSON to and from common sources such as readers, byte slices, and strings, with consistent option handling.
 

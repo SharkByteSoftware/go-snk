@@ -6,6 +6,23 @@
 
 # Changelog
 
+## v1.2.7
+
+### New Packages
+
+#### `httpxtest`
+- `ServerBuilder` — a builder for `httptest` servers that registers `t.Cleanup` automatically
+- `NewServerBuilder` — creates a `ServerBuilder` bound to a `*testing.T` with optional server-level options
+- `Build` / `BuildTLS` — start an HTTP or HTTPS test server
+- `On` / `OnFunc` — define the default handler with a canned response or a custom `http.HandlerFunc`
+- `OnRoute` / `OnRouteFunc` — register a handler for a specific method/route pair
+- `WithHeader`, `WithHeaders`, `WithContentType`, `WithCookie`, `WithDelay` — options to shape responses at the server, handler, or route level
+
+### Improvements
+- Added `httpxtest` documentation and listed the package in the overview and README
+
+---
+
 ## v1.2.6
 
 ### New Functions

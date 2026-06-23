@@ -109,7 +109,7 @@ func TestSet_Values(t *testing.T) {
 
 func TestSet_Intersect(t *testing.T) {
 	set1 := sets.New[int](1, 2, 3, 4, 5)
-	set2 := sets.New[int](2, 3, 4, 5, 6)
+	set2 := sets.New[int](2, 3, 4, 5, 6, 7)
 
 	result := set1.Intersect(set1)
 	assert.Equal(t, set1.Size(), result.Size())
@@ -128,19 +128,19 @@ func TestSet_Intersect(t *testing.T) {
 
 func TestSet_Union(t *testing.T) {
 	set1 := sets.New[int](1, 2, 3, 4, 5)
-	set2 := sets.New[int](4, 5, 6, 7, 256)
+	set2 := sets.New[int](4, 5, 6, 7, 256, 777)
 
 	result := set1.Union(set1)
 	assert.Equal(t, 5, result.Size())
 	assert.Equal(t, set1, result)
 
 	result = set1.Union(set2)
-	assert.Equal(t, 8, result.Size())
+	assert.Equal(t, 9, result.Size())
 	assert.Subset(t, result.Values(), set1.Values())
 	assert.Subset(t, result.Values(), set2.Values())
 
 	result = set2.Union(set1)
-	assert.Equal(t, 8, result.Size())
+	assert.Equal(t, 9, result.Size())
 	assert.Subset(t, result.Values(), set1.Values())
 	assert.Subset(t, result.Values(), set2.Values())
 }

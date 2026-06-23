@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"time"
 
 	"github.com/SharkByteSoftware/go-snk/httpx"
@@ -260,6 +261,29 @@ func ExampleOptions() {
 	// Output:
 	// 200 <nil>
 	// 200 <nil>
+}
+
+func ExampleWithInsecureSkipVerify() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// A TLS server using a self-signed certificate the client does not trust.
+	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(goodResponse))
+	}))
+	defer ts.Close()
+
+	// WithInsecureSkipVerify disables TLS certificate verification, which is
+	// useful for tests against servers with self-signed certificates. Do not
+	// use it in production.
+	result, err := httpx.Get[testResponse](ctx, ts.URL, httpx.WithInsecureSkipVerify())
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(result.Result, result.StatusCode, err)
+	// Output: &{Test 18} 200 <nil>
 }
 
 func ExampleDoRawRequest() {

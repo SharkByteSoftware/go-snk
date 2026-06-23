@@ -118,7 +118,6 @@ func writeResponse(w http.ResponseWriter, statusCode int, response any) {
 	switch value := response.(type) {
 	case nil:
 		w.WriteHeader(http.StatusNoContent)
-		w.WriteHeader(statusCode)
 	case string:
 		w.WriteHeader(statusCode)
 		_, _ = io.WriteString(w, value)
@@ -127,7 +126,6 @@ func writeResponse(w http.ResponseWriter, statusCode int, response any) {
 		_, _ = w.Write(value)
 	case json.RawMessage:
 		w.WriteHeader(statusCode)
-
 		_, _ = w.Write(value)
 	default:
 		bytes, err := jsonx.EncodeBytes(value)

@@ -697,6 +697,17 @@ func TestWithOptions(t *testing.T) {
 	})
 }
 
+func TestWithSkipVerify(t *testing.T) {
+	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_,_ = w.Write([]byte(goodResponse))
+	}))
+	defer ts.Close()
+
+	result, err := httpx.Get[testResponse](context.Background(), ts.URL, httpx.WithInsecureSkipVerify())
+	assertStatusOkGoodResponse(t, err, result)
+}
+
 func assertStatusOkGoodResponse(t *testing.T, err error, resp *httpx.Response[testResponse]) {
 	t.Helper()
 

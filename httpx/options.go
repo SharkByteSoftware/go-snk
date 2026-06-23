@@ -15,23 +15,25 @@ const defaultTimeout = time.Second * 15
 
 // ConfigOptions contains the configuration options for HTTPX.
 type ConfigOptions struct {
-	httpClient     *http.Client
-	headers        http.Header
-	timeout        time.Duration
-	params         url.Values
-	strictDecoding bool
-	parseURLFunc   func(url string) (*url.URL, error)
+	httpClient         *http.Client
+	headers            http.Header
+	timeout            time.Duration
+	params             url.Values
+	strictDecoding     bool
+	insecureSkipVerify bool
+	parseURLFunc       func(url string) (*url.URL, error)
 }
 
 // NewOptions creates a new ConfigOptions instance.
 func NewOptions() *ConfigOptions {
 	return &ConfigOptions{
-		httpClient:     nil,
-		headers:        make(http.Header),
-		timeout:        defaultTimeout,
-		params:         make(url.Values),
-		strictDecoding: false,
-		parseURLFunc:   url.Parse,
+		httpClient:         nil,
+		headers:            make(http.Header),
+		timeout:            defaultTimeout,
+		params:             make(url.Values),
+		strictDecoding:     false,
+		insecureSkipVerify: false,
+		parseURLFunc:       url.Parse,
 	}
 }
 
@@ -155,6 +157,15 @@ func WithUserAgent(ua string) Option {
 
 		options.headers.Set("User-Agent", ua)
 
+		return nil
+	}
+}
+
+// WithInsecureSkipVerify disables TLS certificate verification.
+// This should only be used in development or testing environments.
+func WithInsecureSkipVerify() Option {
+	return func(options *ConfigOptions) error {
+		options.insecureSkipVerify = true
 		return nil
 	}
 }

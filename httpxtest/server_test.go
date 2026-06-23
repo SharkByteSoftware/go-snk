@@ -419,9 +419,4 @@ func TestServerBuilder_HowToUseIt(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, result)
 	assert.Equal(t, "Horton", result.Result.Name)
-
-	// req, _ := recorder.GetRequest("/v1/horton")
-	// // assert.True(t, recorder.IsRouteCalled("/v1/horton"))
-	// assert.Equal(t, http.MethodGet, req.Method)
-	// assert.Equal(t, "/v1/horton", req.URL.Path)
 }

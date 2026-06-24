@@ -290,7 +290,7 @@ func ExampleDoRawRequest() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	ts := setupTestServer(http.StatusOK, goodResponse)
+	ts := setupTestServer(http.StatusNoContent, badResponse)
 	defer ts.Close()
 
 	resp, err := httpx.DoRawRequest(ctx, http.MethodGet, ts.URL, nil)
@@ -301,7 +301,7 @@ func ExampleDoRawRequest() {
 	defer func() { _ = resp.Body.Close() }()
 
 	fmt.Println(resp.StatusCode, err)
-	// Output: 200 <nil>
+	// Output: 204 <nil>
 }
 
 func ExampleDoRequest() {
@@ -341,4 +341,13 @@ func ExampleDecodeResponse() {
 
 	fmt.Println(resp.Result, resp.StatusCode, err)
 	// Output: &{Test 18} 200 <nil>
+}
+
+func setupTestServer(statusCode int, body string) *httptest.Server {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(statusCode)
+		_, _ = w.Write([]byte(body))
+	}))
+
+	return ts
 }

@@ -31,6 +31,11 @@ func WithContentType(contentType string) Option {
 	return WithHeader("Content-Type", contentType)
 }
 
+// WithJSONContentType sets the Content-Type header to "application/json".
+func WithJSONContentType() Option {
+	return WithHeader("Content-Type", "application/json")
+}
+
 // WithCookie sets a cookie on the response.
 func WithCookie(name, value string) Option {
 	return func(w http.ResponseWriter, _ *http.Request) {

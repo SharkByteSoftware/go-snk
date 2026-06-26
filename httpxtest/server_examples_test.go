@@ -37,7 +37,9 @@ func ExampleNewServerBuilder_serverLevelOptions() {
 	t := &testing.T{}
 
 	// Options passed to NewServerBuilder apply to every response.
-	ts := httpxtest.NewServerBuilder(t, httpxtest.WithHeader("X-Server", "go-snk")).
+	ts := httpxtest.NewServerBuilder(t,
+		httpxtest.WithHeader("X-Server", "go-snk"),
+		httpxtest.WithJSONContentType()).
 		OnRoute(http.MethodGet, "/a", http.StatusOK, myStruct{Name: "a"}).
 		OnRoute(http.MethodGet, "/b", http.StatusOK, myStruct{Name: "b"}).
 		Build()
@@ -56,8 +58,10 @@ func ExampleNewServerBuilder_serverLevelOptions() {
 
 	defer func() { _ = respB.Body.Close() }()
 
-	fmt.Println(respA.Header.Get("X-Server"), respB.Header.Get("X-Server"))
-	// Output: go-snk go-snk
+	fmt.Println(respA.Header.Get("X-Server"))
+	fmt.Println(respA.Header.Get("Content-Type"))
+	// Output: go-snk
+	// application/json
 }
 
 func ExampleServerBuilder_On() {

@@ -58,8 +58,10 @@ func ExampleNewServerBuilder_serverLevelOptions() {
 
 	defer func() { _ = respB.Body.Close() }()
 
-	fmt.Println(respA.Header.Get("X-Server"), respB.Header.Get("X-Server"))
-	// Output: go-snk go-snk
+	fmt.Println(respA.Header.Get("X-Server"))
+	fmt.Println(respA.Header.Get("Content-Type"))
+	// Output: go-snk
+	// application/json
 }
 
 func ExampleServerBuilder_On() {

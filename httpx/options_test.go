@@ -201,7 +201,7 @@ func TestWithJSONContentType(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		_, _ = Post[any](context.Background(), ts.URL, struct{}{}, WithJSONContextType())
+		_, _ = Post[any](context.Background(), ts.URL, struct{}{}, WithJSONContentType())
 
 		assert.Equal(t, "application/json", got)
 	})

@@ -191,3 +191,18 @@ func TestWithUserAgent(t *testing.T) {
 		require.ErrorIs(t, err, ErrOptions)
 	})
 }
+
+func TestWithJSONContentType(t *testing.T) {
+	t.Run("sets Content-Type header", func(t *testing.T) {
+		var got string
+
+		ts := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+			got = r.Header.Get("Content-Type")
+		}))
+		defer ts.Close()
+
+		_, _ = Post[any](context.Background(), ts.URL, struct{}{}, WithJSONContextType())
+
+		assert.Equal(t, "application/json", got)
+	})
+}

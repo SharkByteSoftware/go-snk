@@ -170,7 +170,7 @@ func WithInsecureSkipVerify() Option {
 	}
 }
 
-// WithJSONContextType sets the Content-Type header to "application/json".
+// WithJSONContentType sets the Content-Type header to "application/json".
 func WithJSONContentType() Option {
 	return func(options *ConfigOptions) error {
 		options.headers.Set("Content-Type", "application/json")

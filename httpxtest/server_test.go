@@ -397,6 +397,26 @@ func TestServer_Options(t *testing.T) {
 	})
 }
 
+func TestServer_OnSequence(t *testing.T) {
+	t.Run("On sequence (1)", func(t *testing.T) {
+		ts := httpxtest.NewServerBuilder(t).
+			OnSequence(httpxtest.ExhaustServerError,
+				httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}),
+			).
+			Build()
+
+		result, err := httpx.Get[myStruct](context.Background(), ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		assert.Equal(t, http.StatusOK, result.StatusCode)
+		assert.Equal(t, "defaultHorton", result.Result.Name)
+
+		result, err = httpx.Get[myStruct](context.Background(), ts.URL)
+		require.Error(t, err)
+		require.Nil(t, result)
+	})
+}
+
 func TestServerBuilder_HowToUseIt(t *testing.T) {
 	ts := httpxtest.NewServerBuilder(t, httpxtest.WithHeader("X-SVR-LVL", "server-level")).
 		On(http.StatusOK, myStruct{Name: "defaultHorton"}).

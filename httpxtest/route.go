@@ -33,8 +33,9 @@ func (e *routeEntry) next() http.HandlerFunc {
 	case ExhaustRepeatLast:
 		i = min(i, n-1)
 	case ExhaustCycle:
-		i = i % n
-	default: // ExhaustServerError
+		i %= n
+	case ExhaustServerError:
+	default:
 		if i >= n {
 			return defaultHandler
 		}

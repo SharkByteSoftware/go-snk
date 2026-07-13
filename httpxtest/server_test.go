@@ -175,6 +175,15 @@ func TestServer_On(t *testing.T) {
 		require.Contains(t, result.Header, "Content-Type")
 		assert.Contains(t, result.Header.Get("Content-Type"), "application/go-snk")
 	})
+
+	t.Run("On already defined", func(t *testing.T) {
+		assert.Panics(t, func() {
+			_ = httpxtest.NewServerBuilder(t).
+				On(http.StatusOK, myStruct{Name: "defaultHorton"}, httpxtest.WithContentType("application/go-snk")).
+				On(http.StatusOK, myStruct{Name: "defaultHorton"}, httpxtest.WithContentType("application/go-snk")).
+				Build()
+		})
+	})
 }
 
 func TestServer_OnRoute(t *testing.T) {
@@ -269,14 +278,16 @@ func TestServer_OnSequence(t *testing.T) {
 		assert.Equal(t, "defaultHorton", result.Result.Name)
 
 		result, err = httpx.Get[myStruct](context.Background(), ts.URL)
-		require.Error(t, err)
-		require.Nil(t, result)
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, result.StatusCode)
+		assert.Equal(t, "defaultHorton", result.Result.Name)
 	})
 
 	t.Run("On 1 sequence with ExhaustRepeatLast", func(t *testing.T) {
 		ts := httpxtest.NewServerBuilder(t).
 			OnSequence(httpxtest.ExhaustRepeatLast,
-				httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}),
+				httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}, httpxtest.WithJSONContentType()),
+				httpxtest.Response(http.StatusOK, myStruct{Name: "nextHorton"}),
 			).
 			Build()
 
@@ -287,8 +298,9 @@ func TestServer_OnSequence(t *testing.T) {
 		assert.Equal(t, "defaultHorton", result.Result.Name)
 
 		result, err = httpx.Get[myStruct](context.Background(), ts.URL)
-		require.Error(t, err)
-		require.Nil(t, result)
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, result.StatusCode)
+		assert.Equal(t, "nextHorton", result.Result.Name)
 	})
 
 	t.Run("On 1 sequence with ExhaustServerError", func(t *testing.T) {
@@ -307,6 +319,19 @@ func TestServer_OnSequence(t *testing.T) {
 		result, err = httpx.Get[myStruct](context.Background(), ts.URL)
 		require.Error(t, err)
 		require.Nil(t, result)
+	})
+
+	t.Run("On sequence already defined", func(t *testing.T) {
+		assert.Panics(t, func() {
+			_ = httpxtest.NewServerBuilder(t).
+				OnSequence(httpxtest.ExhaustServerError,
+					httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}),
+				).
+				OnSequence(httpxtest.ExhaustServerError,
+					httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}),
+				).
+				Build()
+		})
 	})
 }
 

@@ -96,6 +96,20 @@ func (sb *ServerBuilder) OnRouteFunc(method string, route string, handler http.H
 	return sb
 }
 
+// OnSequence registers an ordered sequence of responses for the default handler.
+//
+//nolint:revive
+func (sb *ServerBuilder) OnSequence(exhaust ExhaustBehavior, responses ...SequencedResponse) *ServerBuilder {
+	return sb
+}
+
+// OnRouteSequence registers an ordered sequence of responses for a method/route.
+//
+//nolint:revive
+func (sb *ServerBuilder) OnRouteSequence(method, route string, exhaust ExhaustBehavior, responses ...SequencedResponse) *ServerBuilder {
+	return sb
+}
+
 func (sb *ServerBuilder) handler(w http.ResponseWriter, req *http.Request) {
 	key := routeKey(req.Method, req.URL.Path)
 	handler, ok := sb.routes[key]

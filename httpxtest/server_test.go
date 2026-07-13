@@ -254,6 +254,62 @@ func TestServer_OnRoute(t *testing.T) {
 	})
 }
 
+func TestServer_OnSequence(t *testing.T) {
+	t.Run("On 1 sequence with ExhaustCycle", func(t *testing.T) {
+		ts := httpxtest.NewServerBuilder(t).
+			OnSequence(httpxtest.ExhaustCycle,
+				httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}),
+			).
+			Build()
+
+		result, err := httpx.Get[myStruct](context.Background(), ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		assert.Equal(t, http.StatusOK, result.StatusCode)
+		assert.Equal(t, "defaultHorton", result.Result.Name)
+
+		result, err = httpx.Get[myStruct](context.Background(), ts.URL)
+		require.Error(t, err)
+		require.Nil(t, result)
+	})
+
+	t.Run("On 1 sequence with ExhaustRepeatLast", func(t *testing.T) {
+		ts := httpxtest.NewServerBuilder(t).
+			OnSequence(httpxtest.ExhaustRepeatLast,
+				httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}),
+			).
+			Build()
+
+		result, err := httpx.Get[myStruct](context.Background(), ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		assert.Equal(t, http.StatusOK, result.StatusCode)
+		assert.Equal(t, "defaultHorton", result.Result.Name)
+
+		result, err = httpx.Get[myStruct](context.Background(), ts.URL)
+		require.Error(t, err)
+		require.Nil(t, result)
+	})
+
+	t.Run("On 1 sequence with ExhaustServerError", func(t *testing.T) {
+		ts := httpxtest.NewServerBuilder(t).
+			OnSequence(httpxtest.ExhaustServerError,
+				httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}),
+			).
+			Build()
+
+		result, err := httpx.Get[myStruct](context.Background(), ts.URL)
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		assert.Equal(t, http.StatusOK, result.StatusCode)
+		assert.Equal(t, "defaultHorton", result.Result.Name)
+
+		result, err = httpx.Get[myStruct](context.Background(), ts.URL)
+		require.Error(t, err)
+		require.Nil(t, result)
+	})
+}
+
 func TestServer_SrvLevelOptions(t *testing.T) {
 	t.Run("With ContentType", func(t *testing.T) {
 		ts := httpxtest.NewServerBuilder(t, httpxtest.WithContentType("application/go-snk")).

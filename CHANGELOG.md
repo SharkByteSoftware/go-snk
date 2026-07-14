@@ -6,6 +6,43 @@
 
 # Changelog
 
+## v1.3.0
+
+### New Functions
+
+#### `httpxtest`
+- `OnSequence` — sets the default handler to an ordered sequence of responses, advancing one entry per request; panics if a default handler is already defined
+- `OnRouteSequence` — registers an ordered sequence of responses for a specific method/route pair; panics if the method is empty or the route is already registered
+- `Response` — constructs a `SequencedResponse` entry for use with `OnSequence` and `OnRouteSequence`; accepts the same status code, response value, and options as `On`
+
+### New Types
+
+#### `httpxtest`
+- `SequencedResponse` — represents a single entry in a sequence registered with `OnSequence` or `OnRouteSequence`
+- `ExhaustBehavior` — controls what the server does once all entries in a sequence have been served; supported values are `ExhaustCycle` (replay from start), `ExhaustRepeatLast` (repeat the final entry), and `ExhaustServerError` (return `500 Internal Server Error`)
+
+---
+
+## v1.2.9
+
+### New Functions
+
+#### `httpxtest`
+- `WithJsonContentType` — convenience option that sets `Content-Type: application/json` on the response; shorthand for `WithContentType("application/json")`
+
+### Improvements
+- **`httpx`** — test suite migrated to use `httpxtest.ServerBuilder` internally, replacing manual `httptest.Server` setup
+
+---
+
+## v1.2.8
+
+### Bug Fixes
+- **`httpxtest`** — fixed double `WriteHeader` call in the `nil` response case; previously both `204 No Content` and the caller-supplied status code were written, causing a superfluous header warning
+- **`httpxtest`** — clarified documentation on `nil` response behaviour: passing `nil` always writes `204 No Content` regardless of the status code argument
+
+---
+
 ## v1.2.7
 
 ### New Packages

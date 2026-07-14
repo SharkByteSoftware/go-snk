@@ -16,10 +16,10 @@ import (
 
 // ServerBuilder is a builder for HTTP servers.
 type ServerBuilder struct {
-	t              *testing.T
-	defaultHandler http.HandlerFunc
-	routes         map[string]http.HandlerFunc
-	options        []Option
+	t         *testing.T
+	options   []Option
+	onHandler http.HandlerFunc
+	routes    map[string]http.HandlerFunc
 }
 
 // NewServerBuilder creates a new ServerBuilder.
@@ -27,10 +27,10 @@ func NewServerBuilder(t *testing.T, options ...Option) *ServerBuilder {
 	t.Helper()
 
 	return &ServerBuilder{
-		t:              t,
-		defaultHandler: defaultHandler,
-		routes:         make(map[string]http.HandlerFunc),
-		options:        options,
+		t:         t,
+		routes:    make(map[string]http.HandlerFunc),
+		options:   options,
+		onHandler: nil,
 	}
 }
 
@@ -50,17 +50,21 @@ func (sb *ServerBuilder) BuildTLS() *httptest.Server {
 	return ts
 }
 
-// On defines a handler for the default route.
-// If response is nil, the server always responds with 204 No Content regardless of statusCode.
+// On defines a wildcard path handler.
+// If the response is nil, the server always responds with 204 No Content regardless of statusCode.
 func (sb *ServerBuilder) On(statusCode int, response any, options ...Option) *ServerBuilder {
 	return sb.OnFunc(func(w http.ResponseWriter, _ *http.Request) {
 		writeResponse(w, statusCode, response)
 	}, options...)
 }
 
-// OnFunc defines a handler for the default route.
+// OnFunc defines a wildcard handler function.
 func (sb *ServerBuilder) OnFunc(handler http.HandlerFunc, options ...Option) *ServerBuilder {
-	sb.defaultHandler = func(w http.ResponseWriter, r *http.Request) {
+	if sb.onHandler != nil {
+		panic("an On handler already defined")
+	}
+
+	sb.onHandler = func(w http.ResponseWriter, r *http.Request) {
 		slicex.Apply(options, func(option Option) { option(w, r) })
 		handler(w, r)
 	}
@@ -68,8 +72,20 @@ func (sb *ServerBuilder) OnFunc(handler http.HandlerFunc, options ...Option) *Se
 	return sb
 }
 
+// OnSequence registers an ordered sequence of responses for the default handler.
+func (sb *ServerBuilder) OnSequence(exhaust ExhaustBehavior, responses ...SequencedResponse) *ServerBuilder {
+	if sb.onHandler != nil {
+		panic("an On handler already defined")
+	}
+
+	sb.onHandler = sb.createSequenceFunc(exhaust, responses...)
+
+	return sb
+}
+
+
 // OnRoute defines a handler for a specific route.
-// If response is nil, the server always responds with 204 No Content regardless of statusCode.
+// If the response is nil, the server always responds with 204 No Content regardless of statusCode.
 func (sb *ServerBuilder) OnRoute(method string, route string, statusCode int, response any, options ...Option) *ServerBuilder {
 	return sb.OnRouteFunc(method, route,
 		func(w http.ResponseWriter, _ *http.Request) { writeResponse(w, statusCode, response) }, options...)
@@ -77,6 +93,21 @@ func (sb *ServerBuilder) OnRoute(method string, route string, statusCode int, re
 
 // OnRouteFunc defines a handler for a specific route.
 func (sb *ServerBuilder) OnRouteFunc(method string, route string, handler http.HandlerFunc, options ...Option) *ServerBuilder {
+	sb.addRouteFunc(method, route, func(w http.ResponseWriter, req *http.Request) {
+		slicex.Apply(options, func(option Option) { option(w, req) })
+		handler(w, req)
+	})
+
+	return sb
+}
+
+// OnRouteSequence registers an ordered sequence of responses for a method/route.
+func (sb *ServerBuilder) OnRouteSequence(method, route string, exhaust ExhaustBehavior, responses ...SequencedResponse) *ServerBuilder {
+	sb.addRouteFunc(method, route, sb.createSequenceFunc(exhaust, responses...))
+	return sb
+}
+
+func (sb *ServerBuilder) addRouteFunc(method, route string, handlerFunc http.HandlerFunc) {
 	if helpers.IsEmpty(method) {
 		panic("method cannot be empty")
 	}
@@ -88,12 +119,25 @@ func (sb *ServerBuilder) OnRouteFunc(method string, route string, handler http.H
 		panic("handler already defined for: " + key)
 	}
 
-	sb.routes[key] = func(w http.ResponseWriter, req *http.Request) {
-		slicex.Apply(options, func(option Option) { option(w, req) })
-		handler(w, req)
+	sb.routes[key] = handlerFunc
+}
+
+func (sb *ServerBuilder) createSequenceFunc(exhaust ExhaustBehavior, responses ...SequencedResponse) http.HandlerFunc {
+	//nolint:exhaustruct
+	entry := &routeEntry{exhaust: exhaust}
+
+	for _, r := range responses {
+		resp := r
+
+		entry.handlers = append(entry.handlers, func(w http.ResponseWriter, req *http.Request) {
+			slicex.Apply(resp.options, func(o Option) { o(w, req) })
+			writeResponse(w, resp.statusCode, resp.body)
+		})
 	}
 
-	return sb
+	return func(w http.ResponseWriter, r *http.Request) {
+		entry.next()(w, r)
+	}
 }
 
 func (sb *ServerBuilder) handler(w http.ResponseWriter, req *http.Request) {
@@ -108,7 +152,11 @@ func (sb *ServerBuilder) handler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	sb.defaultHandler(w, req)
+	if sb.onHandler != nil {
+		sb.onHandler(w, req)
+	}
+
+	defaultHandler(w, req)
 }
 
 func defaultHandler(w http.ResponseWriter, _ *http.Request) {

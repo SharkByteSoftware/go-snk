@@ -152,6 +152,86 @@ func ExampleServerBuilder_OnRouteFunc() {
 	// Output: 201 echo
 }
 
+func ExampleServerBuilder_OnSequence() {
+	t := &testing.T{}
+
+	// OnSequence returns each response in order for successive requests to the
+	// default handler. ExhaustRepeatLast keeps returning the final entry once
+	// the sequence is exhausted.
+	ts := httpxtest.NewServerBuilder(t).
+		OnSequence(httpxtest.ExhaustRepeatLast,
+			httpxtest.Response(http.StatusOK, myStruct{Name: "first"}),
+			httpxtest.Response(http.StatusOK, myStruct{Name: "second"}),
+		).
+		Build()
+
+	for range 3 {
+		resp, err := httpx.Get[myStruct](context.Background(), ts.URL)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(resp.Result.Name)
+	}
+	// Output:
+	// first
+	// second
+	// second
+}
+
+func ExampleServerBuilder_OnSequence_exhaustCycle() {
+	t := &testing.T{}
+
+	// ExhaustCycle wraps back to the first entry after the last one is served.
+	ts := httpxtest.NewServerBuilder(t).
+		OnSequence(httpxtest.ExhaustCycle,
+			httpxtest.Response(http.StatusOK, myStruct{Name: "a"}),
+			httpxtest.Response(http.StatusOK, myStruct{Name: "b"}),
+		).
+		Build()
+
+	for range 4 {
+		resp, err := httpx.Get[myStruct](context.Background(), ts.URL)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(resp.Result.Name)
+	}
+	// Output:
+	// a
+	// b
+	// a
+	// b
+}
+
+func ExampleServerBuilder_OnRouteSequence() {
+	t := &testing.T{}
+
+	// OnRouteSequence returns each response in order for successive requests to
+	// a specific method/route. Useful for simulating a resource that changes
+	// between polls, e.g. a job that transitions from pending to done.
+	ts := httpxtest.NewServerBuilder(t).
+		OnRouteSequence(http.MethodGet, "/v1/job", httpxtest.ExhaustRepeatLast,
+			httpxtest.Response(http.StatusOK, myStruct{Name: "pending"}),
+			httpxtest.Response(http.StatusOK, myStruct{Name: "done"}),
+		).
+		Build()
+
+	for range 3 {
+		resp, err := httpx.Get[myStruct](context.Background(), ts.URL+"/v1/job")
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(resp.Result.Name)
+	}
+	// Output:
+	// pending
+	// done
+	// done
+}
+
 func ExampleServerBuilder_BuildTLS() {
 	t := &testing.T{}
 

@@ -56,16 +56,39 @@ Prefer a plain `httptest.Server` when:
 
 ### Define responses
 
-| Method        | Purpose                                                                        |
-|---------------|--------------------------------------------------------------------------------|
-| `On`          | Sets the default handler to return a status code and response                  |
-| `OnFunc`      | Sets the default handler to a custom `http.HandlerFunc`                        |
-| `OnRoute`     | Registers a handler for a method/route that returns a status code and response |
-| `OnRouteFunc` | Registers a custom `http.HandlerFunc` for a method/route                       |
+| Method              | Purpose                                                                        |
+|---------------------|--------------------------------------------------------------------------------|
+| `On`                | Sets the default handler to return a status code and response                  |
+| `OnFunc`            | Sets the default handler to a custom `http.HandlerFunc`                        |
+| `OnSequence`        | Sets the default handler to an ordered sequence of responses                   |
+| `OnRoute`           | Registers a handler for a method/route that returns a status code and response |
+| `OnRouteFunc`       | Registers a custom `http.HandlerFunc` for a method/route                       |
+| `OnRouteSequence`   | Registers an ordered sequence of responses for a method/route                  |
 
-`OnRoute` and `OnRouteFunc` panic if the method is empty or if a handler is already registered for the
-same method/route pair. Requests that do not match a registered route fall through to the default handler,
-which returns `500 Internal Server Error` unless overridden with `On` or `OnFunc`.
+`OnRoute`, `OnRouteFunc`, and `OnRouteSequence` panic if the method is empty or if a handler is already
+registered for the same method/route pair. `On`, `OnFunc`, and `OnSequence` panic if a default handler is
+already defined. Requests that do not match a registered route fall through to the default handler, which
+returns `500 Internal Server Error` unless overridden with `On`, `OnFunc`, or `OnSequence`.
+
+### Sequenced responses
+
+`OnSequence` and `OnRouteSequence` return a series of responses in order, advancing one entry per request.
+Each entry is built with the `Response` helper, which takes the same status code, response value, and
+options as `On`. This is useful for simulating a resource that changes between requests, such as a job that
+transitions from `pending` to `done`, or for testing client retry logic.
+
+```go
+httpxtest.Response(http.StatusOK, myStruct{Name: "pending"}, httpxtest.WithJSONContentType())
+```
+
+The first argument to both methods is an `ExhaustBehavior` that controls what happens once every entry in
+the sequence has been served:
+
+| Behavior             | Behavior once exhausted                              |
+|----------------------|------------------------------------------------------|
+| `ExhaustCycle`       | Wraps around and replays the sequence from the start |
+| `ExhaustRepeatLast`  | Repeats the final entry indefinitely                 |
+| `ExhaustServerError` | Returns `500 Internal Server Error`                  |
 
 ### Response values
 
@@ -112,11 +135,32 @@ func TestClient(t *testing.T) {
 }
 ```
 
+To simulate a resource that changes between polls, register a sequence:
+
+```go
+func TestPollJob(t *testing.T) {
+    ts := httpxtest.NewServerBuilder(t).
+        OnRouteSequence(http.MethodGet, "/v1/job", httpxtest.ExhaustRepeatLast,
+            httpxtest.Response(http.StatusOK, myStruct{Name: "pending"}),
+            httpxtest.Response(http.StatusOK, myStruct{Name: "done"})).
+        Build()
+
+    first, err := httpx.Get[myStruct](context.Background(), ts.URL+"/v1/job")
+    require.NoError(t, err)
+    assert.Equal(t, "pending", first.Result.Name)
+
+    second, err := httpx.Get[myStruct](context.Background(), ts.URL+"/v1/job")
+    require.NoError(t, err)
+    assert.Equal(t, "done", second.Result.Name)
+}
+```
+
 ## Notes
 
 - The server is closed automatically via `t.Cleanup`; you do not need to close it yourself.
 - Use `BuildTLS` when testing clients that must talk to an HTTPS endpoint.
 - Use `On`/`OnRoute` for canned responses and `OnFunc`/`OnRouteFunc` when you need custom handler logic.
+- Use `OnSequence`/`OnRouteSequence` when successive requests should return different responses in order.
 - Keep options focused so the test setup stays readable.
 
 ## Examples

@@ -35,7 +35,6 @@ func (e *routeEntry) next() http.HandlerFunc {
 	case ExhaustCycle:
 		i %= n
 	case ExhaustServerError:
-	default:
 		if i >= n {
 			return defaultHandler
 		}

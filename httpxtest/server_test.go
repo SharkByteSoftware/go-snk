@@ -283,7 +283,7 @@ func TestServer_OnSequence(t *testing.T) {
 		assert.Equal(t, "defaultHorton", result.Result.Name)
 	})
 
-	t.Run("On 1 sequence with ExhaustRepeatLast", func(t *testing.T) {
+	t.Run("On 2 sequence with ExhaustRepeatLast", func(t *testing.T) {
 		ts := httpxtest.NewServerBuilder(t).
 			OnSequence(httpxtest.ExhaustRepeatLast,
 				httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}, httpxtest.WithJSONContentType()),
@@ -332,6 +332,27 @@ func TestServer_OnSequence(t *testing.T) {
 				).
 				Build()
 		})
+	})
+}
+
+func TestServer_OnRouteSequence(t *testing.T) {
+	t.Run("On route with ExhaustCycle", func(t *testing.T) {
+		ts := httpxtest.NewServerBuilder(t).
+			OnRouteSequence(http.MethodGet, "/v1/horton", httpxtest.ExhaustCycle,
+				httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}),
+			).
+			Build()
+
+		result, err := httpx.Get[myStruct](context.Background(), ts.URL+"/v1/horton")
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		assert.Equal(t, http.StatusOK, result.StatusCode)
+		assert.Equal(t, "defaultHorton", result.Result.Name)
+
+		result, err = httpx.Get[myStruct](context.Background(), ts.URL+"/v1/horton")
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, result.StatusCode)
+		assert.Equal(t, "defaultHorton", result.Result.Name)
 	})
 }
 

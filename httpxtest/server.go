@@ -78,6 +78,51 @@ func (sb *ServerBuilder) OnSequence(exhaust ExhaustBehavior, responses ...Sequen
 		panic("an On handler already defined")
 	}
 
+	sb.onHandler = sb.createSequenceFunc(exhaust, responses...)
+
+	return sb
+}
+
+
+// OnRoute defines a handler for a specific route.
+// If the response is nil, the server always responds with 204 No Content regardless of statusCode.
+func (sb *ServerBuilder) OnRoute(method string, route string, statusCode int, response any, options ...Option) *ServerBuilder {
+	return sb.OnRouteFunc(method, route,
+		func(w http.ResponseWriter, _ *http.Request) { writeResponse(w, statusCode, response) }, options...)
+}
+
+// OnRouteFunc defines a handler for a specific route.
+func (sb *ServerBuilder) OnRouteFunc(method string, route string, handler http.HandlerFunc, options ...Option) *ServerBuilder {
+	sb.addRouteFunc(method, route, func(w http.ResponseWriter, req *http.Request) {
+		slicex.Apply(options, func(option Option) { option(w, req) })
+		handler(w, req)
+	})
+
+	return sb
+}
+
+// OnRouteSequence registers an ordered sequence of responses for a method/route.
+func (sb *ServerBuilder) OnRouteSequence(method, route string, exhaust ExhaustBehavior, responses ...SequencedResponse) *ServerBuilder {
+	sb.addRouteFunc(method, route, sb.createSequenceFunc(exhaust, responses...))
+	return sb
+}
+
+func (sb *ServerBuilder) addRouteFunc(method, route string, handlerFunc http.HandlerFunc) {
+	if helpers.IsEmpty(method) {
+		panic("method cannot be empty")
+	}
+
+	key := routeKey(method, route)
+
+	_, exists := sb.routes[key]
+	if exists {
+		panic("handler already defined for: " + key)
+	}
+
+	sb.routes[key] = handlerFunc
+}
+
+func (sb *ServerBuilder) createSequenceFunc(exhaust ExhaustBehavior, responses ...SequencedResponse) http.HandlerFunc {
 	//nolint:exhaustruct
 	entry := &routeEntry{exhaust: exhaust}
 
@@ -90,46 +135,9 @@ func (sb *ServerBuilder) OnSequence(exhaust ExhaustBehavior, responses ...Sequen
 		})
 	}
 
-	sb.onHandler = func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		entry.next()(w, r)
 	}
-
-	return sb
-}
-
-// OnRoute defines a handler for a specific route.
-// If response is nil, the server always responds with 204 No Content regardless of statusCode.
-func (sb *ServerBuilder) OnRoute(method string, route string, statusCode int, response any, options ...Option) *ServerBuilder {
-	return sb.OnRouteFunc(method, route,
-		func(w http.ResponseWriter, _ *http.Request) { writeResponse(w, statusCode, response) }, options...)
-}
-
-// OnRouteFunc defines a handler for a specific route.
-func (sb *ServerBuilder) OnRouteFunc(method string, route string, handler http.HandlerFunc, options ...Option) *ServerBuilder {
-	if helpers.IsEmpty(method) {
-		panic("method cannot be empty")
-	}
-
-	key := routeKey(method, route)
-
-	_, exists := sb.routes[key]
-	if exists {
-		panic("handler already defined for: " + key)
-	}
-
-	sb.routes[key] = func(w http.ResponseWriter, req *http.Request) {
-		slicex.Apply(options, func(option Option) { option(w, req) })
-		handler(w, req)
-	}
-
-	return sb
-}
-
-// OnRouteSequence registers an ordered sequence of responses for a method/route.
-//
-//nolint:revive
-func (sb *ServerBuilder) OnRouteSequence(method, route string, exhaust ExhaustBehavior, responses ...SequencedResponse) *ServerBuilder {
-	return sb
 }
 
 func (sb *ServerBuilder) handler(w http.ResponseWriter, req *http.Request) {

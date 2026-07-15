@@ -112,6 +112,10 @@ func (sb *ServerBuilder) addRouteFunc(method, route string, handlerFunc http.Han
 		panic("method cannot be empty")
 	}
 
+	if helpers.IsEmpty(route) {
+		panic("route cannot be empty")
+	}
+
 	key := routeKey(method, route)
 
 	_, exists := sb.routes[key]

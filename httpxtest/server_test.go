@@ -234,6 +234,14 @@ func TestServer_OnRoute(t *testing.T) {
 		})
 	})
 
+	t.Run("OnRoute empty method", func(t *testing.T) {
+		ts := httpxtest.NewServerBuilder(t)
+
+		assert.Panics(t, func() {
+			ts.OnRoute(http.MethodGet, "", http.StatusOK, myStruct{Name: "Horton"})
+		})
+	})
+
 	t.Run("OnRoute duplicate path", func(t *testing.T) {
 		ts := httpxtest.NewServerBuilder(t).
 			OnRoute(http.MethodGet, "/v1/horton", http.StatusOK, myStruct{Name: "Horton"})

@@ -9,13 +9,13 @@ import (
 type ExhaustBehavior int
 
 const (
-	// ExhaustCycle wraps around to the first entry.
+	// ExhaustCycle wraps around to the first entry (default).
 	ExhaustCycle ExhaustBehavior = iota
 
 	// ExhaustRepeatLast repeats the final entry indefinitely.
 	ExhaustRepeatLast ExhaustBehavior = iota
 
-	// ExhaustServerError returns 500 (default).
+	// ExhaustServerError returns 500.
 	ExhaustServerError
 )
 

@@ -5,7 +5,6 @@ import "net/http"
 // ResponseFunc is a function that can be used to respond to an HTTP request.
 type ResponseFunc func(w http.ResponseWriter, r *http.Request)
 
-
 // SequencedResponse is a single entry in a sequence of canned responses.
 type SequencedResponse struct {
 	statusCode int

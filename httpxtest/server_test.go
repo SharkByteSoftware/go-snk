@@ -234,6 +234,14 @@ func TestServer_OnRoute(t *testing.T) {
 		})
 	})
 
+	t.Run("OnRoute empty method", func(t *testing.T) {
+		ts := httpxtest.NewServerBuilder(t)
+
+		assert.Panics(t, func() {
+			ts.OnRoute(http.MethodGet, "", http.StatusOK, myStruct{Name: "Horton"})
+		})
+	})
+
 	t.Run("OnRoute duplicate path", func(t *testing.T) {
 		ts := httpxtest.NewServerBuilder(t).
 			OnRoute(http.MethodGet, "/v1/horton", http.StatusOK, myStruct{Name: "Horton"})
@@ -338,6 +346,14 @@ func TestServer_OnSequence(t *testing.T) {
 				Build()
 		})
 	})
+
+	t.Run("OnSequence empty responses", func(t *testing.T) {
+		sb := httpxtest.NewServerBuilder(t)
+
+		assert.Panics(t, func() {
+			sb.OnSequence(httpxtest.ExhaustCycle)
+		})
+	})
 }
 
 func TestServer_OnRouteSequence(t *testing.T) {
@@ -421,6 +437,14 @@ func TestServer_OnRouteSequence(t *testing.T) {
 					httpxtest.Response(http.StatusOK, myStruct{Name: "defaultHorton"}),
 				).
 				Build()
+		})
+	})
+
+	t.Run("On route sequence with no responses", func(t *testing.T) {
+		sb := httpxtest.NewServerBuilder(t)
+
+		require.Panics(t, func() {
+			sb.OnRouteSequence(http.MethodGet, "/v1/horton", httpxtest.ExhaustCycle)
 		})
 	})
 }

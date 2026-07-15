@@ -123,6 +123,10 @@ func (sb *ServerBuilder) addRouteFunc(method, route string, handlerFunc http.Han
 }
 
 func (sb *ServerBuilder) createSequenceFunc(exhaust ExhaustBehavior, responses ...SequencedResponse) http.HandlerFunc {
+	if len(responses) == 0 {
+		panic("at least one response must be provided")
+	}
+
 	//nolint:exhaustruct
 	entry := &routeEntry{exhaust: exhaust}
 
@@ -154,6 +158,7 @@ func (sb *ServerBuilder) handler(w http.ResponseWriter, req *http.Request) {
 
 	if sb.onHandler != nil {
 		sb.onHandler(w, req)
+		return
 	}
 
 	defaultHandler(w, req)

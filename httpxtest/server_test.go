@@ -338,6 +338,14 @@ func TestServer_OnSequence(t *testing.T) {
 				Build()
 		})
 	})
+
+	t.Run("OnSequence empty responses", func(t *testing.T) {
+		sb := httpxtest.NewServerBuilder(t)
+
+		assert.Panics(t, func() {
+			sb.OnSequence(httpxtest.ExhaustCycle)
+		})
+	})
 }
 
 func TestServer_OnRouteSequence(t *testing.T) {

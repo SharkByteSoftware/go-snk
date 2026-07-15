@@ -431,6 +431,14 @@ func TestServer_OnRouteSequence(t *testing.T) {
 				Build()
 		})
 	})
+
+	t.Run("On route sequence with no responses", func(t *testing.T) {
+		sb := httpxtest.NewServerBuilder(t)
+
+		require.Panics(t, func() {
+			sb.OnRouteSequence(http.MethodGet, "/v1/horton", httpxtest.ExhaustCycle)
+		})
+	})
 }
 
 func TestServer_SrvLevelOptions(t *testing.T) {

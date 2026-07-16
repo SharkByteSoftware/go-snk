@@ -430,7 +430,7 @@ func ExampleMin() {
 func ExampleMinBy() {
 	strings := []string{"a", "aa", "aaa"}
 
-	shortest := slicex.MinBy(strings, func(a string, b string) bool { return len(a) > len(b) })
+	shortest := slicex.MinBy(strings, func(a string, b string) bool { return len(a) < len(b) })
 
 	fmt.Println(shortest)
 	// Output: a

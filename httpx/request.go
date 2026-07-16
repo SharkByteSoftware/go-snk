@@ -89,7 +89,14 @@ func newRequestWithAppliedConfig(
 		return nil, err
 	}
 
-	base.RawQuery = config.params.Encode()
+	if len(config.params) > 0 {
+		query := base.Query()
+		for key, values := range config.params {
+			query[key] = values
+		}
+
+		base.RawQuery = query.Encode()
+	}
 
 	req, err := http.NewRequestWithContext(ctx, method, base.String(), body)
 	if err != nil {

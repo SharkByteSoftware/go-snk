@@ -11,7 +11,7 @@ BENCH_PKGS := \
 BENCHMARKS := $(BENCH_PKGS:%=bench/%)
 BENCH_COUNT := 1
 
-.PHONY: default all test bench bench/% vet lint tidy clean dist godoc browse update-pkg-go-dev
+.PHONY: default all test bench bench/% vet lint tidy clean godoc browse update-pkg-go-dev
 
 default: test lint lint-tests
 

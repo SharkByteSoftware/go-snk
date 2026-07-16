@@ -90,23 +90,21 @@ func MaxBy[S ~[]T, T any](slice S, maxFunc func(a, b T) bool) T {
 // Min returns the minimum element in the slice using natural ordering.
 // Returns the zero value of T for an empty slice.
 func Min[S ~[]T, T cmp.Ordered](slice S) T {
-	return MinBy(slice, func(a, b T) bool { return a > b })
+	return MinBy(slice, func(a, b T) bool { return a < b })
 }
 
 // MinBy returns the minimum element in the slice as determined by the less function.
 // less(a, b) should return true when a should be considered less than b.
 // Returns the zero value of T for an empty slice.
-func MinBy[S ~[]T, T any](slice S, minFunc func(a, b T) bool) T {
-	var minValue T
-
+func MinBy[S ~[]T, T any](slice S, less func(a, b T) bool) T {
 	if len(slice) == 0 {
-		return minValue
+		return helpers.Empty[T]()
 	}
 
-	minValue = slice[0]
+	minValue := slice[0]
 
-	Apply(slice, func(item T) {
-		if minFunc(minValue, item) {
+	Apply(slice[1:], func(item T) {
+		if less(item, minValue) {
 			minValue = item
 		}
 	})

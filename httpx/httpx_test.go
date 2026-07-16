@@ -764,6 +764,67 @@ func TestWithSkipVerify(t *testing.T) {
 	assertStatusOkGoodResponse(t, err, result)
 }
 
+// TestGet_PreservesExistingURLQueryString demonstrates that a query string
+// embedded directly in the request URL is dropped when no WithParam/WithParams
+// option is supplied.
+func TestGet_PreservesExistingURLQueryString(t *testing.T) {
+	ctx := context.Background()
+
+	var capturedRawQuery string
+
+	ts := httpxtest.NewServerBuilder(t).
+		OnRouteFunc(http.MethodGet, "/search", func(w http.ResponseWriter, r *http.Request) {
+			capturedRawQuery = r.URL.RawQuery
+
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte(`{"Name":"Test","Age":18}`))
+		}).
+		Build()
+
+	type result struct {
+		Name string
+		Age  int
+	}
+
+	_, err := httpx.Get[result](ctx, ts.URL+"/search?q=hello&page=2")
+	require.NoError(t, err)
+
+	// Expected: the server should see the query string the caller put on the URL.
+	// Actual (bug): capturedRawQuery is "", because DoRequest rebuilds RawQuery
+	// from the (empty) params option set instead of merging with what was there.
+	assert.Equal(t, "q=hello&page=2", capturedRawQuery)
+}
+
+// TestGet_WithParamAlsoDropsExistingURLQueryString shows the same bug still
+// bites even when the caller does use WithParam: the option's params replace
+// the URL's original query string entirely rather than merging with it.
+func TestGet_WithParamAlsoDropsExistingURLQueryString(t *testing.T) {
+	ctx := context.Background()
+
+	var capturedRawQuery string
+
+	ts := httpxtest.NewServerBuilder(t).
+		OnRouteFunc(http.MethodGet, "/search", func(w http.ResponseWriter, r *http.Request) {
+			capturedRawQuery = r.URL.RawQuery
+
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte(`{"Name":"Test","Age":18}`))
+		}).
+		Build()
+
+	type result struct {
+		Name string
+		Age  int
+	}
+
+	_, err := httpx.Get[result](ctx, ts.URL+"/search?q=hello", httpx.WithParam("page", "2"))
+	require.NoError(t, err)
+
+	// Expected (if merging correctly): both q=hello and page=2 present.
+	// Actual (bug): only page=2 survives; q=hello from the URL is gone.
+	assert.Equal(t, "page=2&q=hello", capturedRawQuery)
+}
+
 func assertStatusOkGoodResponse(t *testing.T, err error, resp *httpx.Response[testResponse]) {
 	t.Helper()
 

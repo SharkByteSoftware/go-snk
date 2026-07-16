@@ -21,7 +21,7 @@ func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
 // with a max concurrency. The mapper function is called in parallel, and results are
 // returned in order they appear in the slice.
 func MapWithLimit[S ~[]T, T any, R any](slice S, mapper func(item T) R, concurrency int) []R {
-	concurrency = min(concurrency, len(slice))
+	concurrency = max(min(concurrency, len(slice)), 1)
 
 	result := make([]R, len(slice))
 	tasks := make(chan struct {

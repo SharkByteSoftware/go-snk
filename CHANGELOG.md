@@ -6,6 +6,21 @@
 
 # Changelog
 
+## v1.3.2
+
+### Bug Fixes
+- **`Makefile`** — fixed miscellaneous build bugs and removed `dist` from `.PHONY` targets
+
+---
+
+## v1.3.1
+
+### Bug Fixes
+- **`httpxtest`** — `OnRoute`, `OnRouteFunc`, and `OnRouteSequence` now panic if an empty route is passed; previously only an empty method was guarded against
+- **`httpxtest`** — fixed minor bugs identified during code review
+
+---
+
 ## v1.3.0
 
 ### New Functions

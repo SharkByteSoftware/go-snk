@@ -6,6 +6,18 @@
 
 # Changelog
 
+## v1.3.3
+
+### Bug Fixes
+- **`slicex/parallel.ApplyWithLimit`** — fixed a potential panic when the slice is empty; `concurrency` was being clamped to `min(concurrency, len(slice))` which evaluated to `0`, causing the worker loop to not start and leaving the channel undrained
+- **`httpx.ResponseError`** — fixed a potential nil pointer dereference when `resp.Request` is nil; the `Method` and `URL` fields are now safely extracted before use
+
+### Improvements
+- Upgraded Go to 1.27
+- Updated `golangci-lint` to latest stable version; re-enabled additional linters
+
+---
+
 ## v1.3.2
 
 ### Bug Fixes

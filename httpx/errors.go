@@ -111,12 +111,27 @@ type ResponseError struct {
 }
 
 // NewResponseError returns a new ResponseError.
+//
+// resp.Request is nil for responses that were never associated with an outgoing
+// request — for example, one built by hand or returned from
+// [net/http/httptest.ResponseRecorder.Result]. Method and URL are left empty in
+// that case rather than panicking.
 func NewResponseError(resp *http.Response) *ResponseError {
 	body, _ := io.ReadAll(resp.Body)
 
+	var method, requestURL string
+
+	if resp.Request != nil {
+		method = resp.Request.Method
+
+		if resp.Request.URL != nil {
+			requestURL = resp.Request.URL.String()
+		}
+	}
+
 	return &ResponseError{
-		Method:     resp.Request.Method,
-		URL:        resp.Request.URL.String(),
+		Method:     method,
+		URL:        requestURL,
 		StatusCode: resp.StatusCode,
 		Status:     resp.Status,
 		Body:       body,

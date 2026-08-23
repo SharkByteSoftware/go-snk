@@ -75,3 +75,28 @@ func TestDecodeResponse_500StatusCode(t *testing.T) {
 	assert.Equal(t, http.StatusInternalServerError, respError.StatusCode)
 	assert.Equal(t, http.StatusText(http.StatusInternalServerError), respError.Status)
 }
+
+func TestDecodeResponse_500StatusCode_NilRequest(t *testing.T) {
+	// resp.Request is nil for responses not associated with an outgoing request,
+	// such as one returned from httptest.ResponseRecorder.Result(). NewResponseError
+	// must not panic when building the error from a response shaped like this.
+	response := &http.Response{
+		StatusCode: http.StatusInternalServerError,
+		Status:     http.StatusText(http.StatusInternalServerError),
+		Header:     http.Header{"Content-Type": []string{"application/json"}},
+		Body:       io.NopCloser(strings.NewReader(goodResponse)),
+		Request:    nil,
+	}
+
+	resp, err := httpx.DecodeResponse[testResponse](response, httpx.NewOptions())
+	require.Error(t, err)
+	require.ErrorIs(t, err, httpx.ErrResponse)
+	require.Nil(t, resp)
+
+	var respError *httpx.ResponseError
+	require.ErrorAs(t, err, &respError)
+	assert.Equal(t, http.StatusInternalServerError, respError.StatusCode)
+	assert.Empty(t, respError.Method)
+	assert.Empty(t, respError.URL)
+	assert.JSONEq(t, goodResponse, string(respError.Body))
+}

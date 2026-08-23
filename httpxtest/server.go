@@ -83,7 +83,6 @@ func (sb *ServerBuilder) OnSequence(exhaust ExhaustBehavior, responses ...Sequen
 	return sb
 }
 
-
 // OnRoute defines a handler for a specific route.
 // If the response is nil, the server always responds with 204 No Content regardless of statusCode.
 func (sb *ServerBuilder) OnRoute(method string, route string, statusCode int, response any, options ...Option) *ServerBuilder {
@@ -131,7 +130,7 @@ func (sb *ServerBuilder) createSequenceFunc(exhaust ExhaustBehavior, responses .
 		panic("at least one response must be provided")
 	}
 
-	//nolint:exhaustruct
+	//nolint:exhaustruct_v5
 	entry := &routeEntry{exhaust: exhaust}
 
 	for _, r := range responses {

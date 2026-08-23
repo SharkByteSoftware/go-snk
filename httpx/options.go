@@ -139,7 +139,7 @@ func WithBasicAuth(username, password string) Option {
 			return NewOptionsError("WithBasicAuth", "username must not be empty", nil)
 		}
 
-		//nolint:exhaustruct
+		//nolint:exhaustruct_v5
 		req := &http.Request{Header: make(http.Header)}
 		req.SetBasicAuth(username, password)
 		options.headers.Set("Authorization", req.Header.Get("Authorization"))

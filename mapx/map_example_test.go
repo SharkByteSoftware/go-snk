@@ -174,6 +174,7 @@ func ExampleApply() {
 	}
 
 	var result string
+
 	mapx.Apply(numMap, func(key int, value string) {
 		if key == 256 {
 			result = value

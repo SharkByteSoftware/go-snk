@@ -107,6 +107,7 @@ func ExampleSet_Apply() {
 	set := sets.New(1, 2, 3)
 
 	var values []int
+
 	set.Apply(func(i int) {
 		values = append(values, i)
 	})

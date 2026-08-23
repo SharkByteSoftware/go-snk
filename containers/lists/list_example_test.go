@@ -197,6 +197,7 @@ func ExampleList_ForEach() {
 	l := lists.New(1, 2, 3, 4, 5)
 
 	var sum int
+
 	l.ForEach(func(v int) { sum += v })
 
 	fmt.Println(sum)

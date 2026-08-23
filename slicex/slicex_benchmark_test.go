@@ -142,6 +142,7 @@ func BenchmarkApply(b *testing.B) {
 
 			for b.Loop() {
 				var sum int
+
 				slicex.Apply(ints, func(n int) { sum += n })
 			}
 		})

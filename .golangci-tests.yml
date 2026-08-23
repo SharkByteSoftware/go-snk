@@ -11,7 +11,10 @@ linters:
     - gochecknoglobals
     - staticcheck
     - exhaustruct
+    - gomodguard
+    - exhaustruct_v5
     - dupl
+    - goconst
   settings:
     funlen:
       lines: 100

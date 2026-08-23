@@ -60,13 +60,13 @@ func clientWithAppliedConfig(config *ConfigOptions) *http.Client {
 		return config.httpClient
 	}
 
-	//nolint:exhaustruct
-	client :=http.Client{
-		Timeout:   config.timeout,
+	//nolint:exhaustruct_v5
+	client := http.Client{
+		Timeout: config.timeout,
 	}
 
 	if config.insecureSkipVerify {
-		//nolint:exhaustruct
+		//nolint:exhaustruct_v5
 		client.Transport = &http.Transport{
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: config.insecureSkipVerify, //nolint:gosec
@@ -92,6 +92,7 @@ func newRequestWithAppliedConfig(
 	if len(config.params) > 0 {
 		query := base.Query()
 		for key, values := range config.params {
+			//nolint:modernize
 			query[key] = values
 		}
 

@@ -39,7 +39,7 @@ func WithJSONContentType() Option {
 // WithCookie sets a cookie on the response.
 func WithCookie(name, value string) Option {
 	return func(w http.ResponseWriter, _ *http.Request) {
-		http.SetCookie(w, &http.Cookie{Name: name, Value: value}) //nolint:exhaustruct
+		http.SetCookie(w, &http.Cookie{Name: name, Value: value}) //nolint:exhaustruct_v5,gosec
 	}
 }
 

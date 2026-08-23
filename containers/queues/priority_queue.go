@@ -1,4 +1,4 @@
-//nolint:mnd,exhaustruct
+//nolint:mnd,exhaustruct_v5
 package queues
 
 import (

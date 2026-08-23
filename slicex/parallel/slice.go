@@ -34,6 +34,7 @@ func MapWithLimit[S ~[]T, T any, R any](slice S, mapper func(item T) R, concurre
 	for i := 0; i < concurrency && i < len(slice); i++ {
 		waitGroup.Add(1)
 
+		//nolint:modernize
 		go func() {
 			defer waitGroup.Done()
 
@@ -84,6 +85,7 @@ func ApplyWithLimit[S ~[]T, T any](slice S, apply func(item T), concurrency int)
 	for i := 0; i < concurrency && i < len(slice); i++ {
 		waitGroup.Add(1)
 
+		//nolint:modernize
 		go func() {
 			defer waitGroup.Done()
 

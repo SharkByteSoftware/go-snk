@@ -87,6 +87,7 @@ func (l *List[T]) PushFront(value T) *Element[T] {
 func (l *List[T]) Prepend(values ...T) {
 	l.checkInit()
 
+	//nolint:modernize
 	for idx := len(values) - 1; idx >= 0; idx-- {
 		_ = l.insertValue(values[idx], &l.root)
 	}

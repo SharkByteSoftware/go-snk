@@ -161,6 +161,7 @@ func TestMap_Merge(t *testing.T) {
 
 	// resolver receives the correct key
 	var seenKey int
+
 	mapx.Merge(
 		map[int]string{5: "five"},
 		map[int]string{5: "FIVE"},

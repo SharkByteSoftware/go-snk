@@ -4,6 +4,8 @@ linters:
   default: all
   disable:
     - wsl
+    - exhaustruct
+    - gomodguard
   settings:
     varnamelen:
       max-distance: 30

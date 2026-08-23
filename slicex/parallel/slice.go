@@ -76,7 +76,7 @@ func Apply[S ~[]T, T any](slice S, apply func(item T)) {
 // ApplyWithLimit applies a function to each item in the slice.  The apply function is called
 // in parallel with a max concurrency.
 func ApplyWithLimit[S ~[]T, T any](slice S, apply func(item T), concurrency int) {
-	concurrency = min(concurrency, len(slice))
+	concurrency = max(min(concurrency, len(slice)), 1)
 
 	tasks := make(chan T, len(slice))
 

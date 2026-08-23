@@ -107,17 +107,19 @@ type ResponseError struct {
 	URL        string
 	StatusCode int
 	Status     string
-	Body       io.Closer
+	Body       []byte
 }
 
 // NewResponseError returns a new ResponseError.
 func NewResponseError(resp *http.Response) *ResponseError {
+	body, _ := io.ReadAll(resp.Body)
+
 	return &ResponseError{
 		Method:     resp.Request.Method,
 		URL:        resp.Request.URL.String(),
 		StatusCode: resp.StatusCode,
 		Status:     resp.Status,
-		Body:       resp.Body,
+		Body:       body,
 	}
 }
 

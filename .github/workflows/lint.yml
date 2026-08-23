@@ -21,8 +21,7 @@ jobs:
       - name: Run code lint
         uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.5
-          install-mode: goinstall
+          version: v2.13
       - name: Run tests lint
         run: |
           make lint-tests

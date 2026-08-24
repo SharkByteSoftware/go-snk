@@ -6,6 +6,13 @@
 
 # Changelog
 
+## v1.3.4
+
+### Improvements
+- Improved `update-pkg-go-dev` Makefile target
+
+---
+
 ## v1.3.3
 
 ### Bug Fixes

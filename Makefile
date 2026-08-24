@@ -61,8 +61,11 @@ update-pkg-go-dev:
 	$(printTarget)
 	$(eval LATEST_TAG := $(shell git ls-remote --tags origin | grep -E 'v[0-9]+\.[0-9]+\.[0-9]+$$' | awk '{print $$2}' | sed 's#refs/tags/##' | sort -V | tail -n 1))
 	@test -n "$(LATEST_TAG)" || (echo "Could not determine latest tag" && exit 1)
-	@echo "Refreshing pkg.go.dev with: $(LATEST_TAG)"
+	@echo "Refreshing proxy.golang.org with: $(LATEST_TAG)"
 	@curl -s "https://proxy.golang.org/github.com/!shark!byte!software/go-snk/@v/$(LATEST_TAG).info" | jq
+	@echo "Requesting pkg.go.dev index for: $(LATEST_TAG)"
+	@curl -s -o /dev/null -w "pkg.go.dev responded: %{http_code}\n" \
+		"https://pkg.go.dev/github.com/SharkByteSoftware/go-snk@$(LATEST_TAG)"
 
 #Helper function to pretty print targets as they execute
 TARGET_COLOR := \033[0;32m

@@ -2,9 +2,6 @@
 package parallel
 
 import (
-	"sync"
-
-	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 )
 
@@ -21,118 +18,59 @@ func Map[S ~[]T, T any, R any](slice S, mapper func(item T) R) []R {
 // with a max concurrency. The mapper function is called in parallel, and results are
 // returned in order they appear in the slice.
 func MapWithLimit[S ~[]T, T any, R any](slice S, mapper func(item T) R, concurrency int) []R {
-	concurrency = max(min(concurrency, len(slice)), 1)
-
 	result := make([]R, len(slice))
-	tasks := make(chan struct {
-		item T
-		idx  int
-	}, len(slice))
 
-	var waitGroup sync.WaitGroup
-
-	for i := 0; i < concurrency && i < len(slice); i++ {
-		waitGroup.Add(1)
-
-		//nolint:modernize
-		go func() {
-			defer waitGroup.Done()
-
-			for task := range tasks {
-				result[task.idx] = mapper(task.item)
-			}
-		}()
-	}
-
-	slicex.ApplyWithIndex(slice, func(item T, idx int) {
-		tasks <- struct {
-			item T
-			idx  int
-		}{item, idx}
+	runIndexed(slice, concurrency, func(idx int, item T) {
+		result[idx] = mapper(item)
 	})
-
-	close(tasks)
-	waitGroup.Wait()
 
 	return result
 }
 
-// Apply applies a function to each item in the slice.  The apply function is called
-// in parallel.
+// Apply applies a function to each item in the slice. The apply function is called
+// in parallel with at most 1000 concurrent calls.
+// If the function panics, the panic is re-raised on the calling goroutine.
 func Apply[S ~[]T, T any](slice S, apply func(item T)) {
-	var waitGroup sync.WaitGroup
-	waitGroup.Add(len(slice))
-
-	slicex.Apply(slice, func(item T) {
-		go func() {
-			apply(item)
-			waitGroup.Done()
-		}()
-	})
-
-	waitGroup.Wait()
+	ApplyWithLimit(slice, apply, defaultMaxConcurrency)
 }
 
-// ApplyWithLimit applies a function to each item in the slice.  The apply function is called
+// ApplyWithLimit applies a function to each item in the slice. The apply function is called
 // in parallel with a max concurrency.
+// If the function panics, the panic is re-raised on the calling goroutine.
 func ApplyWithLimit[S ~[]T, T any](slice S, apply func(item T), concurrency int) {
-	concurrency = max(min(concurrency, len(slice)), 1)
-
-	tasks := make(chan T, len(slice))
-
-	var waitGroup sync.WaitGroup
-
-	for i := 0; i < concurrency && i < len(slice); i++ {
-		waitGroup.Add(1)
-
-		//nolint:modernize
-		go func() {
-			defer waitGroup.Done()
-
-			for task := range tasks {
-				apply(task)
-			}
-		}()
-	}
-
-	slicex.Apply(slice, func(item T) {
-		tasks <- item
+	runIndexed(slice, concurrency, func(_ int, item T) {
+		apply(item)
 	})
-
-	close(tasks)
-	waitGroup.Wait()
 }
 
 // GroupBy returns a map of slices grouped by a key produced by a predicate function.
 // The predicate is called in parallel, and the results are returned in the order they
 // appear in the slice.
 func GroupBy[S ~[]T, T any, R comparable](slice S, predicate func(item T) R) map[R]S {
-	result := make(map[R]S, len(slice))
-
-	keys := Map(slice, func(item T) R {
-		return predicate(item)
-	})
-
-	slicex.ApplyWithIndex(slice, func(item T, idx int) {
-		result[keys[idx]] = append(result[keys[idx]], item)
-	})
-
-	return result
+	return groupByKeys(slice, Map(slice, predicate))
 }
 
 // GroupByWithLimit returns a map of slices grouped by a key produced by a predicate function.
 // The predicate is called in parallel with a max concurrency, and the results are returned in the order they
 // appear in the slice.
 func GroupByWithLimit[S ~[]T, T any, R comparable](slice S, predicate func(item T) R, concurrency int) map[R]S {
-	concurrency = min(concurrency, len(slice))
+	return groupByKeys(slice, MapWithLimit(slice, predicate, concurrency))
+}
 
+// Partition splits a slice into two slices based on a predicate. The predicate is called
+// in parallel, and the results are returned in the order they appear in the slice.
+func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
+	return splitByMatch(slice, Map(slice, predicate))
+}
+
+// PartitionWithLimit splits a slice into two slices based on a predicate. The predicate is called
+// in parallel with a max concurrency, and the results are returned in the order they appear in the slice.
+func PartitionWithLimit[S ~[]T, T any](slice S, predicate func(item T) bool, concurrency int) (S, S) {
+	return splitByMatch(slice, MapWithLimit(slice, predicate, concurrency))
+}
+
+func groupByKeys[S ~[]T, T any, R comparable](slice S, keys []R) map[R]S {
 	result := make(map[R]S, len(slice))
-
-	keys := MapWithLimit(slice,
-		func(item T) R {
-			return predicate(item)
-		},
-		concurrency)
 
 	slicex.ApplyWithIndex(slice, func(item T, idx int) {
 		result[keys[idx]] = append(result[keys[idx]], item)
@@ -141,48 +79,23 @@ func GroupByWithLimit[S ~[]T, T any, R comparable](slice S, predicate func(item 
 	return result
 }
 
-// Partition splits a slice into two slices based on a predicate.  The predicate is called
-// in parallel, and the results are returned in the order they appear in the slice.
-func Partition[S ~[]T, T any](slice S, predicate func(item T) bool) (S, S) {
+// splitByMatch sequentially routes items by the precomputed predicate results;
+// the parallelism lives in the predicate evaluation, which is the expensive part.
+func splitByMatch[S ~[]T, T any](slice S, matches []bool) (S, S) {
 	const halfDivisor = 2
 
 	half := len(slice) / halfDivisor
-	part1 := make(S, 0, half)
-	part2 := make(S, 0, half)
-
-	results := Map(slice, predicate) // parallelism stays here — the expensive part
+	matched := make(S, 0, half)
+	unmatched := make(S, 0, half)
 
 	for i, item := range slice {
-		if results[i] {
-			part1 = append(part1, item)
+		if matches[i] {
+			matched = append(matched, item)
 			continue
 		}
 
-		part2 = append(part2, item)
+		unmatched = append(unmatched, item)
 	}
 
-	return part1, part2
-}
-
-// PartitionWithLimit splits a slice into two slices based on a predicate.  The predicate is called
-// in parallel with a max concurrency, and the results are returned in the order they appear in the slice.
-func PartitionWithLimit[S ~[]T, T any](slice S, predicate func(item T) bool, concurrency int) (S, S) {
-	const halfDivisor = 2
-
-	concurrency = min(concurrency, len(slice))
-	half := len(slice) / halfDivisor
-	part1 := make(S, 0, half)
-	part2 := make(S, 0, half)
-
-	part := MapWithLimit(slice,
-		func(item T) *S {
-			return conditional.If(predicate(item), &part1, &part2)
-		},
-		concurrency)
-
-	slicex.ApplyWithIndex(slice, func(item T, idx int) {
-		*part[idx] = append(*part[idx], item)
-	})
-
-	return part1, part2
+	return matched, unmatched
 }

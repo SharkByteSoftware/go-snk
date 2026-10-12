@@ -74,7 +74,7 @@ func ExamplePost() {
 	defer ts.Close()
 
 	_, err = httpx.Post[testResponse](ctx, ts.URL, testPayload{Name: "Test", Age: 18},
-		httpx.StrictDecoding(),
+		httpx.WithStrictDecoding(),
 	)
 
 	// if the server returns a 200 status code, but the payload is not the expected type,

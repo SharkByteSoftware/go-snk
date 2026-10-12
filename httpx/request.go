@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
+
+	"github.com/SharkByteSoftware/go-snk/conditional"
 )
 
 // DoRawRequest sends an HTTP request with the given method and body, without any shared request logic.
@@ -55,26 +58,56 @@ func doRawRequest(ctx context.Context, method, url string, body io.Reader, confi
 	return resp, nil
 }
 
+// insecureTransport is shared across requests so connections are pooled and reused.
+//nolint:gochecknoglobals
+var insecureTransport = sync.OnceValue(func() *http.Transport {
+	return newInsecureTransport(http.DefaultTransport)
+})
+
+// newInsecureTransport returns a transport with certificate verification disabled.
+// When base is an *http.Transport it is cloned, preserving proxy-from-environment, HTTP/2,
+// and dial/TLS handshake timeouts; otherwise a minimal transport with proxy support is used.
+// No insecure settings are applied to base. Note that http.Transport.Clone initializes
+// base's lazy HTTP/2 defaults as a side effect.
+func newInsecureTransport(base http.RoundTripper) *http.Transport {
+	typed, isTransport := base.(*http.Transport)
+
+	// typed.Clone is a method value on a possibly-nil pointer; that is safe because
+	// IfCallReturn only invokes the branch selected by isTransport.
+	transport := conditional.IfCallReturn(isTransport,
+		typed.Clone,
+		//nolint:exhaustruct_v5
+		func() *http.Transport { return &http.Transport{Proxy: http.ProxyFromEnvironment} },
+	)
+
+	// Clone any existing TLS config rather than replacing it, so settings such as the
+	// NextProtos that enable HTTP/2 are kept. (*tls.Config).Clone is nil-safe.
+	tlsConfig := conditional.IfCallReturn(transport.TLSClientConfig != nil,
+		transport.TLSClientConfig.Clone,
+		//nolint:exhaustruct_v5
+		func() *tls.Config { return &tls.Config{} },
+	)
+
+	tlsConfig.InsecureSkipVerify = true
+	tlsConfig.MinVersion = max(tlsConfig.MinVersion, tls.VersionTLS12)
+	transport.TLSClientConfig = tlsConfig
+
+	return transport
+}
+
 func clientWithAppliedConfig(config *ConfigOptions) *http.Client {
 	if config.httpClient != nil {
 		return config.httpClient
 	}
 
 	//nolint:exhaustruct_v5
-	client := http.Client{
-		Timeout: config.timeout,
-	}
+	client := &http.Client{Timeout: config.timeout}
 
 	if config.insecureSkipVerify {
-		//nolint:exhaustruct_v5
-		client.Transport = &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: config.insecureSkipVerify, //nolint:gosec
-			},
-		}
+		client.Transport = insecureTransport()
 	}
 
-	return &client
+	return client
 }
 
 func newRequestWithAppliedConfig(

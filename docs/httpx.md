@@ -88,7 +88,8 @@ Prefer a simpler local implementation when:
 | `WithTimeout`            | Sets the request timeout; must be positive                               |
 | `WithParam`              | Adds a single query parameter to the request                             |
 | `WithParams`             | Merges a set of query parameters into the request                        |
-| `StrictDecoding`         | Enables strict JSON decoding; unknown fields cause an error              |
+| `WithStrictDecoding`     | Enables strict JSON decoding; unknown fields cause an error              |
+| `StrictDecoding`         | **Deprecated:** use `WithStrictDecoding`                                 |
 | `WithParseURLFunc`       | Overrides the function used to parse the request URL                     |
 | `WithBearerToken`        | Sets `Authorization: Bearer <token>`; token must not be empty            |
 | `WithBasicAuth`          | Sets `Authorization` using HTTP Basic auth (RFC 7617); username required |

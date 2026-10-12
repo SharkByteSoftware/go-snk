@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
 )
 
 // DoRawRequest sends an HTTP request with the given method and body, without any shared request logic.
@@ -55,26 +56,42 @@ func doRawRequest(ctx context.Context, method, url string, body io.Reader, confi
 	return resp, nil
 }
 
+// insecureTransport is shared across requests so connections are pooled and reused.
+// It is cloned from http.DefaultTransport on first use, so proxy-from-environment,
+// HTTP/2, and dial/TLS handshake timeouts are preserved.
+//nolint:gochecknoglobals
+var insecureTransport = sync.OnceValue(func() *http.Transport {
+	var transport *http.Transport
+
+	if base, ok := http.DefaultTransport.(*http.Transport); ok {
+		transport = base.Clone()
+	} else {
+		//nolint:exhaustruct_v5
+		transport = &http.Transport{Proxy: http.ProxyFromEnvironment}
+	}
+
+	//nolint:exhaustruct_v5
+	transport.TLSClientConfig = &tls.Config{
+		InsecureSkipVerify: true, //nolint:gosec
+		MinVersion:         tls.VersionTLS12,
+	}
+
+	return transport
+})
+
 func clientWithAppliedConfig(config *ConfigOptions) *http.Client {
 	if config.httpClient != nil {
 		return config.httpClient
 	}
 
 	//nolint:exhaustruct_v5
-	client := http.Client{
-		Timeout: config.timeout,
-	}
+	client := &http.Client{Timeout: config.timeout}
 
 	if config.insecureSkipVerify {
-		//nolint:exhaustruct_v5
-		client.Transport = &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: config.insecureSkipVerify, //nolint:gosec
-			},
-		}
+		client.Transport = insecureTransport()
 	}
 
-	return &client
+	return client
 }
 
 func newRequestWithAppliedConfig(

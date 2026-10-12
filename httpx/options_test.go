@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/SharkByteSoftware/go-snk/httpxtest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -205,4 +206,25 @@ func TestWithJSONContentType(t *testing.T) {
 
 		assert.Equal(t, "application/json", got)
 	})
+}
+
+func TestWithStrictDecoding(t *testing.T) {
+	for name, opt := range map[string]Option{
+		"WithStrictDecoding":          WithStrictDecoding(),
+		"StrictDecoding (deprecated)": StrictDecoding(),
+	} {
+		t.Run(name, func(t *testing.T) {
+			ts := httpxtest.NewServerBuilder(t).
+				OnFunc(func(w http.ResponseWriter, _ *http.Request) {
+					w.Header().Set("Content-Type", "application/json")
+					_, _ = w.Write([]byte(`{"name":"x","unknown":1}`))
+				}).
+				Build()
+
+			_, err := Get[struct {
+				Name string `json:"name"`
+			}](context.Background(), ts.URL, opt)
+			require.ErrorIs(t, err, ErrDecoding)
+		})
+	}
 }

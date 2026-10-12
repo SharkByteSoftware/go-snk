@@ -54,7 +54,8 @@ func WithHTTPClient(client *http.Client) Option {
 	}
 }
 
-// WithHeader adds a single header to the request.
+// WithHeader adds a value for the header key. Calling it repeatedly with the same key
+// appends additional values rather than replacing earlier ones.
 func WithHeader(key, value string) Option {
 	return func(options *ConfigOptions) error {
 		options.headers.Add(key, value)
@@ -62,7 +63,8 @@ func WithHeader(key, value string) Option {
 	}
 }
 
-// WithHeaders combines the provided headers with the existing headers.
+// WithHeaders merges the provided headers into the existing headers. For any key present in
+// both, the provided values replace the existing values for that key.
 func WithHeaders(headers http.Header) Option {
 	return func(options *ConfigOptions) error {
 		options.headers = mapx.Combine(options.headers, headers)
@@ -70,7 +72,8 @@ func WithHeaders(headers http.Header) Option {
 	}
 }
 
-// WithTimeout sets the timeout for the request.
+// WithTimeout sets the timeout for the client created by httpx. It has no effect when
+// WithHTTPClient is also used; configure the timeout on that client instead.
 // If the timeout is <= 0, an error is returned.
 func WithTimeout(timeout time.Duration) Option {
 	return func(options *ConfigOptions) error {
@@ -84,7 +87,9 @@ func WithTimeout(timeout time.Duration) Option {
 	}
 }
 
-// WithParam adds a single param to the request.
+// WithParam sets a single query parameter, replacing any value previously set for key via
+// WithParam or WithParams. Parameters set through options also replace any parameter with
+// the same key already present in the request URL.
 func WithParam(key, value string) Option {
 	return func(options *ConfigOptions) error {
 		options.params[key] = []string{value}
@@ -100,12 +105,20 @@ func WithParams(params url.Values) Option {
 	}
 }
 
-// StrictDecoding enables strict decoding of the response body.
-func StrictDecoding() Option {
+// WithStrictDecoding enables strict decoding of the response body; unknown JSON fields cause an error.
+func WithStrictDecoding() Option {
 	return func(options *ConfigOptions) error {
 		options.strictDecoding = true
 		return nil
 	}
+}
+
+// StrictDecoding enables strict decoding of the response body.
+//
+// Deprecated: use WithStrictDecoding, which matches the naming of the other options
+// and of jsonx.WithStrictDecoding.
+func StrictDecoding() Option {
+	return WithStrictDecoding()
 }
 
 // WithParseURLFunc sets the function to parse the URL.

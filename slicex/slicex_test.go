@@ -7,13 +7,20 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	"golang.org/x/exp/constraints"
-
 	"github.com/SharkByteSoftware/go-snk/conditional"
 	"github.com/SharkByteSoftware/go-snk/slicex"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
+
+type integer interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64 |
+	~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
+}
+
+func isEven[T integer](n T) bool {
+	return n%2 == 0
+}
 
 var numberList = []int{1, 2, 3, 4, 5, 333, 256}
 var duplicateList = []int{1, 2, 3, 4, 5, 333, 256, 1, 2, 3, 4, 5, 333, 256}
@@ -719,8 +726,4 @@ func TestSlice_MapErr(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, result)
-}
-
-func isEven[T constraints.Integer](n T) bool {
-	return n%2 == 0
 }

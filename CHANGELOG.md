@@ -6,6 +6,18 @@
 
 # Changelog
 
+## v1.3.5
+
+### Bug Fixes
+- **`slicex/parallel.GroupByWithLimit`** — fixed unbound concurrency clamp; `min(concurrency, len(slice))` collapsed to `0` on an empty slice, causing a deadlock. Now uses `max(min(concurrency, len(slice)), 1)` consistent with `MapWithLimit` and `ApplyWithLimit`
+- **`slicex/parallel.PartitionWithLimit`** — same fix applied; empty slice no longer deadlocks
+
+### Improvements
+- Updated `golangci-lint` version
+
+---
+
+
 ## v1.3.4
 
 ### Improvements

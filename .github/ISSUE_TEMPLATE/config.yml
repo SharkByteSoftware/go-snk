@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🙋 Ask a question
+    url: https://github.com/SharkByteSoftware/go-snk/discussions/categories/q-a
+    about: Usage help and API questions — please ask in Discussions Q&A instead of opening an issue.
+  - name: 💡 Propose a feature or package
+    url: https://github.com/SharkByteSoftware/go-snk/discussions/categories/ideas
+    about: New functions, packages, or API changes — start a discussion first so we can agree on the design.
+  - name: 📦 API reference
+    url: https://pkg.go.dev/github.com/SharkByteSoftware/go-snk
+    about: Browse the package documentation on pkg.go.dev.

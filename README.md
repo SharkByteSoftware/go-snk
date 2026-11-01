@@ -8,14 +8,10 @@
 
 [![GitHub Tag](https://img.shields.io/github/v/tag/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/releases)
 [![Go Reference](https://pkg.go.dev/badge/github.com/SharkByteSoftware/go-snk.svg)](https://pkg.go.dev/github.com/SharkByteSoftware/go-snk)
-[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/SharkByteSoftware/go-snk)](./go.mod)
 [![Build Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml)
-[![Lint Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/lint.yml/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/lint.yml)
 [![codecov](https://codecov.io/gh/SharkByteSoftware/go-snk/graph/badge.svg?token=HGGS1ESDYP)](https://codecov.io/gh/SharkByteSoftware/go-snk)
 [![Go report](https://goreportcard.com/badge/github.com/SharkByteSoftware/go-snk)](https://goreportcard.com/report/SharkByteSoftware/go-snk)
-[![CodeQL](https://github.com/SharkByteSoftware/go-snk/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/github-code-scanning/codeql)
 [![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)
-[![Contributors](https://img.shields.io/github/contributors/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/graphs/contributors)
 [![Mentioned in Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go)
 
 `go-snk` is the library you pull into any Go project to clean it up and keep it clean. The name is short for
@@ -26,6 +22,21 @@ for the things you do all the time.
 ## Getting Started
 
 ### Installation
+### Quick example
+
+```go
+type Order struct {
+    ID       string
+    Customer string
+    Shipped  bool
+}
+
+pending    := slicex.Filter(orders, func(o Order) bool { return !o.Shipped })
+ids        := slicex.Map(pending, func(o Order) string { return o.ID })
+byCustomer := slicex.GroupBy(pending, func(o Order) string { return o.Customer })
+```
+
+Three lines instead of three hand-rolled loops, with each step's intent explicit.
 
 ```sh
 go get github.com/SharkByteSoftware/go-snk@latest
@@ -36,9 +47,18 @@ Import only the packages you need:
 ```go
 package main
 
-import "github.com/SharkByteSoftware/go-snk/slicex"
-import "github.com/SharkByteSoftware/go-snk/mapx"
+import (
+	"github.com/SharkByteSoftware/go-snk/mapx"
+	"github.com/SharkByteSoftware/go-snk/slicex"
+)
 ```
+
+## Why go-snk?
+
+Stdlib first: go-snk fills the gaps `slices`/`maps` leave out (`Map`, `Filter`, `GroupBy`…)
+with consistent `S ~[]T` / `M ~map[K]V` constraints, order-preserving fail-fast parallel
+variants, and backend helpers (`jsonx`, `httpx`, `httpxtest`).
+Compared with `samber/lo`, it's narrower and more opinionated. → [Full comparison](docs/why-go-snk.md)
 
 ## Documentation
 

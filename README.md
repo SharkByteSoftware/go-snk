@@ -1,8 +1,8 @@
-<div style="text-align: center;">
+<p align="center">
     <a href="https://github.com/SharkByteSoftware/go-snk">
-        <img width="" height="202" alt="sink-logo" src="img/logo.png" />
+        <img height="202" alt="go-snk logo" src="img/logo.png" />
     </a>
-</div>
+</p>
 
 # go-snk — the kitchen sink for clean Go projects
 
@@ -22,6 +22,22 @@ for the things you do all the time.
 ## Getting Started
 
 ### Installation
+
+```sh
+go get github.com/SharkByteSoftware/go-snk@latest
+```
+
+Import only the packages you need:
+
+```go
+package main
+
+import (
+    "github.com/SharkByteSoftware/go-snk/slicex"
+    "github.com/SharkByteSoftware/go-snk/slicex/parallel"
+)
+```
+
 ### Quick example
 
 ```go
@@ -38,26 +54,44 @@ byCustomer := slicex.GroupBy(pending, func(o Order) string { return o.Customer }
 
 Three lines instead of three hand-rolled loops, with each step's intent explicit.
 
-```sh
-go get github.com/SharkByteSoftware/go-snk@latest
-```
-
-Import only the packages you need:
+### Bounded parallelism, results in order
 
 ```go
-package main
-
-import (
-	"github.com/SharkByteSoftware/go-snk/mapx"
-	"github.com/SharkByteSoftware/go-snk/slicex"
-)
+// Look up every shipment with at most 16 requests in flight.
+// statuses[i] always matches shipmentIDs[i].
+statuses := parallel.MapWithLimit(shipmentIDs, func(id string) Status {
+    return tracker.Lookup(ctx, id)
+}, 16)
 ```
+
+<details>
+<summary>Without go-snk</summary>
+
+```go
+statuses := make([]Status, len(shipmentIDs))
+sem := make(chan struct{}, 16)
+var wg sync.WaitGroup
+for i, id := range shipmentIDs {
+    wg.Add(1)
+    sem <- struct{}{}
+    go func() {
+        defer wg.Done()
+        defer func() { <-sem }()
+        statuses[i] = tracker.Lookup(ctx, id)
+    }()
+}
+wg.Wait()
+```
+
+</details>
+
+A panic inside the callback is re-raised on the caller's goroutine, so `recover` works just as it does with the sequential `slicex` functions.
 
 ## Why go-snk?
 
 Stdlib first: go-snk fills the gaps `slices`/`maps` leave out (`Map`, `Filter`, `GroupBy`…)
-with consistent `S ~[]T` / `M ~map[K]V` constraints, order-preserving fail-fast parallel
-variants, and backend helpers (`jsonx`, `httpx`, `httpxtest`).
+with consistent `S ~[]T` / `M ~map[K]V` constraints, order-preserving, bounded-concurrency parallel variants,
+and backend helpers (`jsonx`, `httpx`, `httpxtest`).
 Compared with `samber/lo`, it's narrower and more opinionated. → [Full comparison](docs/why-go-snk.md)
 
 ## Documentation
@@ -73,7 +107,7 @@ Compared with `samber/lo`, it's narrower and more opinionated. → [Full compari
 | `conditional`     | Concise helpers for branching and value selection                                                                                | [conditional.md](docs/conditional.md)  |
 | `stringx`         | Helpers for blank checks, fallback selection, truncation, wrapping, and padding strings                                          | [stringx.md](docs/stringx.md)          |
 | `errorx`          | Helpers for intentional error suppression, initialization panics, multi-target error checks, and reducing multiple errors to one | [errorx.md](docs/errorx.md)            |
-| `containers`      | Reusable data structures including lists, sets, stacks, and queues                                                               | [README.md](docs/containers/README.md) |
+| `containers`      | Reusable data structures including lists, sets, stacks, queues, and priority queues                                              | [README.md](docs/containers/README.md) |
 | `helpers`         | Generic utilities for pointer handling and zero value operations                                                                 | [helpers.md](docs/helpers.md)          |
 
 For a full overview of the library, see [docs/overview.md](docs/overview.md).

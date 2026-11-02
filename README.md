@@ -1,21 +1,17 @@
-<div style="text-align: center;">
+<p align="center">
     <a href="https://github.com/SharkByteSoftware/go-snk">
-        <img width="" height="202" alt="sink-logo" src="img/logo.png" />
+        <img height="202" alt="go-snk logo" src="img/logo.png" />
     </a>
-</div>
+</p>
 
 # go-snk — the kitchen sink for clean Go projects
 
 [![GitHub Tag](https://img.shields.io/github/v/tag/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/releases)
 [![Go Reference](https://pkg.go.dev/badge/github.com/SharkByteSoftware/go-snk.svg)](https://pkg.go.dev/github.com/SharkByteSoftware/go-snk)
-[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/SharkByteSoftware/go-snk)](./go.mod)
 [![Build Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/go.yml)
-[![Lint Status](https://github.com/SharkByteSoftware/go-snk/actions/workflows/lint.yml/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/lint.yml)
 [![codecov](https://codecov.io/gh/SharkByteSoftware/go-snk/graph/badge.svg?token=HGGS1ESDYP)](https://codecov.io/gh/SharkByteSoftware/go-snk)
 [![Go report](https://goreportcard.com/badge/github.com/SharkByteSoftware/go-snk)](https://goreportcard.com/report/SharkByteSoftware/go-snk)
-[![CodeQL](https://github.com/SharkByteSoftware/go-snk/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/SharkByteSoftware/go-snk/actions/workflows/github-code-scanning/codeql)
 [![GitHub License](https://img.shields.io/github/license/SharkByteSoftware/go-snk)](./LICENSE)
-[![Contributors](https://img.shields.io/github/contributors/SharkByteSoftware/go-snk)](https://github.com/SharkByteSoftware/go-snk/graphs/contributors)
 [![Mentioned in Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go)
 
 `go-snk` is the library you pull into any Go project to clean it up and keep it clean. The name is short for
@@ -36,9 +32,67 @@ Import only the packages you need:
 ```go
 package main
 
-import "github.com/SharkByteSoftware/go-snk/slicex"
-import "github.com/SharkByteSoftware/go-snk/mapx"
+import (
+    "github.com/SharkByteSoftware/go-snk/slicex"
+    "github.com/SharkByteSoftware/go-snk/slicex/parallel"
+)
 ```
+
+### Quick example
+
+```go
+type Order struct {
+    ID       string
+    Customer string
+    Shipped  bool
+}
+
+pending    := slicex.Filter(orders, func(o Order) bool { return !o.Shipped })
+ids        := slicex.Map(pending, func(o Order) string { return o.ID })
+byCustomer := slicex.GroupBy(pending, func(o Order) string { return o.Customer })
+```
+
+Three lines instead of three hand-rolled loops, with each step's intent explicit.
+
+### Bounded parallelism, results in order
+
+```go
+// Look up every shipment with at most 16 requests in flight.
+// statuses[i] always matches shipmentIDs[i].
+statuses := parallel.MapWithLimit(shipmentIDs, func(id string) Status {
+    return tracker.Lookup(ctx, id)
+}, 16)
+```
+
+<details>
+<summary>Without go-snk</summary>
+
+```go
+statuses := make([]Status, len(shipmentIDs))
+sem := make(chan struct{}, 16)
+var wg sync.WaitGroup
+for i, id := range shipmentIDs {
+    wg.Add(1)
+    sem <- struct{}{}
+    go func() {
+        defer wg.Done()
+        defer func() { <-sem }()
+        statuses[i] = tracker.Lookup(ctx, id)
+    }()
+}
+wg.Wait()
+```
+
+</details>
+
+A panic inside the callback is re-raised on the caller's goroutine, so `recover` works just as it does with the sequential `slicex` functions.
+
+## Why go-snk?
+
+Stdlib first: go-snk fills the gaps `slices`/`maps` leave out (`Map`, `Filter`, `GroupBy`…)
+with consistent `S ~[]T` / `M ~map[K]V` constraints, order-preserving, bounded-concurrency parallel variants,
+and backend helpers (`jsonx`, `httpx`, `httpxtest`).
+Compared with `samber/lo`, it's narrower and more opinionated. → [Full comparison](docs/why-go-snk.md)
 
 ## Documentation
 
@@ -53,7 +107,7 @@ import "github.com/SharkByteSoftware/go-snk/mapx"
 | `conditional`     | Concise helpers for branching and value selection                                                                                | [conditional.md](docs/conditional.md)  |
 | `stringx`         | Helpers for blank checks, fallback selection, truncation, wrapping, and padding strings                                          | [stringx.md](docs/stringx.md)          |
 | `errorx`          | Helpers for intentional error suppression, initialization panics, multi-target error checks, and reducing multiple errors to one | [errorx.md](docs/errorx.md)            |
-| `containers`      | Reusable data structures including lists, sets, stacks, and queues                                                               | [README.md](docs/containers/README.md) |
+| `containers`      | Reusable data structures including lists, sets, stacks, queues, and priority queues                                              | [README.md](docs/containers/README.md) |
 | `helpers`         | Generic utilities for pointer handling and zero value operations                                                                 | [helpers.md](docs/helpers.md)          |
 
 For a full overview of the library, see [docs/overview.md](docs/overview.md).
